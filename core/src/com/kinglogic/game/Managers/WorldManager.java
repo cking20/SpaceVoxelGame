@@ -3,6 +3,9 @@ package com.kinglogic.game.Managers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -23,6 +26,7 @@ public class WorldManager {
     private World worldPhysics;
     private Viewport view;
     public final OrthographicCamera viewCam;
+    private Box2DDebugRenderer debugRenderer;
 
     private HashSet<Grid> grids;
 
@@ -35,12 +39,11 @@ public class WorldManager {
 
     private WorldManager(){
         grids = new HashSet<Grid>();
-
         viewCam = new OrthographicCamera();
         view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*ResourceManager.ins().calculateAspectRatio(), viewCam);
         view.apply();
-
         BuildWorldt();
+        debugRenderer = new Box2DDebugRenderer();
 
     }
     public void BuildWorldt(){
@@ -52,6 +55,10 @@ public class WorldManager {
     }
 
     public void update(float delta){
+        for(Grid g : grids) {
+            g.updateRendering();
+            g.myBody.setTransform(g.myBody.getPosition().x%(Gdx.graphics.getWidth()/2),(g.myBody.getPosition().y%(Gdx.graphics.getHeight()/2)), g.myBody.getAngle());
+        }
         worldStage.act(delta);
         doPhysicsStep(delta);
         //todo update actors
@@ -59,6 +66,7 @@ public class WorldManager {
     public void render(){
         worldStage.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         worldStage.draw();
+        debugRenderer.render(worldPhysics, viewCam.combined);
     }
     public void resize(int width, int height){
         worldStage.getViewport().update(width,height, true);
@@ -87,27 +95,14 @@ public class WorldManager {
 
     public void addGridToWorld(Grid d){
         worldStage.addActor(d.voxels);
-        d.myBody = worldPhysics.createBody(d.bodyDef);
-
         //todo make funciton in Grid to parse through voxels and create fixture
-        //must go counter clockwise
-        /*something like
-        * b2Vec2 vertices[5];
-  vertices[0].Set(-1,  2);
-  vertices[1].Set(-1,  0);
-  vertices[2].Set( 0, -3);
-  vertices[3].Set( 1,  0);
-  vertices[4].Set( 1,  1);
+        d.recalculateShape();
+        d.myBody = worldPhysics.createBody(d.bodyDef);
+        System.out.println(d.myBody);
+        System.out.println(d.fixtureDef);
+        d.fixture = d.myBody.createFixture(d.fixtureDef);
+        grids.add(d);
 
-  b2PolygonShape polygonShape;
-  polygonShape.Set(vertices, 5); //pass array to the shape
-
-  myFixtureDef.shape = &polygonShape; //change the shape of the fixture
-  myBodyDef.position.Set(0, 20); //in the middle
-  b2Body* dynamicBody2 = m_world->CreateBody(&myBodyDef);
-  dynamicBody2->CreateFixture(&myFixtureDef); //add a fixture to the body
-        *
-        * */
     }
 
 }

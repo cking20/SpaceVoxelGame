@@ -1,6 +1,7 @@
 package com.kinglogic.game.Managers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.kinglogic.game.TestInputProcessor;
 
 /**
@@ -23,6 +24,18 @@ public class GameManager {
         tip = new TestInputProcessor();
         Gdx.input.setInputProcessor(tip);
 
+    }
+
+    public void Update(float delta){
+        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().scl(10000f),true);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
+            tip.dyn.myBody.applyAngularImpulse(100f,true);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
+            tip.dyn.myBody.applyAngularImpulse(-100f,true);
+        }
     }
 
     public void dispose(){

@@ -3,7 +3,12 @@ package com.kinglogic.game.Managers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
+import java.util.ArrayList;
 
 /**
  * Created by chris on 4/1/2018.
@@ -15,6 +20,7 @@ public class ResourceManager {
 
     private static ResourceManager instance;
     private final TextureAtlas voxelAtlas;
+    private ArrayList<Shape> shapes;
 
 
     public static ResourceManager ins() {
@@ -24,6 +30,7 @@ public class ResourceManager {
     }
 
     private ResourceManager(){
+        shapes = new ArrayList<Shape>();
         ui = new Skin(Gdx.files.internal("skin/skin.json"));
 //            ui.getFont("font").getData().
         ui.getFont("font").setUseIntegerPositions(false);
@@ -31,8 +38,16 @@ public class ResourceManager {
         voxelAtlas = new TextureAtlas(Gdx.files.internal("images/voxelAtlas.atlas"));
 
     }
+    public PolygonShape getNewPolyShape(){
+        PolygonShape p = new PolygonShape();
+        shapes.add(p);
+        return p;
+    }
 
     public void dispose(){
+        for(Shape s: shapes){
+            s.dispose();
+        }
         ui.dispose();
         voxelAtlas.dispose();
 

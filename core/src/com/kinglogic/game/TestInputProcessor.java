@@ -14,13 +14,14 @@ import com.kinglogic.game.Physics.Grid;
  */
 
 public class TestInputProcessor implements InputProcessor {
-    Grid dyn;
+    public Grid dyn;
     public TestInputProcessor(){
         dyn = new Grid( new VoxelCollection(new Voxel("metal"),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(dyn);
     }
     @Override
     public boolean keyDown(int keycode) {
+
         return false;
     }
 
@@ -40,6 +41,7 @@ public class TestInputProcessor implements InputProcessor {
         else if(character == '3'){
 
         }
+
         return false;
     }
 
