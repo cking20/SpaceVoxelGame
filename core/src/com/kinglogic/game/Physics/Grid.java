@@ -58,6 +58,8 @@ public class Grid {
         recalculateVerts();
             if (verts != null) {
                 //todo dispose of the old chain and get a new one from the resource manager
+                ResourceManager.ins().disposeOfShape(shape);
+                shape = ResourceManager.ins().getNewChainShape();
                 shape.createChain(verts);
                 fixtureDef.shape = shape;
             } else {
@@ -66,6 +68,8 @@ public class Grid {
                 verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
                 verts[2] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
                 verts[3] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
+                ResourceManager.ins().disposeOfShape(shape);
+                shape = ResourceManager.ins().getNewChainShape();
                 shape.createChain(verts);
                 fixtureDef.shape = shape;
             }

@@ -49,6 +49,10 @@ public class ResourceManager {
         shapes.add(s);
         return s;
     }
+    public void disposeOfShape(Shape s){
+        shapes.remove(s);
+        s.dispose();
+    }
 
     public void dispose(){
         for(Shape s: shapes){
