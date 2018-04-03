@@ -3,11 +3,13 @@ package com.kinglogic.game.Physics;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
+import com.kinglogic.game.Actors.Voxel.VoxelUtils;
 import com.kinglogic.game.Managers.ResourceManager;
 
 import java.util.LinkedList;
@@ -20,7 +22,7 @@ import java.util.List;
 public class Grid {
     public VoxelCollection voxels;
     public Body myBody;
-    public PolygonShape polygonShape;
+    public ChainShape shape;
     public BodyDef bodyDef;
     public FixtureDef fixtureDef;
     public Fixture fixture;
@@ -30,7 +32,7 @@ public class Grid {
         voxels = v;
         bodyDef = new BodyDef();
         fixtureDef = new FixtureDef();
-        polygonShape = ResourceManager.ins().getNewPolyShape();
+        shape = ResourceManager.ins().getNewChainShape();
         recalculateShape();
         fixtureDef.density = 0.5f;
         fixtureDef.friction = 0.4f;
@@ -43,7 +45,7 @@ public class Grid {
 // Set our body's starting position in the world
         bodyDef.position.set(v.getX(),v.getY());
 
-        recalculateVerts();
+        //recalculateVerts();
     }
     public void updateRendering(){
         //System.out.println("update Rendering");
@@ -54,8 +56,20 @@ public class Grid {
     }
     public void recalculateShape(){
         recalculateVerts();
-        polygonShape.set(verts);
-        fixtureDef.shape = polygonShape;
+            if (verts != null) {
+                //todo dispose of the old chain and get a new one from the resource manager
+                shape.createChain(verts);
+                fixtureDef.shape = shape;
+            } else {
+                verts = new Vector2[4];
+                verts[0] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
+                verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
+                verts[2] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
+                verts[3] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
+                shape.createChain(verts);
+                fixtureDef.shape = shape;
+            }
+
         bodyDef.position.set(voxels.getX(),voxels.getY());
         //voxels.setOrigin((ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2-ResourceManager.voxelPixelSize/2,(ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2 - ResourceManager.voxelPixelSize/2);
 
@@ -64,31 +78,12 @@ public class Grid {
     public Vector2[] recalculateVerts(){
         //todo parse through the voxels, counter clockwise
         int vCount = 0;
-        List<Vector2> temp = new LinkedList<Vector2>();
-        Voxel[][] grid = voxels.getGrid();
-        for(int i = 0; i < grid.length; i++){
-            for(int j = 0; j < grid[0].length; j++){
-                if(grid[i][j] != null) {
-                    temp.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
-                    temp.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
-                    temp.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
-                    temp.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
-                }
+        List<Vector2> verticies = VoxelUtils.MarchingSquares(voxels.getGrid());
 
-            }
+        if(verticies != null) {
+            Vector2[] ret = new Vector2[verticies.size()];
+            verts = verticies.toArray(ret);
         }
-
-//        Vector2[] tempVerts = new Vector2[4];
-//        tempVerts[0] = new Vector2(0,0);
-//        tempVerts[1] = new Vector2(ResourceManager.voxelPixelSize,0);
-//        tempVerts[2] = new Vector2(ResourceManager.voxelPixelSize,ResourceManager.voxelPixelSize);
-//        tempVerts[3] = new Vector2(0,ResourceManager.voxelPixelSize);
-
-        //todo MARCHING SQUARES!!!
-
-//        verts = tempVerts;
-        Vector2[] ret = new Vector2[temp.size()];
-        verts = temp.toArray(ret);
         return verts;
     }
     public boolean addVoxelScreenPos(Voxel v, Vector2 screenPosition){

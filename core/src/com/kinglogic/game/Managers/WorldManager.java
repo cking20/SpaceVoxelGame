@@ -102,7 +102,12 @@ public class WorldManager {
         System.out.println(d.fixtureDef);
         d.fixture = d.myBody.createFixture(d.fixtureDef);
         grids.add(d);
-
+    }
+    public void rethinkShape(Grid d){
+        d.recalculateShape();
+        d.myBody.destroyFixture(d.fixture);
+        d.fixture = d.myBody.createFixture(d.fixtureDef);
+        grids.add(d);
     }
 
 }
