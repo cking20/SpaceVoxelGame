@@ -50,13 +50,13 @@ public class TestInputProcessor implements InputProcessor {
         if (button == Input.Buttons.LEFT) {
             // Some stuff
             System.out.println("click @ ("+screenX+"),("+(Gdx.graphics.getHeight()-screenY)+")");
-            dyn.voxels.addVoxelScreenPos(new Voxel("metal"), new Vector2(screenX,screenY));
+            dyn.addVoxelScreenPos(new Voxel("metal"), new Vector2(screenX,screenY));
             return true;
         }
         if (button == Input.Buttons.RIGHT) {
             // Some stuff
             System.out.println("click @ ("+screenX+"),("+(Gdx.graphics.getHeight()-screenY)+")");
-            dyn.voxels.removeVoxelScreenPos(new Vector2(screenX,screenY));
+            dyn.removeVoxelScreenPos(new Vector2(screenX,screenY));
             return true;
         }
         return false;

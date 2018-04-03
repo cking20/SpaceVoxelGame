@@ -57,29 +57,52 @@ public class Grid {
         polygonShape.set(verts);
         fixtureDef.shape = polygonShape;
         bodyDef.position.set(voxels.getX(),voxels.getY());
-        voxels.setOrigin((ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2-ResourceManager.voxelPixelSize/2,(ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2 - ResourceManager.voxelPixelSize/2);
+        //voxels.setOrigin((ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2-ResourceManager.voxelPixelSize/2,(ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2 - ResourceManager.voxelPixelSize/2);
 
     }
 
     public Vector2[] recalculateVerts(){
         //todo parse through the voxels, counter clockwise
         int vCount = 0;
-        List<Float> temp = new LinkedList<Float>();
+        List<Vector2> temp = new LinkedList<Vector2>();
         Voxel[][] grid = voxels.getGrid();
         for(int i = 0; i < grid.length; i++){
             for(int j = 0; j < grid[0].length; j++){
+                if(grid[i][j] != null) {
+                    temp.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
+                    temp.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
+                    temp.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                    temp.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                }
 
             }
         }
-        Vector2[] tempVerts = new Vector2[4];
-        tempVerts[0] = new Vector2(0,0);
-        tempVerts[1] = new Vector2(ResourceManager.voxelPixelSize,0);
-        tempVerts[2] = new Vector2(ResourceManager.voxelPixelSize,ResourceManager.voxelPixelSize);
-        tempVerts[3] = new Vector2(0,ResourceManager.voxelPixelSize);
 
-        //todo stuff
+//        Vector2[] tempVerts = new Vector2[4];
+//        tempVerts[0] = new Vector2(0,0);
+//        tempVerts[1] = new Vector2(ResourceManager.voxelPixelSize,0);
+//        tempVerts[2] = new Vector2(ResourceManager.voxelPixelSize,ResourceManager.voxelPixelSize);
+//        tempVerts[3] = new Vector2(0,ResourceManager.voxelPixelSize);
 
-        verts = tempVerts;
-        return tempVerts;
+        //todo MARCHING SQUARES!!!
+
+//        verts = tempVerts;
+        Vector2[] ret = new Vector2[temp.size()];
+        verts = temp.toArray(ret);
+        return verts;
+    }
+    public boolean addVoxelScreenPos(Voxel v, Vector2 screenPosition){
+        boolean good = voxels.addVoxelScreenPos(v,screenPosition);
+        if(good) {
+            recalculateShape();
+        }
+        return good;
+    }
+    public boolean removeVoxelScreenPos(Vector2 screenPosition){
+        boolean good = voxels.removeVoxelScreenPos(screenPosition);
+        if(good) {
+            recalculateShape();
+        }
+        return good;
     }
 }

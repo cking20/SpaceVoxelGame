@@ -57,7 +57,7 @@ public class WorldManager {
     public void update(float delta){
         for(Grid g : grids) {
             g.updateRendering();
-            g.myBody.setTransform(g.myBody.getPosition().x%(Gdx.graphics.getWidth()/2),(g.myBody.getPosition().y%(Gdx.graphics.getHeight()/2)), g.myBody.getAngle());
+            //g.myBody.setTransform(g.myBody.getPosition().x%(Gdx.graphics.getWidth()/2),(g.myBody.getPosition().y%(Gdx.graphics.getHeight()/2)), g.myBody.getAngle());
         }
         worldStage.act(delta);
         doPhysicsStep(delta);
