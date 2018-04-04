@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.VoxelUtils;
@@ -22,7 +23,8 @@ import java.util.List;
 public class Grid {
     public VoxelCollection voxels;
     public Body myBody;
-    public ChainShape shape;
+    //public ChainShape shape;
+    public Shape shape;
     public BodyDef bodyDef;
     public FixtureDef fixtureDef;
     public Fixture fixture;
@@ -60,9 +62,10 @@ public class Grid {
                 //todo dispose of the old chain and get a new one from the resource manager
                 ResourceManager.ins().disposeOfShape(shape);
                 shape = ResourceManager.ins().getNewChainShape();
-                shape.createChain(verts);
+                ((ChainShape)shape).createChain(verts);
                 fixtureDef.shape = shape;
             } else {
+                System.err.println("default shape");
                 verts = new Vector2[4];
                 verts[0] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
                 verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
@@ -70,7 +73,7 @@ public class Grid {
                 verts[3] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
                 ResourceManager.ins().disposeOfShape(shape);
                 shape = ResourceManager.ins().getNewChainShape();
-                shape.createChain(verts);
+                ((ChainShape)shape).createChain(verts);
                 fixtureDef.shape = shape;
             }
 

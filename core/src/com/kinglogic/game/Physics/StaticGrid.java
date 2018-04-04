@@ -7,7 +7,7 @@ import com.kinglogic.game.Actors.Voxel.VoxelCollection;
  */
 
 public class StaticGrid extends Grid{
-    StaticGrid(VoxelCollection v) {
+    public StaticGrid(VoxelCollection v) {
         super(v);
     }
 }

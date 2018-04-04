@@ -27,8 +27,9 @@ public class GameManager {
     }
 
     public void Update(float delta){
+        //System.out.println(tip.dyn.fixture);
         if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().rotate90(1).scl(1000f),true);
+            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().scl(10000f),true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
             tip.dyn.myBody.applyTorque(1000f,true);

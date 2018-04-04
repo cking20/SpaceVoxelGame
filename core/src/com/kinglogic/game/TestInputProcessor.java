@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Managers.WorldManager;
+import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.Grid;
 
 /**
@@ -15,10 +16,12 @@ import com.kinglogic.game.Physics.Grid;
 
 public class TestInputProcessor implements InputProcessor {
     public Grid dyn;
+    public Grid stc;
     public TestInputProcessor(){
-        dyn = new Grid( new VoxelCollection(new Voxel("metal"),new Vector2(400,300)));
+        stc = new Grid( new VoxelCollection(new Voxel("metal"),new Vector2(400,300)));
+        WorldManager.ins().addGridToWorld(stc);
+        dyn = new DynamicGrid( new VoxelCollection(new Voxel("metal"),new Vector2(200,300)));
         WorldManager.ins().addGridToWorld(dyn);
-        WorldManager.ins().addGridToWorld(new Grid( new VoxelCollection(new Voxel("metal"),new Vector2(200,300))));
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -51,15 +54,15 @@ public class TestInputProcessor implements InputProcessor {
         if (button == Input.Buttons.LEFT) {
             // Some stuff
             System.out.println("click @ ("+screenX+"),("+(Gdx.graphics.getHeight()-screenY)+")");
-            dyn.addVoxelScreenPos(new Voxel("metal"), new Vector2(screenX,screenY));
-            WorldManager.ins().rethinkShape(dyn);
+            stc.addVoxelScreenPos(new Voxel("metal"), new Vector2(screenX,screenY));
+            WorldManager.ins().rethinkShape(stc);
             return true;
         }
         if (button == Input.Buttons.RIGHT) {
             // Some stuff
             System.out.println("click @ ("+screenX+"),("+(Gdx.graphics.getHeight()-screenY)+")");
-            dyn.removeVoxelScreenPos(new Vector2(screenX,screenY));
-            WorldManager.ins().rethinkShape(dyn);
+            stc.removeVoxelScreenPos(new Vector2(screenX,screenY));
+            WorldManager.ins().rethinkShape(stc);
             return true;
         }
         return false;
