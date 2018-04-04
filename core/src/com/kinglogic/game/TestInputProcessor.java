@@ -18,6 +18,7 @@ public class TestInputProcessor implements InputProcessor {
     public TestInputProcessor(){
         dyn = new Grid( new VoxelCollection(new Voxel("metal"),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(dyn);
+        WorldManager.ins().addGridToWorld(new Grid( new VoxelCollection(new Voxel("metal"),new Vector2(200,300))));
     }
     @Override
     public boolean keyDown(int keycode) {

@@ -28,13 +28,13 @@ public class GameManager {
 
     public void Update(float delta){
         if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().scl(10000f),true);
+            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().rotate90(1).scl(1000f),true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
-            tip.dyn.myBody.applyAngularImpulse(100f,true);
+            tip.dyn.myBody.applyTorque(1000f,true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
-            tip.dyn.myBody.applyAngularImpulse(-100f,true);
+            tip.dyn.myBody.applyTorque(-1000f,true);
         }
     }
 

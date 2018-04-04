@@ -6,6 +6,7 @@ import com.kinglogic.game.Managers.ResourceManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -14,105 +15,127 @@ import java.util.List;
 
 public class VoxelUtils {
 
-    private static HashMap<Vector2,FromEdge> map(Byte value, int x, int y){
-        HashMap<Vector2, FromEdge> edges = new HashMap();
+    private static HashMap<Vector2,LinkedList<FromEdge>> map(Byte value, int x, int y){
+        HashMap<Vector2, LinkedList<FromEdge>> edges = new HashMap();
+        LinkedList<FromEdge> list = new LinkedList<FromEdge>();
         FromEdge temp;
         switch (value){
             case 0:
                 break;
             case 1:
                 temp = GetTop(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 2:
                 temp = GetLeft(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 3:
                 temp = GetTop(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetLeft(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 4:
                 temp = GetBottom(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 5:
                 temp = GetTop(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
+
+                list = new LinkedList<FromEdge>();
                 temp = GetBottom(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 6:
                 temp = GetLeft(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetBottom(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 7:
                 temp = GetTop(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetLeft(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetBottom(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 8:
                 temp = GetRight(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 9:
                 temp = GetRight(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetTop(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 10:
                 temp = GetLeft(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
+
+                list = new LinkedList<FromEdge>();
                 temp = GetRight(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 11:
                 temp = GetRight(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetTop(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetLeft(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 12:
                 temp = GetBottom(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetRight(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 13:
                 temp = GetBottom(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetRight(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetTop(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 14:
                 temp = GetLeft(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetBottom(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetRight(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
             case 15:
                 temp = GetTop(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetLeft(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetBottom(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
                 temp = GetRight(x,y);
-                edges.put(temp.from, temp);
+                list.push(temp);
+                edges.put(temp.from, list);
                 break;
 
         }
@@ -153,7 +176,7 @@ public class VoxelUtils {
         //save the first
         //for each generate map value and add the verts to the list, then parse the list and reorder it so its a loop counter clockwise loop
         int firstX = -1,firstY = -1;
-        HashMap<Vector2,FromEdge> edges = new HashMap();
+        HashMap<Vector2,LinkedList<FromEdge>> edgeslist = new HashMap();
         for(int i = 0; i < state.length; i++){
             for(int j = 0; j < state[0].length; j++){
                 if(state[i][j] != null) {
@@ -180,7 +203,7 @@ public class VoxelUtils {
                     if (j + 1 < state.length)
                         if (state[i][j + 1] == null)
                             maping ^= 1;
-                    edges.putAll(map(maping, i, j));
+                    edgeslist.putAll(map(maping, i, j));
                 }
             }
 
@@ -189,13 +212,14 @@ public class VoxelUtils {
             List<Vector2> verts = new ArrayList<Vector2>();
             Vector2 firstPos = new Vector2(firstX*ResourceManager.voxelPixelSize, firstY*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
             System.out.println("adding first position = "+firstPos);
-            FromEdge current = edges.get(firstPos);
-            if(edges.size() == 0)
+            //todo parse the lists
+            FromEdge current = edgeslist.get(firstPos);
+            if(edgeslist.size() == 0)
                 return null;
             while (!current.to.equals(firstPos)){
                 System.out.println("connecting "+current.from+" to"+current.to);
                 verts.add(current.from);
-                current = edges.get(current.to);
+                current = edgeslist.get(current.to);
                 System.out.println("current is now from "+current.from+" to"+current.to);
             }
             //todo maybe missing onehere?
