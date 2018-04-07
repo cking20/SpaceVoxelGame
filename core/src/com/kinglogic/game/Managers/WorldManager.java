@@ -27,7 +27,6 @@ public class WorldManager {
     private Viewport view;
     public final OrthographicCamera viewCam;
     private Box2DDebugRenderer debugRenderer;
-
     private HashSet<Grid> grids;
 
 
@@ -57,7 +56,7 @@ public class WorldManager {
     public void update(float delta){
         for(Grid g : grids) {
             g.updateRendering();
-            g.myBody.setTransform(g.myBody.getPosition().x%(Gdx.graphics.getWidth()),(g.myBody.getPosition().y%(Gdx.graphics.getHeight())), g.myBody.getAngle());
+            //g.myBody.setTransform(g.myBody.getPosition().x%(Gdx.graphics.getWidth()),(g.myBody.getPosition().y%(Gdx.graphics.getHeight())), g.myBody.getAngle());
         }
         worldStage.act(delta);
         doPhysicsStep(delta);
@@ -107,7 +106,9 @@ public class WorldManager {
         d.recalculateShape();
         d.myBody.destroyFixture(d.fixture);
         d.fixture = d.myBody.createFixture(d.fixtureDef);
-        grids.add(d);
+
+        if(!grids.contains(d))
+            grids.add(d);
     }
 
 }
