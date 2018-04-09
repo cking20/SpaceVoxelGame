@@ -32,10 +32,10 @@ public class GameManager {
             tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().scl(10000f),true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
-            tip.dyn.myBody.applyTorque(1000f,true);
+            tip.dyn.myBody.applyTorque(10000f,true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
-            tip.dyn.myBody.applyTorque(-1000f,true);
+            tip.dyn.myBody.applyTorque(-10000f,true);
         }
     }
 

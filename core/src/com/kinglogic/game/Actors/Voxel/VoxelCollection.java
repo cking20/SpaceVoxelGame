@@ -5,12 +5,15 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+
 /**
  * Created by chris on 4/1/2018.
  */
 
 public class VoxelCollection extends Group {
-    public static int maxSize = 31;
+    public static int maxSize = 241;
     Voxel[][] grid;
 
     public VoxelCollection(Voxel v, Vector2 position){
@@ -37,6 +40,7 @@ public class VoxelCollection extends Group {
         System.out.println("index pos:" + position);
         int x = (int)position.x;
         int y = (int)position.y;
+        if(!validPosition(x,y))return false;
         if(verifyVoxelPlacement(x,y)) {
             grid[x][y] = v;
             super.addActor(v);
@@ -49,10 +53,25 @@ public class VoxelCollection extends Group {
         Vector2 position = mapWorldPointToIndexies(WorldManager.ins().screenToWorldCoords(screenPosition));
         int x = (int)position.x;
         int y = (int)position.y;
+        if(!validPosition(x,y))return false;
         if(grid[x][y] != null) {
             Voxel v = grid[x][y];
             super.removeActor(v);
             grid[x][y] = null;
+            //todo Splitting algorithm
+
+            VoxelUtils.Index ref = getFirstIndex();
+            if(grid[x][y+1] != null)
+                System.out.println("Remove check. Top connects to first? "+connects(new VoxelUtils.Index(x,y+1),ref));
+            if(grid[x][y-1] != null)
+                System.out.println("Remove check. Bot connects to first? "+connects(new VoxelUtils.Index(x,y-1),ref));
+            if(grid[x-1][y] != null)
+                System.out.println("Remove check. Lef connects to first? "+connects(new VoxelUtils.Index(x-1,y),ref));
+            if(grid[x+1][y] != null)
+                System.out.println("Remove check. Rht connects to first? "+connects(new VoxelUtils.Index(x+1,y),ref));
+            ////////////////////////
+
+
             return true;
         } else return false;
     }
@@ -66,6 +85,94 @@ public class VoxelCollection extends Group {
 
     public Voxel[][] getGrid(){
         return grid;
+    }
+
+    private boolean validPosition(int x, int y){
+        if(x < 0 || y < 0) return false;
+        if(x >= maxSize || y >= maxSize) return false;
+        return true;
+    }
+
+    private ArrayList<Voxel> getNeighbors(int x,int y){
+        ArrayList<Voxel> neighbors = new ArrayList<Voxel>();
+        if(validPosition(x+1,y))neighbors.add(grid[x+1][y]);
+        if(validPosition(x-1,y))neighbors.add(grid[x-1][y]);
+        if(validPosition(x,y+1))neighbors.add(grid[x][y+1]);
+        if(validPosition(x,y+1))neighbors.add(grid[x][y-1]);
+        return neighbors;
+    }
+    private Voxel getFirst(){
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                if(grid[i][j] != null)
+                    return grid[i][j];
+            }
+        }
+        return null;
+    }
+    private VoxelUtils.Index getFirstIndex(){
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                if(grid[i][j] != null)
+                    return new VoxelUtils.Index(i,j);
+            }
+        }
+        return null;
+    }
+    private boolean connects(VoxelUtils.Index from, VoxelUtils.Index to){
+        //todo improve this
+        boolean[][] visited = new boolean[maxSize][maxSize];
+        if (from == null || to == null) return false;
+        IndexCompare compare = new IndexCompare(to);
+        PriorityQueue<VoxelUtils.Index> queue = new PriorityQueue<VoxelUtils.Index>(11,compare);
+        queue.add(from);//.Push(myMap[(int)startPos.x][(int)startPos.y]);
+        Voxel goal = grid[to.x][to.y];
+        //evaluate
+        while (queue.size() > 0){
+            VoxelUtils.Index c = queue.remove();
+            System.out.println("checking at"+c.x+", "+c.y);
+            Voxel current = grid[c.x][c.y];
+            if(current == goal){
+                return true;
+            }
+            if(validPosition(c.x+1,c.y)){
+                if(grid[c.x+1][c.y] != null && !visited[c.x+1][c.y]){
+                    visited[c.x+1][c.y] = true;
+                    VoxelUtils.Index next = new VoxelUtils.Index(c.x + 1, c.y);
+                    if (!queue.contains(next))
+                        queue.add(next);
+                }
+            }
+            if(validPosition(c.x-1,c.y)){
+                if(grid[c.x-1][c.y] != null && !visited[c.x-1][c.y]){
+                    visited[c.x-1][c.y] = true;
+                    VoxelUtils.Index next = new VoxelUtils.Index(c.x - 1, c.y);
+                    if (!queue.contains(next))
+                        queue.add(next);
+                }
+            }
+            if(validPosition(c.x,c.y+1)){
+                if(grid[c.x][c.y+1] != null && !visited[c.x][c.y+1]){
+                    visited[c.x][c.y+1] = true;
+                    VoxelUtils.Index next = new VoxelUtils.Index(c.x, c.y + 1);
+                    if (!queue.contains(next))
+                        queue.add(next);
+                }
+            }
+            if(validPosition(c.x,c.y-1)){
+                if(grid[c.x][c.y-1] != null && !visited[c.x][c.y-1]){
+                    visited[c.x][c.y-1] = true;
+                    VoxelUtils.Index next = new VoxelUtils.Index(c.x, c.y - 1);
+                    if (!queue.contains(next))
+                        queue.add(next);
+                }
+            }
+        }
+        return false;
+    }
+    private Voxel[][] getVoxelsConnectedToPos(int x, int y){
+        //todo bfs add
+        return null;
     }
 
     public boolean verifyVoxelPlacement(int x, int y){

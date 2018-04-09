@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.kinglogic.game.Managers.ResourceManager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -230,7 +231,7 @@ public class VoxelUtils {
             FromEdge currentVert = currentList.removeLast();
             while(!currentVert.to.equals( firstPos)){
                 verts.add(currentVert.from);
-                System.out.println("connecting "+currentVert.from+" to"+currentVert.to);
+                //System.out.println("connecting "+currentVert.from+" to"+currentVert.to);
                 if(currentList.size() > 0) {
                     currentVert = currentList.removeLast();
                 }else {
@@ -275,4 +276,13 @@ public class VoxelUtils {
             return from.equals(o);
         }
     }
+
+    public static class Index{
+        public Integer x;
+        public Integer y;
+        public Index(int i, int j){
+            x = i; y = j;
+        }
+    }
+
 }
