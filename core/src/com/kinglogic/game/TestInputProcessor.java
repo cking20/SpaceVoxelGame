@@ -52,17 +52,11 @@ public class TestInputProcessor implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-            // Some stuff
-            System.out.println("click @ ("+screenX+"),("+(Gdx.graphics.getHeight()-screenY)+")");
-            stc.addVoxelScreenPos(new Voxel("metal"), new Vector2(screenX,screenY));
-            WorldManager.ins().rethinkShape(stc);
+            WorldManager.ins().addVoxelScreenPosition(screenX,screenY, "metal");
             return true;
         }
         if (button == Input.Buttons.RIGHT) {
-            // Some stuff
-            System.out.println("click @ ("+screenX+"),("+(Gdx.graphics.getHeight()-screenY)+")");
-            stc.removeVoxelScreenPos(new Vector2(screenX,screenY));
-            WorldManager.ins().rethinkShape(stc);
+            WorldManager.ins().removeVoxelScreenPosition(screenX,screenY);
             return true;
         }
         return false;

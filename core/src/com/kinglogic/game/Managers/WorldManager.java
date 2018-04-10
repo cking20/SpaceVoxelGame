@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.Grid;
@@ -43,8 +44,31 @@ public class WorldManager {
         view.apply();
         BuildWorldt();
         debugRenderer = new Box2DDebugRenderer();
-
     }
+
+    public boolean addVoxelScreenPosition(float x, float y, String block){
+        boolean hitFlag = false;
+        for(Grid g : grids){
+            if(g.addVoxelScreenPos(new Voxel(block),new Vector2(x,y))){
+                hitFlag = true;
+                rethinkShape(g);
+            }
+        }
+        return hitFlag;
+    }
+
+    public boolean removeVoxelScreenPosition(float x, float y){
+        boolean hitFlag = false;
+        HashSet<Grid> gridsClone = (HashSet<Grid>) grids.clone();
+        for(Grid g : gridsClone){
+            if(g.removeVoxelScreenPos(new Vector2(x,y))){
+                hitFlag = true;
+                rethinkShape(g);
+            }
+        }
+        return hitFlag;
+    }
+
     public void BuildWorldt(){
         if(worldStage == null)
             worldStage = new Stage(view);

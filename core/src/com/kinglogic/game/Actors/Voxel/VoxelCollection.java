@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
+import com.kinglogic.game.Physics.Grid;
+import com.kinglogic.game.Physics.StaticGrid;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,7 +17,7 @@ import java.util.Queue;
  */
 
 public class VoxelCollection extends Group {
-    public static int maxSize = 10;//241;
+    public static int maxSize = 250;//241;
     Voxel[][] grid;
 
     public VoxelCollection(Voxel v, Vector2 position){
@@ -32,6 +34,24 @@ public class VoxelCollection extends Group {
         setPosition(
                 position.x-((maxSize * ResourceManager.voxelPixelSize)/2),
                 position.y-((maxSize * ResourceManager.voxelPixelSize)/2));
+    }
+    public VoxelCollection(Voxel[][] v, Vector2 position){
+        //the size must be odd to get a center position
+        if(maxSize%2 == 0)
+            maxSize--;
+        grid = v;
+        for(int i = 0; i < v.length; i++){
+            for(int j = 0; j < v.length; j++){
+                if(grid[i][j] != null)
+                    super.addActor(grid[i][j]);
+            }
+        }
+
+        //v.setPosition((maxSize/2)*ResourceManager.voxelPixelSize,(maxSize/2)*ResourceManager.voxelPixelSize);
+        //todo use v.origin(changes the last bit to +pix/2)
+        setPosition(
+                position.x,
+                position.y);
     }
 
     public boolean addVoxelScreenPos(Voxel v, Vector2 screenPosition){
@@ -51,6 +71,11 @@ public class VoxelCollection extends Group {
         } else return false;
     }
 
+    /**
+     * Attempts to remove a block
+     * @param screenPosition
+     * @return if a block has been removed
+     */
     public boolean removeVoxelScreenPos(Vector2 screenPosition){
         Vector2 position = mapWorldPointToIndexies(WorldManager.ins().screenToWorldCoords(screenPosition));
         int x = (int)position.x;
@@ -61,27 +86,32 @@ public class VoxelCollection extends Group {
             super.removeActor(v);
             grid[x][y] = null;
             //todo Splitting algorithm
-
+            Voxel[][] toRemove;
             VoxelUtils.Index ref = getFirstIndex();
             if(grid[x][y+1] != null)
                 if(!connects(new VoxelUtils.Index(x,y+1),ref)){
                     System.out.println("should cascade up");
-                    removeConnectedTo(x,y+1);
+                    toRemove = removeConnectedTo(x,y+1);
+                    WorldManager.ins().addGridToWorld(new StaticGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
                 }
             if(grid[x][y-1] != null)
                 if(!connects(new VoxelUtils.Index(x,y-1),ref)){
                     System.out.println("should cascade down");
-                    removeConnectedTo(x,y-1);
+                    toRemove = removeConnectedTo(x,y-1);
+                    WorldManager.ins().addGridToWorld(new StaticGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
                 }
             if(grid[x-1][y] != null)
                 if(!connects(new VoxelUtils.Index(x-1,y),ref)){
                     System.out.println("should cascade left");
-                    removeConnectedTo(x+1,y);
+                    toRemove = removeConnectedTo(x+1,y);
+                    WorldManager.ins().addGridToWorld(new StaticGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
                 }
             if(grid[x+1][y] != null)
                 if(!connects(new VoxelUtils.Index(x+1,y),ref)){
                     System.out.println("should cascade right");
-                    removeConnectedTo(x-1,y);
+                    toRemove = removeConnectedTo(x-1,y);
+                    if(toRemove != null)
+                        WorldManager.ins().addGridToWorld(new StaticGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
                 }
             ////////////////////////
 
@@ -137,6 +167,7 @@ public class VoxelCollection extends Group {
         }
         return null;
     }
+
     private boolean connects(VoxelUtils.Index from, VoxelUtils.Index to){
         //todo improve this
         boolean[][] visited = new boolean[maxSize][maxSize];
@@ -188,8 +219,9 @@ public class VoxelCollection extends Group {
         }
         return false;
     }
-    private void removeConnectedTo(int x, int y){
-        if(!validPosition(x,y))return;
+
+    private Voxel[][] removeConnectedTo(int x, int y){
+        if(!validPosition(x,y))return null;
         Voxel[][] delta = getVoxelsConnectedToPos(x,y);
         if(delta != null){
             for(int i = 0; i < grid.length; i++){
@@ -201,6 +233,7 @@ public class VoxelCollection extends Group {
                 }
             }
         }
+        return delta;
     }
     private Voxel[][] getVoxelsConnectedToPos(int x, int y){
         //todo bfs add
