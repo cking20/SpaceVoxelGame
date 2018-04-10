@@ -6,14 +6,16 @@ import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 /**
  * Created by chris on 4/1/2018.
  */
 
 public class VoxelCollection extends Group {
-    public static int maxSize = 241;
+    public static int maxSize = 10;//241;
     Voxel[][] grid;
 
     public VoxelCollection(Voxel v, Vector2 position){
@@ -62,18 +64,34 @@ public class VoxelCollection extends Group {
 
             VoxelUtils.Index ref = getFirstIndex();
             if(grid[x][y+1] != null)
-                System.out.println("Remove check. Top connects to first? "+connects(new VoxelUtils.Index(x,y+1),ref));
+                if(!connects(new VoxelUtils.Index(x,y+1),ref)){
+                    System.out.println("should cascade up");
+                    removeConnectedTo(x,y+1);
+                }
             if(grid[x][y-1] != null)
-                System.out.println("Remove check. Bot connects to first? "+connects(new VoxelUtils.Index(x,y-1),ref));
+                if(!connects(new VoxelUtils.Index(x,y-1),ref)){
+                    System.out.println("should cascade down");
+                    removeConnectedTo(x,y-1);
+                }
             if(grid[x-1][y] != null)
-                System.out.println("Remove check. Lef connects to first? "+connects(new VoxelUtils.Index(x-1,y),ref));
+                if(!connects(new VoxelUtils.Index(x-1,y),ref)){
+                    System.out.println("should cascade left");
+                    removeConnectedTo(x+1,y);
+                }
             if(grid[x+1][y] != null)
-                System.out.println("Remove check. Rht connects to first? "+connects(new VoxelUtils.Index(x+1,y),ref));
+                if(!connects(new VoxelUtils.Index(x+1,y),ref)){
+                    System.out.println("should cascade right");
+                    removeConnectedTo(x-1,y);
+                }
             ////////////////////////
 
 
             return true;
-        } else return false;
+        } else{
+            System.out.println("grid @ click pos == null");
+            return false;
+        }
+
     }
 
     private Vector2 mapWorldPointToIndexies(Vector2 worldPos){
@@ -170,29 +188,104 @@ public class VoxelCollection extends Group {
         }
         return false;
     }
+    private void removeConnectedTo(int x, int y){
+        if(!validPosition(x,y))return;
+        Voxel[][] delta = getVoxelsConnectedToPos(x,y);
+        if(delta != null){
+            for(int i = 0; i < grid.length; i++){
+                for(int j = 0; j < grid[0].length; j++){
+                    if(delta[i][j] != null) {
+                        super.removeActor(grid[i][j]);
+                        grid[i][j] = null;
+                    }
+                }
+            }
+        }
+    }
     private Voxel[][] getVoxelsConnectedToPos(int x, int y){
         //todo bfs add
-        return null;
+        Voxel[][] connected = new Voxel[maxSize][maxSize];
+        boolean[][] visited = new boolean[maxSize][maxSize];
+        if(!validPosition(x,y) || grid[x][y] == null){
+            System.out.println("returning null on getVoxelsConnectedToPos");
+            return null;
+        }
+        LinkedList<VoxelUtils.Index> queue = new LinkedList<VoxelUtils.Index>();
+        VoxelUtils.Index from = new VoxelUtils.Index(x,y);
+        queue.add(from);//.Push(myMap[(int)startPos.x][(int)startPos.y]);
+        connected[x][y] = grid[x][y];
+        //evaluate
+        while (queue.size() > 0){
+            VoxelUtils.Index c = queue.remove();
+            System.out.println("checking at"+c.x+", "+c.y);
+            Voxel current = grid[c.x][c.y];
+
+            if(validPosition(c.x+1,c.y)){
+                if(grid[c.x+1][c.y] != null && !visited[c.x+1][c.y]){
+                    visited[c.x+1][c.y] = true;
+                    VoxelUtils.Index next = new VoxelUtils.Index(c.x + 1, c.y);
+                    if (!queue.contains(next)) {
+                        queue.add(next);
+                        connected[c.x+1][c.y] = grid[c.x+1][c.y];
+                    }
+                }
+            }
+            if(validPosition(c.x-1,c.y)){
+                if(grid[c.x-1][c.y] != null && !visited[c.x-1][c.y]){
+                    visited[c.x-1][c.y] = true;
+                    VoxelUtils.Index next = new VoxelUtils.Index(c.x - 1, c.y);
+                    if (!queue.contains(next)){
+                        queue.add(next);
+                        connected[c.x-1][c.y] = grid[c.x-1][c.y];
+                    }
+                }
+            }
+            if(validPosition(c.x,c.y+1)){
+                if(grid[c.x][c.y+1] != null && !visited[c.x][c.y+1]){
+                    visited[c.x][c.y+1] = true;
+                    VoxelUtils.Index next = new VoxelUtils.Index(c.x, c.y + 1);
+                    if (!queue.contains(next)){
+                        queue.add(next);
+                        connected[c.x][c.y+1] = grid[c.x][c.y+1];
+                    }
+                }
+            }
+            if(validPosition(c.x,c.y-1)){
+                if(grid[c.x][c.y-1] != null && !visited[c.x][c.y-1]){
+                    visited[c.x][c.y-1] = true;
+                    VoxelUtils.Index next = new VoxelUtils.Index(c.x, c.y - 1);
+                    if (!queue.contains(next)){
+                        queue.add(next);
+                        connected[c.x][c.y-1] = grid[c.x][c.y-1];
+                    }
+                }
+            }
+        }
+        return connected;
     }
 
     public boolean verifyVoxelPlacement(int x, int y){
         boolean isGood = false;
         //check neighbors if there true
-        if(x+1 < grid.length)
+        if(validPosition(x+1,y) && x+1 < grid.length){
             if(grid[x+1][y] != null)
                 isGood = true;
-        if(x-1 > 0)
+        } else return false;
+        if(validPosition(x-1,y) && x-1 > 0){
             if(grid[x-1][y] != null)
                 isGood = true;
-        if(y+1 < grid.length)
+        } else return false;
+        if(validPosition(x,y+1) && y+1 < grid.length){
             if(grid[x][y+1] != null)
                 isGood = true;
-        if(y-1 > 0)
+        } else return false;
+        if(validPosition(x,y-1) && y-1 > 0){
             if(grid[x][y-1] != null)
                 isGood = true;
+        } else return false;
 
         //check self if there false
-        if(grid[x][y] != null)
+        if(validPosition(x,y) && grid[x][y] != null)
             isGood = false;
 
         return isGood;
