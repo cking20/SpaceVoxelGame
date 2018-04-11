@@ -1,9 +1,14 @@
 package com.kinglogic.game.Physics;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Managers.ResourceManager;
+
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by chris on 4/1/2018.
@@ -17,13 +22,19 @@ public class DynamicGrid extends Grid{
 
     @Override
     public void recalculateShape(){
-        recalculateVerts();
-        if (verts != null) {
-            //todo THIS HAS TO BE POLYGONS
-            ResourceManager.ins().disposeOfShape(shape);
-            shape = ResourceManager.ins().getNewPolyShape();
-            ((PolygonShape)shape).set(verts);
-            fixtureDef.shape = shape;
+        recalculateRects();
+        if (verts != null && myBody != null) {
+            //todo dispose of the old chain and get a new one from the resource manager
+            for(PhysicsShape s : (HashSet<PhysicsShape>)physicsShapes.clone()){
+                ResourceManager.ins().disposeOfShape(s.shape);
+                myBody.destroyFixture(s.fixture);
+                physicsShapes.remove(s);
+            }
+
+            PolygonShape stat = ResourceManager.ins().getNewPolyShape();
+            stat.set(verts);
+            physicsShapes.add(new PhysicsShape(stat, myBody));
+
         } else {
             System.err.println("default shape");
             verts = new Vector2[4];
@@ -31,14 +42,24 @@ public class DynamicGrid extends Grid{
             verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
             verts[2] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
             verts[3] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
-            ResourceManager.ins().disposeOfShape(shape);
-            shape = ResourceManager.ins().getNewPolyShape();
-            ((PolygonShape)shape).set(verts);
-            fixtureDef.shape = shape;
+            if(myBody != null) {
+                for (PhysicsShape s : (HashSet<PhysicsShape>) physicsShapes.clone()) {
+                    ResourceManager.ins().disposeOfShape(s.shape);
+                    myBody.destroyFixture(s.fixture);
+                    physicsShapes.remove(s);
+                }
+                PolygonShape stat = ResourceManager.ins().getNewPolyShape();
+                stat.set(verts);
+                physicsShapes.add(new PhysicsShape(stat, myBody));
+            }
         }
 
         bodyDef.position.set(voxels.getX(),voxels.getY());
         //voxels.setOrigin((ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2-ResourceManager.voxelPixelSize/2,(ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2 - ResourceManager.voxelPixelSize/2);
+    }
+
+
+    private void recalculateRects(){
 
     }
 }

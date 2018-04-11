@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -122,15 +123,13 @@ public class WorldManager {
         d.recalculateShape();
         d.myBody = worldPhysics.createBody(d.bodyDef);
         System.out.println(d.myBody);
-        System.out.println(d.fixtureDef);
-        d.fixture = d.myBody.createFixture(d.fixtureDef);
+        System.out.println(d.physicsShapes);
+        d.recalculateShape();
+        //d.fixture.add(d.myBody.createFixture(d.fixtureDef));
         grids.add(d);
     }
     public void rethinkShape(Grid d){
         d.recalculateShape();
-        d.myBody.destroyFixture(d.fixture);
-        d.fixture = d.myBody.createFixture(d.fixtureDef);
-
         if(!grids.contains(d))
             grids.add(d);
     }

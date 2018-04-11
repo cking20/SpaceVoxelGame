@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
+import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.Grid;
 import com.kinglogic.game.Physics.StaticGrid;
 
@@ -92,26 +93,26 @@ public class VoxelCollection extends Group {
                 if(!connects(new VoxelUtils.Index(x,y+1),ref)){
                     System.out.println("should cascade up");
                     toRemove = removeConnectedTo(x,y+1);
-                    WorldManager.ins().addGridToWorld(new StaticGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
+                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
                 }
             if(grid[x][y-1] != null)
                 if(!connects(new VoxelUtils.Index(x,y-1),ref)){
                     System.out.println("should cascade down");
                     toRemove = removeConnectedTo(x,y-1);
-                    WorldManager.ins().addGridToWorld(new StaticGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
+                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
                 }
             if(grid[x-1][y] != null)
                 if(!connects(new VoxelUtils.Index(x-1,y),ref)){
                     System.out.println("should cascade left");
                     toRemove = removeConnectedTo(x+1,y);
-                    WorldManager.ins().addGridToWorld(new StaticGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
+                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
                 }
             if(grid[x+1][y] != null)
                 if(!connects(new VoxelUtils.Index(x+1,y),ref)){
                     System.out.println("should cascade right");
                     toRemove = removeConnectedTo(x-1,y);
                     if(toRemove != null)
-                        WorldManager.ins().addGridToWorld(new StaticGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
+                        WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
                 }
             ////////////////////////
 
@@ -167,7 +168,9 @@ public class VoxelCollection extends Group {
         }
         return null;
     }
-
+    private VoxelUtils.Index getCenterIndex(){
+        return new VoxelUtils.Index(maxSize/2,maxSize/2);
+    }
     private boolean connects(VoxelUtils.Index from, VoxelUtils.Index to){
         //todo improve this
         boolean[][] visited = new boolean[maxSize][maxSize];

@@ -13,6 +13,7 @@ import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.VoxelUtils;
 import com.kinglogic.game.Managers.ResourceManager;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,21 +25,18 @@ public class Grid {
     public VoxelCollection voxels;
     public Body myBody;
     //public ChainShape shape;
-    public Shape shape;
+    public HashSet<PhysicsShape> physicsShapes;
     public BodyDef bodyDef;
-    public FixtureDef fixtureDef;
-    public Fixture fixture;
     public Vector2[] verts;
 
     public Grid(VoxelCollection v){
         voxels = v;
         bodyDef = new BodyDef();
-        fixtureDef = new FixtureDef();
-        shape = ResourceManager.ins().getNewChainShape();
-        recalculateShape();
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+        physicsShapes = new HashSet<PhysicsShape>();
+        if(myBody != null){
+            physicsShapes.add(new PhysicsShape(ResourceManager.ins().getNewChainShape(), myBody));
+        }
+        //recalculateShape();
 
 // We set our body to dynamic, for something like ground which doesn't move we would set it to StaticBody
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -58,12 +56,19 @@ public class Grid {
     }
     public void recalculateShape(){
         recalculateVerts();
-            if (verts != null) {
+            if (verts != null && myBody != null) {
                 //todo dispose of the old chain and get a new one from the resource manager
-                ResourceManager.ins().disposeOfShape(shape);
-                shape = ResourceManager.ins().getNewChainShape();
-                ((ChainShape)shape).createChain(verts);
-                fixtureDef.shape = shape;
+                for(PhysicsShape s : (HashSet<PhysicsShape>)physicsShapes.clone()){
+                    ResourceManager.ins().disposeOfShape(s.shape);
+                    myBody.destroyFixture(s.fixture);
+                    physicsShapes.remove(s);
+                }
+                
+                ChainShape stat = ResourceManager.ins().getNewChainShape();
+                stat.createChain(verts);
+                physicsShapes.add(new PhysicsShape(stat, myBody));
+
+
             } else {
                 System.err.println("default shape");
                 verts = new Vector2[4];
@@ -71,15 +76,22 @@ public class Grid {
                 verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
                 verts[2] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
                 verts[3] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
-                ResourceManager.ins().disposeOfShape(shape);
-                shape = ResourceManager.ins().getNewChainShape();
-                ((ChainShape)shape).createChain(verts);
-                fixtureDef.shape = shape;
+                if(myBody != null) {
+                    for (PhysicsShape s : (HashSet<PhysicsShape>) physicsShapes.clone()) {
+                        ResourceManager.ins().disposeOfShape(s.shape);
+                        myBody.destroyFixture(s.fixture);
+                        physicsShapes.remove(s);
+                    }
+                    if(myBody != null) {
+                        ChainShape stat = ResourceManager.ins().getNewChainShape();
+                        stat.createChain(verts);
+                        physicsShapes.add(new PhysicsShape(stat, myBody));
+                    }
+                }
             }
 
         bodyDef.position.set(voxels.getX(),voxels.getY());
         //voxels.setOrigin((ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2-ResourceManager.voxelPixelSize/2,(ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2 - ResourceManager.voxelPixelSize/2);
-
     }
 
     public Vector2[] recalculateVerts(){
