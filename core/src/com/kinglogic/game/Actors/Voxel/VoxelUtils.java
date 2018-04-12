@@ -16,6 +16,13 @@ import java.util.List;
 
 public class VoxelUtils {
 
+    /**
+     * Helper function of marching squares. Maps the values to a set of edges
+     * @param value the neighbor code
+     * @param x index
+     * @param y index
+     * @return
+     */
     private static HashMap<Vector2,LinkedList<FromEdge>> map(Byte value, int x, int y){
         HashMap<Vector2, LinkedList<FromEdge>> edges = new HashMap();
         LinkedList<FromEdge> list = new LinkedList<FromEdge>();
@@ -172,6 +179,12 @@ public class VoxelUtils {
 
     }
 
+    /**
+     * Implementation of the marching squares algorithm. Creates a perimeter of vertexes
+     *      based on the state of the grid. Intended to be used for ChainShape generation
+     * @param state of a grid
+     * @return a list of connected vertices
+     */
     public static List<Vector2> MarchingSquares(Voxel[][] state){
         //todo implement this
         //save the first
@@ -254,6 +267,12 @@ public class VoxelUtils {
         return null;
     }
 
+    /**
+     * Generates a list of rectangles(pos 0,1,2,3 repeating)
+     * todo optimize the number of rectangles being created
+     * @param state of a grid
+     * @return list of rectangles whos verts are at i*4+0, i*4+1, i*4+2, i*4+3
+     */
     public static List<Vector2> LeastRects(Voxel[][] state){
         //todo make this only use the largest possible rectangles not a rect per block
         List<Vector2> verts = new ArrayList<Vector2>();
@@ -273,6 +292,10 @@ public class VoxelUtils {
             return verts;
         else return null;
     }
+
+    /**
+     * Helper class of the MarchingSquares function
+     */
     private static class FromEdge{
         public Vector2 from;
         public Vector2 to;
@@ -296,6 +319,9 @@ public class VoxelUtils {
         }
     }
 
+    /**
+     * Helper class for indexing into a grid
+     */
     public static class Index{
         public Integer x;
         public Integer y;

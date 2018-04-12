@@ -20,6 +20,7 @@ public class DynamicGrid extends Grid{
 
     public DynamicGrid(VoxelCollection v) {
         super(v);
+        bodyDef.linearDamping = .5f;
     }
 
     @Override

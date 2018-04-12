@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.Voxel;
+import com.kinglogic.game.Managers.IDs;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.Grid;
@@ -15,13 +16,13 @@ import com.kinglogic.game.Physics.Grid;
  */
 
 public class TestInputProcessor implements InputProcessor {
-    public String blockName = "metal";
+    public String blockName = IDs.METAL_TEX;
     public Grid dyn;
     public Grid stc;
     public TestInputProcessor(){
         stc = new Grid( new VoxelCollection(new Voxel(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);
-        WorldManager.ins().GenerateAsteroid(0,0, 100);
+        WorldManager.ins().GenerateAsteroid(100,100, 10);
         dyn = new DynamicGrid( new VoxelCollection(new Voxel(blockName),new Vector2(200,300)));
         WorldManager.ins().addGridToWorld(dyn);
     }
@@ -39,14 +40,14 @@ public class TestInputProcessor implements InputProcessor {
     @Override
     public boolean keyTyped(char character) {
         if(character == '1'){
-            blockName = "metal";
+            blockName = IDs.METAL_TEX;
         }
         else if(character == '2'){
-            blockName = "tech";
+            blockName = IDs.TECH_TEX;
 
         }
         else if(character == '3'){
-
+            blockName = IDs.ROCK_TEX;
         }
 
         return false;

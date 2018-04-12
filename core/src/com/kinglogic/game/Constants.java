@@ -10,5 +10,6 @@ public class Constants {
     public static final int  POSITION_ITERATIONS = 2;
     public static final int START_WIDTH = 800;
     public static final int START_HEIGHT = 600;
+//    public static final float BLOCK_MASS = 100000f;
 
 }

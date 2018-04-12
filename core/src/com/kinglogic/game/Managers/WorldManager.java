@@ -150,10 +150,12 @@ public class WorldManager {
 
 
     public void GenerateAsteroid(int posX, int posY, int size){
-        VoxelCollection astVox = new VoxelCollection(new Voxel("metal"), new Vector2(posX,posY));
-        for (int i = 0; i < astVox.getGrid().length; i++){
-            for (int j = 0; j <astVox.getGrid()[0].length; j++){
-                astVox.addVoxelIndex(new Voxel("metal"),i,j);
+        int start = VoxelCollection.maxSize/2-size/2;
+        int end = VoxelCollection.maxSize/2+size/2;
+        VoxelCollection astVox = new VoxelCollection(new Voxel(IDs.ROCK_TEX), new Vector2(posX,posY));
+        for (int i = start; i < end; i++){
+            for (int j = start; j < end; j++){
+                astVox.addVoxelIndex(new Voxel(IDs.ROCK_TEX),i,j);
             }
         }
         StaticGrid astGrid = new StaticGrid(astVox);

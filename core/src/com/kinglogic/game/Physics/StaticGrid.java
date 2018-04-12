@@ -1,5 +1,6 @@
 package com.kinglogic.game.Physics;
 
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 
 /**
@@ -9,5 +10,6 @@ import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 public class StaticGrid extends Grid{
     public StaticGrid(VoxelCollection v) {
         super(v);
+        bodyDef.type = BodyDef.BodyType.StaticBody;
     }
 }

@@ -6,11 +6,13 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.VoxelUtils;
+import com.kinglogic.game.Constants;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 
@@ -41,7 +43,7 @@ public class Grid {
 
 // We set our body to dynamic, for something like ground which doesn't move we would set it to StaticBody
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.linearDamping = .5f;
+        bodyDef.linearDamping = 1.5f;
         bodyDef.angularDamping = .5f;
 // Set our body's starting position in the world
         bodyDef.position.set(v.getX(),v.getY());
@@ -115,6 +117,9 @@ public class Grid {
         boolean good = voxels.addVoxelScreenPos(v,screenPosition);
         if(good) {
             recalculateShape();
+//            MassData d = myBody.getMassData();
+//            d.mass += Constants.BLOCK_MASS;
+//            myBody.setMassData(d);
         }
         return good;
     }
@@ -122,6 +127,9 @@ public class Grid {
         boolean good = voxels.removeVoxelScreenPos(screenPosition);
         if(good) {
             recalculateShape();
+//            MassData d = myBody.getMassData();
+//            d.mass -= Constants.BLOCK_MASS;
+//            myBody.setMassData(d);
         }
         return good;
     }

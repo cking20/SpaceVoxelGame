@@ -11,9 +11,16 @@ metal
   orig: 16, 16
   offset: 0, 0
   index: -1
-tech
+rock
   rotate: false
   xy: 20, 2
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+tech
+  rotate: false
+  xy: 38, 2
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

@@ -17,10 +17,18 @@ import java.util.Queue;
  * Created by chris on 4/1/2018.
  */
 
+/**
+ * Holds Data pertaining to grid of squares
+ */
 public class VoxelCollection extends Group {
-    public static int maxSize = 10;//241;
+    public static int maxSize = 250;
     Voxel[][] grid;
 
+    /**
+     * Init at a world position with a root
+     * @param v root voxel
+     * @param position in world units
+     */
     public VoxelCollection(Voxel v, Vector2 position){
         //the size must be odd to get a center position
         if(maxSize%2 == 0)
@@ -36,6 +44,12 @@ public class VoxelCollection extends Group {
                 position.x-((maxSize * ResourceManager.voxelPixelSize)/2),
                 position.y-((maxSize * ResourceManager.voxelPixelSize)/2));
     }
+
+    /**
+     * Init with a pre existing grid at a position
+     * @param v pre existing grid
+     * @param position in world units
+     */
     public VoxelCollection(Voxel[][] v, Vector2 position){
         //the size must be odd to get a center position
         if(maxSize%2 == 0)
@@ -55,6 +69,12 @@ public class VoxelCollection extends Group {
                 position.y);
     }
 
+    /**
+     * Add a voxel to this collection in screen units
+     * @param v to add
+     * @param screenPosition position to add at
+     * @return false iff the voxel wasnt added
+     */
     public boolean addVoxelScreenPos(Voxel v, Vector2 screenPosition){
         System.out.println("Screen pos:" + screenPosition);
         Vector2 worldPosition = WorldManager.ins().screenToWorldCoords(screenPosition);
@@ -65,6 +85,14 @@ public class VoxelCollection extends Group {
         int y = (int)position.y;
         return addVoxelIndex(v,x,y);
     }
+
+    /**
+     * Add a voxel to this collection in index units
+     * @param v voxel to add
+     * @param x column (0,0 is the bottom left)
+     * @param y row (0,0 is the bottom left)
+     * @return false iff the voxel wasnt added
+     */
     public boolean addVoxelIndex(Voxel v, int x, int y){
         if(!validPosition(x,y))return false;
         if(verifyVoxelPlacement(x,y)) {
@@ -76,9 +104,9 @@ public class VoxelCollection extends Group {
     }
 
     /**
-     * Attempts to remove a block
+     * Attempts to remove a block at screen position
      * @param screenPosition
-     * @return if a block has been removed
+     * @return true iff a block has been removed
      */
     public boolean removeVoxelScreenPos(Vector2 screenPosition){
         Vector2 position = mapWorldPointToIndexies(WorldManager.ins().screenToWorldCoords(screenPosition));
@@ -88,6 +116,13 @@ public class VoxelCollection extends Group {
 
     }
 
+    /**
+     * Attempts to remove a block at screen position
+     * @param x column (0,0 is the bottom left)
+     * @param y row (0,0 is the bottom left)
+     * @return false iff the voxel wasnt added
+     * @return true iff a block has been removed
+     */
     public boolean removeVoxelIndex(int x, int y){
         if(!validPosition(x,y))return false;
         if(grid[x][y] != null) {
@@ -122,9 +157,6 @@ public class VoxelCollection extends Group {
                     if(toRemove != null)
                         WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
                 }
-            ////////////////////////
-
-
             return true;
         } else{
             System.out.println("grid @ click pos == null");
@@ -132,6 +164,12 @@ public class VoxelCollection extends Group {
         }
 
     }
+
+    /**
+     * Transforms a position in world units to an index into this grid
+     * @param worldPos in world units
+     * @return the x,y indexes
+     */
     private Vector2 mapWorldPointToIndexies(Vector2 worldPos){
         worldPos = this.stageToLocalCoordinates(worldPos);
         worldPos.x = (int)(worldPos.x/ResourceManager.voxelPixelSize);
@@ -139,16 +177,30 @@ public class VoxelCollection extends Group {
         return worldPos;
     }
 
+    /**
+     * @return the actual grid(not a copy)
+     */
     public Voxel[][] getGrid(){
         return grid;
     }
 
+    /**
+     * @param x index
+     * @param y index
+     * @return true iff there will not be an array index out of bounds exception
+     */
     private boolean validPosition(int x, int y){
         if(x < 0 || y < 0) return false;
         if(x >= maxSize || y >= maxSize) return false;
         return true;
     }
 
+    /**
+     * Get all not null neighbors of the cell @ x,y
+     * @param x index
+     * @param y index
+     * @return a list of the neighbors
+     */
     private ArrayList<Voxel> getNeighbors(int x,int y){
         ArrayList<Voxel> neighbors = new ArrayList<Voxel>();
         if(validPosition(x+1,y))neighbors.add(grid[x+1][y]);
@@ -157,6 +209,10 @@ public class VoxelCollection extends Group {
         if(validPosition(x,y+1))neighbors.add(grid[x][y-1]);
         return neighbors;
     }
+
+    /**
+     * @return the first not null Voxel in the grid
+     */
     private Voxel getFirst(){
         for(int i = 0; i < grid.length; i++){
             for(int j = 0; j < grid[0].length; j++){
@@ -166,6 +222,10 @@ public class VoxelCollection extends Group {
         }
         return null;
     }
+
+    /**
+     * @return the indexes of the first not null Voxel in the grid
+     */
     private VoxelUtils.Index getFirstIndex(){
         for(int i = 0; i < grid.length; i++){
             for(int j = 0; j < grid[0].length; j++){
@@ -175,9 +235,20 @@ public class VoxelCollection extends Group {
         }
         return null;
     }
+
+    /**
+     * @return the index of the centermost cell(cell @ index could be null)
+     */
     private VoxelUtils.Index getCenterIndex(){
         return new VoxelUtils.Index(maxSize/2,maxSize/2);
     }
+
+    /**
+     * Determins if there exists a path of not null tiles between two indexes
+     * @param from start index
+     * @param to end index(target)
+     * @return true iff there is a not null path between from and to
+     */
     private boolean connects(VoxelUtils.Index from, VoxelUtils.Index to){
         //todo improve this
         boolean[][] visited = new boolean[maxSize][maxSize];
@@ -230,6 +301,12 @@ public class VoxelCollection extends Group {
         return false;
     }
 
+    /**
+     * Remove all Voxels that are connected to the cell @ index x,y
+     * @param x index
+     * @param y index
+     * @return all the cells that have been removed
+     */
     private Voxel[][] removeConnectedTo(int x, int y){
         if(!validPosition(x,y))return null;
         Voxel[][] delta = getVoxelsConnectedToPos(x,y);
@@ -245,6 +322,13 @@ public class VoxelCollection extends Group {
         }
         return delta;
     }
+
+    /**
+     * Find all Voxels that are connected to the cell @ index x,y
+     * @param x index
+     * @param y index
+     * @return all the cells connected to the cell at index x,y
+     */
     private Voxel[][] getVoxelsConnectedToPos(int x, int y){
         //todo bfs add
         Voxel[][] connected = new Voxel[maxSize][maxSize];
@@ -307,6 +391,12 @@ public class VoxelCollection extends Group {
         return connected;
     }
 
+    /**
+     * Check to see if a placement at x,y would be connected to a not null tile
+     * @param x index
+     * @param y index
+     * @return true iff a neighbor of position x,y is not null
+     */
     public boolean verifyVoxelPlacement(int x, int y){
         boolean isGood = false;
         //check neighbors if there true
