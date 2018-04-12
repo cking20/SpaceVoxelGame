@@ -12,9 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kinglogic.game.Actors.Voxel.Voxel;
+import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.Grid;
+import com.kinglogic.game.Physics.StaticGrid;
 
 import java.util.HashSet;
 
@@ -118,20 +120,44 @@ public class WorldManager {
     }
 
     public void addGridToWorld(Grid d){
-        worldStage.addActor(d.voxels);
-        //todo make funciton in Grid to parse through voxels and create fixture
-        d.recalculateShape();
-        d.myBody = worldPhysics.createBody(d.bodyDef);
-        System.out.println(d.myBody);
-        System.out.println(d.physicsShapes);
-        d.recalculateShape();
-        //d.fixture.add(d.myBody.createFixture(d.fixtureDef));
-        grids.add(d);
+        if(!grids.contains(d)) {
+            worldStage.addActor(d.voxels);
+            //todo make funciton in Grid to parse through voxels and create fixture
+            //d.recalculateShape();
+            d.myBody = worldPhysics.createBody(d.bodyDef);
+            System.out.println(d.myBody);
+            System.out.println(d.physicsShapes);
+            d.recalculateShape();
+            //d.fixture.add(d.myBody.createFixture(d.fixtureDef));
+            grids.add(d);
+        }
+    }
+
+    public void removeGridFromWorld(Grid g){
+        System.out.println("remove grid called");
+        grids.remove(g);
+        worldStage.getActors().removeValue(g.voxels,true);
+        if(g.myBody != null){
+            g.dispose();
+            worldPhysics.destroyBody(g.myBody);
+        }
     }
     public void rethinkShape(Grid d){
-        d.recalculateShape();
+//        d.recalculateShape();
         if(!grids.contains(d))
             grids.add(d);
+    }
+
+
+    public void GenerateAsteroid(int posX, int posY, int size){
+        VoxelCollection astVox = new VoxelCollection(new Voxel("metal"), new Vector2(posX,posY));
+        for (int i = 0; i < astVox.getGrid().length; i++){
+            for (int j = 0; j <astVox.getGrid()[0].length; j++){
+                astVox.addVoxelIndex(new Voxel("metal"),i,j);
+            }
+        }
+        StaticGrid astGrid = new StaticGrid(astVox);
+        addGridToWorld(astGrid);
     }
 
 }

@@ -12,6 +12,7 @@ import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.VoxelUtils;
 import com.kinglogic.game.Managers.ResourceManager;
+import com.kinglogic.game.Managers.WorldManager;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -45,8 +46,8 @@ public class Grid {
 // Set our body's starting position in the world
         bodyDef.position.set(v.getX(),v.getY());
 
-        //recalculateVerts();
     }
+
     public void updateRendering(){
         //System.out.println("update Rendering");
         voxels.setPosition(myBody.getPosition().x, myBody.getPosition().y);
@@ -63,20 +64,22 @@ public class Grid {
                     myBody.destroyFixture(s.fixture);
                     physicsShapes.remove(s);
                 }
-                
+
                 ChainShape stat = ResourceManager.ins().getNewChainShape();
                 stat.createChain(verts);
                 physicsShapes.add(new PhysicsShape(stat, myBody));
 
 
+                bodyDef.position.set(voxels.getX(),voxels.getY());
             } else {
                 System.err.println("default shape");
-                verts = new Vector2[4];
-                verts[0] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
-                verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
-                verts[2] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
-                verts[3] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
-                if(myBody != null) {
+//                verts = new Vector2[4];
+//                verts[0] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
+//                verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
+//                verts[2] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
+//                verts[3] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
+//                if(myBody != null) {
+                    /*
                     for (PhysicsShape s : (HashSet<PhysicsShape>) physicsShapes.clone()) {
                         ResourceManager.ins().disposeOfShape(s.shape);
                         myBody.destroyFixture(s.fixture);
@@ -87,21 +90,24 @@ public class Grid {
                         stat.createChain(verts);
                         physicsShapes.add(new PhysicsShape(stat, myBody));
                     }
-                }
+                    */
+                    WorldManager.ins().removeGridFromWorld(this);
+//                }
             }
 
-        bodyDef.position.set(voxels.getX(),voxels.getY());
+//        bodyDef.position.set(voxels.getX(),voxels.getY());
         //voxels.setOrigin((ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2-ResourceManager.voxelPixelSize/2,(ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2 - ResourceManager.voxelPixelSize/2);
     }
 
     public Vector2[] recalculateVerts(){
         //todo parse through the voxels, counter clockwise
-        int vCount = 0;
         List<Vector2> verticies = VoxelUtils.MarchingSquares(voxels.getGrid());
 
         if(verticies != null) {
             Vector2[] ret = new Vector2[verticies.size()];
             verts = verticies.toArray(ret);
+        }else {
+            verts = null;
         }
         return verts;
     }
@@ -118,5 +124,13 @@ public class Grid {
             recalculateShape();
         }
         return good;
+    }
+
+    public void dispose(){
+        for(PhysicsShape s : (HashSet<PhysicsShape>)physicsShapes.clone()){
+            ResourceManager.ins().disposeOfShape(s.shape);
+            myBody.destroyFixture(s.fixture);
+            physicsShapes.remove(s);
+        }
     }
 }

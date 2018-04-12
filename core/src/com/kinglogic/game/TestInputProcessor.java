@@ -15,12 +15,14 @@ import com.kinglogic.game.Physics.Grid;
  */
 
 public class TestInputProcessor implements InputProcessor {
+    public String blockName = "metal";
     public Grid dyn;
     public Grid stc;
     public TestInputProcessor(){
-        stc = new Grid( new VoxelCollection(new Voxel("metal"),new Vector2(400,300)));
+        stc = new Grid( new VoxelCollection(new Voxel(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);
-        dyn = new DynamicGrid( new VoxelCollection(new Voxel("metal"),new Vector2(200,300)));
+        WorldManager.ins().GenerateAsteroid(0,0, 100);
+        dyn = new DynamicGrid( new VoxelCollection(new Voxel(blockName),new Vector2(200,300)));
         WorldManager.ins().addGridToWorld(dyn);
     }
     @Override
@@ -37,9 +39,10 @@ public class TestInputProcessor implements InputProcessor {
     @Override
     public boolean keyTyped(char character) {
         if(character == '1'){
-
+            blockName = "metal";
         }
         else if(character == '2'){
+            blockName = "tech";
 
         }
         else if(character == '3'){
@@ -52,7 +55,7 @@ public class TestInputProcessor implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-            WorldManager.ins().addVoxelScreenPosition(screenX,screenY, "metal");
+            WorldManager.ins().addVoxelScreenPosition(screenX,screenY, blockName);
             return true;
         }
         if (button == Input.Buttons.RIGHT) {

@@ -18,7 +18,7 @@ import java.util.Queue;
  */
 
 public class VoxelCollection extends Group {
-    public static int maxSize = 250;//241;
+    public static int maxSize = 10;//241;
     Voxel[][] grid;
 
     public VoxelCollection(Voxel v, Vector2 position){
@@ -63,6 +63,9 @@ public class VoxelCollection extends Group {
         System.out.println("index pos:" + position);
         int x = (int)position.x;
         int y = (int)position.y;
+        return addVoxelIndex(v,x,y);
+    }
+    public boolean addVoxelIndex(Voxel v, int x, int y){
         if(!validPosition(x,y))return false;
         if(verifyVoxelPlacement(x,y)) {
             grid[x][y] = v;
@@ -81,6 +84,11 @@ public class VoxelCollection extends Group {
         Vector2 position = mapWorldPointToIndexies(WorldManager.ins().screenToWorldCoords(screenPosition));
         int x = (int)position.x;
         int y = (int)position.y;
+        return removeVoxelIndex(x,y);
+
+    }
+
+    public boolean removeVoxelIndex(int x, int y){
         if(!validPosition(x,y))return false;
         if(grid[x][y] != null) {
             Voxel v = grid[x][y];
@@ -124,7 +132,6 @@ public class VoxelCollection extends Group {
         }
 
     }
-
     private Vector2 mapWorldPointToIndexies(Vector2 worldPos){
         worldPos = this.stageToLocalCoordinates(worldPos);
         worldPos.x = (int)(worldPos.x/ResourceManager.voxelPixelSize);

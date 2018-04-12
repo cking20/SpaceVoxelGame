@@ -254,6 +254,25 @@ public class VoxelUtils {
         return null;
     }
 
+    public static List<Vector2> LeastRects(Voxel[][] state){
+        //todo make this only use the largest possible rectangles not a rect per block
+        List<Vector2> verts = new ArrayList<Vector2>();
+        boolean foundOneFlag = false;
+        for(int i = 0; i < state.length; i++){
+            for(int j = 0; j < state[0].length; j++){
+                if(state[i][j] != null){
+                    foundOneFlag = true;
+                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
+                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
+                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                }
+            }
+        }
+        if(foundOneFlag)
+            return verts;
+        else return null;
+    }
     private static class FromEdge{
         public Vector2 from;
         public Vector2 to;
