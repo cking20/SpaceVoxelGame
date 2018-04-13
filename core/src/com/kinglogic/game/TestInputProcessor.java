@@ -9,6 +9,7 @@ import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Managers.IDs;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.DynamicGrid;
+import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
 
 /**
@@ -19,7 +20,10 @@ public class TestInputProcessor implements InputProcessor {
     public String blockName = IDs.METAL_TEX;
     public Grid dyn;
     public Grid stc;
+    public EntityBody player;
     public TestInputProcessor(){
+        player = new EntityBody("player", new Vector2(450,300));
+        WorldManager.ins().addEntityToWorld(player);
         stc = new Grid( new VoxelCollection(new Voxel(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);
         WorldManager.ins().GenerateAsteroid(100,100, 10);

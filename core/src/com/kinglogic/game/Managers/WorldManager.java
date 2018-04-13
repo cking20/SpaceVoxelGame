@@ -11,10 +11,12 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Physics.DynamicGrid;
+import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
 import com.kinglogic.game.Physics.StaticGrid;
 
@@ -32,6 +34,7 @@ public class WorldManager {
     public final OrthographicCamera viewCam;
     private Box2DDebugRenderer debugRenderer;
     private HashSet<Grid> grids;
+    private HashSet<EntityBody> entities;
 
 
     public static WorldManager ins() {
@@ -42,6 +45,7 @@ public class WorldManager {
 
     private WorldManager(){
         grids = new HashSet<Grid>();
+        entities = new HashSet<EntityBody>();
         viewCam = new OrthographicCamera();
         view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*ResourceManager.ins().calculateAspectRatio(), viewCam);
         view.apply();
@@ -83,6 +87,10 @@ public class WorldManager {
     public void update(float delta){
         for(Grid g : grids) {
             g.updateRendering();
+            //g.myBody.setTransform(g.myBody.getPosition().x%(Gdx.graphics.getWidth()),(g.myBody.getPosition().y%(Gdx.graphics.getHeight())), g.myBody.getAngle());
+        }
+        for(EntityBody e : entities) {
+            e.updateRendering();
             //g.myBody.setTransform(g.myBody.getPosition().x%(Gdx.graphics.getWidth()),(g.myBody.getPosition().y%(Gdx.graphics.getHeight())), g.myBody.getAngle());
         }
         worldStage.act(delta);
@@ -132,7 +140,6 @@ public class WorldManager {
             grids.add(d);
         }
     }
-
     public void removeGridFromWorld(Grid g){
         System.out.println("remove grid called");
         grids.remove(g);
@@ -142,6 +149,26 @@ public class WorldManager {
             worldPhysics.destroyBody(g.myBody);
         }
     }
+
+    public void addEntityToWorld(EntityBody e){
+        if(!entities.contains(e)) {
+            worldStage.addActor(e.view);
+            //todo make funciton in Grid to parse through voxels and create fixture
+            //d.recalculateShape();
+            e.myBody = worldPhysics.createBody(e.bodyDef);
+            e.CreateFixture();
+            entities.add(e);
+        }
+    }
+    public void removeEntityFromWorld(EntityBody e){
+        entities.remove(e);
+        worldStage.getActors().removeValue(e.view,true);
+        if(e.myBody != null){
+            e.dispose();
+            worldPhysics.destroyBody(e.myBody);
+        }
+    }
+
     public void rethinkShape(Grid d){
 //        d.recalculateShape();
         if(!grids.contains(d))

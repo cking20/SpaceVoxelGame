@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * Created by chris on 4/1/2018.
+ * Container for physics and rendering of grids
  */
 
 public class Grid {
@@ -50,6 +51,9 @@ public class Grid {
 
     }
 
+    /**
+     * Update the rendering
+     */
     public void updateRendering(){
         //System.out.println("update Rendering");
         voxels.setPosition(myBody.getPosition().x, myBody.getPosition().y);
@@ -57,6 +61,11 @@ public class Grid {
         //System.out.println("rot="+myBody.getTransform().getRotation());
         voxels.setRotation((float) Math.toDegrees(myBody.getTransform().getRotation()));
     }
+
+    /**
+     * Rebuild the physics shapes of this grid
+     * if there are no voxels, then destroy this grid
+     */
     public void recalculateShape(){
         recalculateVerts();
             if (verts != null && myBody != null) {

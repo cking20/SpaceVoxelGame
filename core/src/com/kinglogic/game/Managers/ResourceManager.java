@@ -21,6 +21,7 @@ public class ResourceManager {
 
     private static ResourceManager instance;
     private final TextureAtlas voxelAtlas;
+    private final TextureAtlas spriteAtlas;
     private ArrayList<Shape> shapes;
 
 
@@ -37,6 +38,7 @@ public class ResourceManager {
         ui.getFont("font").setUseIntegerPositions(false);
         ui.getFont("font").getData().setScale(.3f,.3f);
         voxelAtlas = new TextureAtlas(Gdx.files.internal("images/voxelAtlas.atlas"));
+        spriteAtlas = new TextureAtlas(Gdx.files.internal("images/spriteAtlas.atlas"));
 
     }
     public PolygonShape getNewPolyShape(){
@@ -60,6 +62,7 @@ public class ResourceManager {
         }
         ui.dispose();
         voxelAtlas.dispose();
+        spriteAtlas.dispose();
 
     }
 
@@ -68,6 +71,9 @@ public class ResourceManager {
     }
     public TextureAtlas.AtlasRegion getVoxTex(String name){
         return voxelAtlas.findRegion(name);
+    }
+    public TextureAtlas.AtlasRegion getSpriteTex(String name){
+        return spriteAtlas.findRegion(name);
     }
 
 }
