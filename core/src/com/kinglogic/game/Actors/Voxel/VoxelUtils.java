@@ -185,7 +185,7 @@ public class VoxelUtils {
      * @param state of a grid
      * @return a list of connected vertices
      */
-    public static List<Vector2> MarchingSquares(Voxel[][] state){
+    public static List<Vector2[]> MarchingSquares(Voxel[][] state){
         //todo implement this
         //save the first
         //for each generate map value and add the verts to the list, then parse the list and reorder it so its a loop counter clockwise loop
@@ -224,44 +224,54 @@ public class VoxelUtils {
 
         }
         if(firstX >= 0){
-            List<Vector2> verts = new ArrayList<Vector2>();
+            List<Vector2[]> chainsList = new LinkedList<Vector2[]>();
+
+
             Vector2 firstPos = new Vector2(firstX*ResourceManager.voxelPixelSize, firstY*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
             System.out.println("adding first position = "+firstPos);
-            //todo parse the lists
-            LinkedList<FromEdge> currentList = edgeslist.get(firstPos);
+
             if(edgeslist.size() == 0){
                 System.out.println("edgesList of size 0");
                 return null;
             }
-            if(currentList == null) {
-                System.out.println("null currents list");
-                //meaning we hit an edge case such that the first position isnt in the top left, its in the top right
-                firstPos = new Vector2(firstX*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, firstY*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
-                currentList = edgeslist.get(firstPos);
-                if(currentList == null)//then its really northing there
-                    return null;
-            }
-            FromEdge currentVert = currentList.removeLast();
-            while(!currentVert.to.equals( firstPos)){
-                verts.add(currentVert.from);
-                //System.out.println("connecting "+currentVert.from+" to"+currentVert.to);
-                if(currentList.size() > 0) {
-                    currentVert = currentList.removeLast();
-                }else {
-                    currentList = edgeslist.get(currentVert.to);
-                    if(currentList == null)
+            while (edgeslist.size() > 0) {
+                firstPos = edgeslist.keySet().iterator().next();
+                LinkedList<FromEdge> currentList = edgeslist.remove(firstPos);
+                if (currentList == null) {
+                    //meaning we hit an edge case such that the first position isnt in the top left, its in the top right
+                    firstPos = new Vector2(firstX * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, firstY * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
+                    currentList = edgeslist.remove(firstPos);
+                    if (currentList == null){//then its really northing there
+                        System.out.println("null currents list");
                         break;
-                    currentVert = currentList.removeLast();
+                    }
                 }
+                List<Vector2> verts = new ArrayList<Vector2>();
+                FromEdge currentVert = currentList.removeLast();
+                while (!currentVert.to.equals(firstPos)) {
+                    verts.add(currentVert.from);
+                    //System.out.println("connecting "+currentVert.from+" to"+currentVert.to);
+                    if (currentList.size() > 0) {
+                        currentVert = currentList.removeLast();
+                    } else {
+                        currentList = edgeslist.remove(currentVert.to);
+                        if (currentList == null)
+                            break;
+                        currentVert = currentList.removeLast();
+                    }
+                }
+                verts.add(currentVert.from);
+                verts.add(currentVert.to);
+                Vector2[] chain = new Vector2[verts.size()];
+                chain = verts.toArray(chain);
+                chainsList.add(chain);
+
+                //todo when parsing one should push THE VERT NOT EDGE to the poly list and when an edge is pulled that links to the start, its done
+                //todo optimization - account for strait lines: if 3 verts in a row have the same X or Y, delete middle
+                //todo optimization - istead of removing the links and putting them in a new list, ATTATCH THEM}
             }
-            verts.add(currentVert.from);
-            verts.add(currentVert.to);
-
-            //todo when parsing one should push THE VERT NOT EDGE to the poly list and when an edge is pulled that links to the start, its done
-            //todo optimization - account for strait lines: if 3 verts in a row have the same X or Y, delete middle
-            //todo optimization - istead of removing the links and putting them in a new list, ATTATCH THEM
-
-            return verts;
+            System.out.println(chainsList.size()+ " chains found");
+            return chainsList;
         }
         //nothing was found
         return null;
@@ -273,7 +283,7 @@ public class VoxelUtils {
      * @param state of a grid
      * @return list of rectangles whos verts are at i*4+0, i*4+1, i*4+2, i*4+3
      */
-    public static List<Vector2> LeastRects(Voxel[][] state){
+    public static List<Vector2[]> LeastRects(Voxel[][] state){
         //todo make this only use the largest possible rectangles not a rect per block
         List<Vector2> verts = new ArrayList<Vector2>();
         boolean foundOneFlag = false;
@@ -288,8 +298,13 @@ public class VoxelUtils {
                 }
             }
         }
-        if(foundOneFlag)
-            return verts;
+        if(foundOneFlag){
+            Vector2[] vs  = new Vector2[verts.size()];
+            vs = verts.toArray(vs);
+            List<Vector2[]> ret = new LinkedList<Vector2[]>();
+            ret.add(vs);
+            return ret;
+        }
         else return null;
     }
 

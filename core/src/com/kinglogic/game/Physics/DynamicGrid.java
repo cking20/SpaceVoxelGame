@@ -35,17 +35,18 @@ public class DynamicGrid extends Grid{
             }
             PolygonShape temp;
             float[] vertPos;
-            for(int i = 0; i < verts.length/4; i++){
+            Vector2[] v = verts.get(0);
+            for(int i = 0; i < v.length/4; i++){
                 temp = ResourceManager.ins().getNewPolyShape();
                 vertPos = new float[8];
-                vertPos[0] = verts[i*4+0].x;
-                vertPos[1] = verts[i*4+0].y;
-                vertPos[2] = verts[i*4+1].x;
-                vertPos[3] = verts[i*4+1].y;
-                vertPos[4] = verts[i*4+2].x;
-                vertPos[5] = verts[i*4+2].y;
-                vertPos[6] = verts[i*4+3].x;
-                vertPos[7] = verts[i*4+3].y;
+                vertPos[0] = v[i*4+0].x;
+                vertPos[1] = v[i*4+0].y;
+                vertPos[2] = v[i*4+1].x;
+                vertPos[3] = v[i*4+1].y;
+                vertPos[4] = v[i*4+2].x;
+                vertPos[5] = v[i*4+2].y;
+                vertPos[6] = v[i*4+3].x;
+                vertPos[7] = v[i*4+3].y;
                 temp.set(vertPos);
                 physicsShapes.add(new PhysicsShape(temp, myBody));
             }
@@ -78,12 +79,12 @@ public class DynamicGrid extends Grid{
 
 
     @Override
-    public Vector2[] recalculateVerts(){
+    public List<Vector2[]> recalculateVerts(){
         //todo new voxel utils function
-        List<Vector2> verticies = VoxelUtils.LeastRects(voxels.getGrid());
+        List<Vector2[]> verticies = VoxelUtils.LeastRects(voxels.getGrid());
         if(verticies != null) {
-            Vector2[] ret = new Vector2[verticies.size()];
-            verts = verticies.toArray(ret);
+//            Vector2[] ret = new Vector2[verticies.size()];
+            verts = verticies;//.toArray(ret);
         }else {
             verts = null;
         }

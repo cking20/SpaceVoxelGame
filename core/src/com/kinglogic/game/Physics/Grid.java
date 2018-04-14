@@ -31,7 +31,7 @@ public class Grid {
     //public ChainShape shape;
     public HashSet<PhysicsShape> physicsShapes;
     public BodyDef bodyDef;
-    public Vector2[] verts;
+    public List<Vector2[]> verts;
 
     public Grid(VoxelCollection v){
         voxels = v;
@@ -48,6 +48,7 @@ public class Grid {
         bodyDef.angularDamping = .5f;
 // Set our body's starting position in the world
         bodyDef.position.set(v.getX(),v.getY());
+        bodyDef.angle = (float) Math.toRadians(v.getRotation());
 
     }
 
@@ -75,10 +76,13 @@ public class Grid {
                     myBody.destroyFixture(s.fixture);
                     physicsShapes.remove(s);
                 }
+                for (Vector2[] chain : verts){
+                    ChainShape stat = ResourceManager.ins().getNewChainShape();
+                    stat.createChain(chain);
+                    physicsShapes.add(new PhysicsShape(stat, myBody));
+                }
 
-                ChainShape stat = ResourceManager.ins().getNewChainShape();
-                stat.createChain(verts);
-                physicsShapes.add(new PhysicsShape(stat, myBody));
+
 
 
                 bodyDef.position.set(voxels.getX(),voxels.getY());
@@ -110,13 +114,13 @@ public class Grid {
         //voxels.setOrigin((ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2-ResourceManager.voxelPixelSize/2,(ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2 - ResourceManager.voxelPixelSize/2);
     }
 
-    public Vector2[] recalculateVerts(){
+    public List<Vector2[]> recalculateVerts(){
         //todo parse through the voxels, counter clockwise
-        List<Vector2> verticies = VoxelUtils.MarchingSquares(voxels.getGrid());
+        List<Vector2[]> verticies = VoxelUtils.MarchingSquares(voxels.getGrid());
 
         if(verticies != null) {
             Vector2[] ret = new Vector2[verticies.size()];
-            verts = verticies.toArray(ret);
+            verts = verticies;//.toArray(ret);
         }else {
             verts = null;
         }

@@ -50,23 +50,27 @@ public class VoxelCollection extends Group {
      * @param v pre existing grid
      * @param position in world units
      */
-    public VoxelCollection(Voxel[][] v, Vector2 position){
+    public VoxelCollection(Voxel[][] v, Vector2 position, float rotation){
         //the size must be odd to get a center position
         if(maxSize%2 == 0)
             maxSize--;
         grid = v;
-        for(int i = 0; i < v.length; i++){
-            for(int j = 0; j < v.length; j++){
-                if(grid[i][j] != null)
-                    super.addActor(grid[i][j]);
+        if(grid == null){
+            grid = new Voxel[maxSize][maxSize];
+        }else {
+            for (int i = 0; i < v.length; i++) {
+                for (int j = 0; j < v.length; j++) {
+                    if (grid[i][j] != null)
+                        super.addActor(grid[i][j]);
+                }
             }
         }
-
         //v.setPosition((maxSize/2)*ResourceManager.voxelPixelSize,(maxSize/2)*ResourceManager.voxelPixelSize);
         //todo use v.origin(changes the last bit to +pix/2)
         setPosition(
                 position.x,
                 position.y);
+        setRotation(rotation);
     }
 
     /**
@@ -76,11 +80,11 @@ public class VoxelCollection extends Group {
      * @return false iff the voxel wasnt added
      */
     public boolean addVoxelScreenPos(Voxel v, Vector2 screenPosition){
-        System.out.println("Screen pos:" + screenPosition);
+//        System.out.println("Screen pos:" + screenPosition);
         Vector2 worldPosition = WorldManager.ins().screenToWorldCoords(screenPosition);
-        System.out.println("World pos:" + worldPosition);
+//        System.out.println("World pos:" + worldPosition);
         Vector2 position = mapWorldPointToIndexies(worldPosition);
-        System.out.println("index pos:" + position);
+//        System.out.println("index pos:" + position);
         int x = (int)position.x;
         int y = (int)position.y;
         return addVoxelIndex(v,x,y);
@@ -134,32 +138,33 @@ public class VoxelCollection extends Group {
             VoxelUtils.Index ref = getFirstIndex();
             if(grid[x][y+1] != null)
                 if(!connects(new VoxelUtils.Index(x,y+1),ref)){
-                    System.out.println("should cascade up");
+//                    System.out.println("should cascade up");
                     toRemove = removeConnectedTo(x,y+1);
-                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
+//todo ADDED GetRotation/////////////////////////////////////////////////////////////////////////////////////////////
+                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             if(grid[x][y-1] != null)
                 if(!connects(new VoxelUtils.Index(x,y-1),ref)){
-                    System.out.println("should cascade down");
+//                    System.out.println("should cascade down");
                     toRemove = removeConnectedTo(x,y-1);
-                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
+                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             if(grid[x-1][y] != null)
                 if(!connects(new VoxelUtils.Index(x-1,y),ref)){
-                    System.out.println("should cascade left");
+//                    System.out.println("should cascade left");
                     toRemove = removeConnectedTo(x+1,y);
-                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
+                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             if(grid[x+1][y] != null)
                 if(!connects(new VoxelUtils.Index(x+1,y),ref)){
-                    System.out.println("should cascade right");
+//                    System.out.println("should cascade right");
                     toRemove = removeConnectedTo(x-1,y);
                     if(toRemove != null)
-                        WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()))));
+                        WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             return true;
         } else{
-            System.out.println("grid @ click pos == null");
+//            System.out.println("grid @ click pos == null");
             return false;
         }
 
@@ -260,7 +265,7 @@ public class VoxelCollection extends Group {
         //evaluate
         while (queue.size() > 0){
             VoxelUtils.Index c = queue.remove();
-            System.out.println("checking at"+c.x+", "+c.y);
+//            System.out.println("checking at"+c.x+", "+c.y);
             Voxel current = grid[c.x][c.y];
             if(current == goal){
                 return true;
@@ -334,7 +339,7 @@ public class VoxelCollection extends Group {
         Voxel[][] connected = new Voxel[maxSize][maxSize];
         boolean[][] visited = new boolean[maxSize][maxSize];
         if(!validPosition(x,y) || grid[x][y] == null){
-            System.out.println("returning null on getVoxelsConnectedToPos");
+//            System.out.println("returning null on getVoxelsConnectedToPos");
             return null;
         }
         LinkedList<VoxelUtils.Index> queue = new LinkedList<VoxelUtils.Index>();
@@ -344,7 +349,7 @@ public class VoxelCollection extends Group {
         //evaluate
         while (queue.size() > 0){
             VoxelUtils.Index c = queue.remove();
-            System.out.println("checking at"+c.x+", "+c.y);
+//            System.out.println("checking at"+c.x+", "+c.y);
             Voxel current = grid[c.x][c.y];
 
             if(validPosition(c.x+1,c.y)){
