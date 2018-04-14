@@ -19,6 +19,7 @@ public class GameManager {
     }
 
     private GameManager(){
+        CameraManager.ins();
         ResourceManager.ins();
         WorldManager.ins();
         tip = new TestInputProcessor();

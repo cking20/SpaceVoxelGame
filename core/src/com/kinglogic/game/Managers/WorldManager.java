@@ -46,7 +46,7 @@ public class WorldManager {
     private WorldManager(){
         grids = new HashSet<Grid>();
         entities = new HashSet<EntityBody>();
-        viewCam = new OrthographicCamera();
+        viewCam = CameraManager.ins().mainCamera;
         view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*ResourceManager.ins().calculateAspectRatio(), viewCam);
         view.apply();
         BuildWorldt();
@@ -121,6 +121,8 @@ public class WorldManager {
     public void dispose(){
         if(worldStage != null)
             worldStage.dispose();
+        if(worldPhysics != null)
+            worldPhysics.dispose();
     }
 
     public Vector2 screenToWorldCoords(Vector2 pos){
