@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kinglogic.game.Managers.CameraManager;
 import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.SpaceGame;
@@ -55,6 +56,7 @@ public class GameScreen implements Screen {
         //perform the actions of the actors
         GameManager.ins().Update(delta);
         WorldManager.ins().update(delta);
+        CameraManager.ins().Update(delta);
         gui.act(delta);
 
 

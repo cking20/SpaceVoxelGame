@@ -99,6 +99,13 @@ public class WorldManager {
     }
     public void render(){
         worldStage.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+        worldStage.getViewport().apply(true);
+
+//        worldStage.getCamera().translate(200f,0,0);
+        System.out.println(worldStage.getCamera().position);
+        CameraManager.ins().Update(0f);
+        System.out.println(worldStage.getCamera().position);
+
         worldStage.draw();
         debugRenderer.render(worldPhysics, viewCam.combined);
     }

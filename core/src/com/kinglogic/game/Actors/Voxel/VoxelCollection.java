@@ -113,7 +113,9 @@ public class VoxelCollection extends Group {
      * @return true iff a block has been removed
      */
     public boolean removeVoxelScreenPos(Vector2 screenPosition){
+        System.out.println("remove screenpos @"+screenPosition);
         Vector2 position = mapWorldPointToIndexies(WorldManager.ins().screenToWorldCoords(screenPosition));
+        System.out.println("remove indexpos @"+position);
         int x = (int)position.x;
         int y = (int)position.y;
         return removeVoxelIndex(x,y);

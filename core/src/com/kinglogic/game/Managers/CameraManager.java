@@ -15,6 +15,7 @@ public class CameraManager {
     private static CameraManager instance;
     public final OrthographicCamera mainCamera;
     private Actor toTrack;
+    private float oldMainCamRotation = 0;
 
     public static CameraManager ins() {
         if(instance == null)
@@ -30,11 +31,22 @@ public class CameraManager {
         toTrack = a;
     }
 
-    public void Update(){
+    public void Update(float delta){
         if(toTrack != null){
-            mainCamera.position.set(new Vector2(toTrack.getX(),toTrack.getY()),mainCamera.position.z);
+//            mainCamera.rotate(1f);
+//            mainCamera.position.x = toTrack.getX();
+//            mainCamera.position.y = toTrack.getY();
+//            mainCamera.translate(-mainCamera.position.x,-mainCamera.position.y);
+            mainCamera.position.x = 0;
+            mainCamera.position.y = 0;
+//            mainCamera.rotate(-oldMainCamRotation);
+            mainCamera.translate((new Vector2(toTrack.getX(),toTrack.getY())));
+            mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);
+//            mainCamera.rotate(toTrack.getRotation());
+//            oldMainCamRotation = toTrack.getRotation();
         }
-        mainCamera.update();
+//        mainCamera.update(true);
+
 
     }
 }
