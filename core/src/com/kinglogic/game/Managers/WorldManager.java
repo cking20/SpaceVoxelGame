@@ -50,13 +50,15 @@ public class WorldManager {
         view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*ResourceManager.ins().calculateAspectRatio(), viewCam);
         view.apply();
         BuildWorldt();
+        worldStage.setDebugAll(true);
+        worldStage.setDebugInvisible(false);
         debugRenderer = new Box2DDebugRenderer();
     }
 
     public boolean addVoxelScreenPosition(float x, float y, String block){
         boolean hitFlag = false;
         for(Grid g : grids){
-            if(g.addVoxelScreenPos(new Voxel(block),new Vector2(x,y))){
+            if(g.addVoxelScreenPos(Voxel.Build(block),new Vector2(x,y))){
                 hitFlag = true;
                 rethinkShape(g);
             }
@@ -87,26 +89,26 @@ public class WorldManager {
     public void update(float delta){
         for(Grid g : grids) {
             g.updateRendering();
-            //g.myBody.setTransform(g.myBody.getPosition().x%(Gdx.graphics.getWidth()),(g.myBody.getPosition().y%(Gdx.graphics.getHeight())), g.myBody.getAngle());
         }
         for(EntityBody e : entities) {
             e.updateRendering();
-            //g.myBody.setTransform(g.myBody.getPosition().x%(Gdx.graphics.getWidth()),(g.myBody.getPosition().y%(Gdx.graphics.getHeight())), g.myBody.getAngle());
         }
         worldStage.act(delta);
         doPhysicsStep(delta);
-        //todo update actors
     }
+
     public void render(){
         worldStage.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         worldStage.getViewport().apply(true);
 
-//        worldStage.getCamera().translate(200f,0,0);
-        System.out.println(worldStage.getCamera().position);
         CameraManager.ins().Update(0f);
-        System.out.println(worldStage.getCamera().position);
 
         worldStage.draw();
+        worldStage.getBatch().begin();
+        for(EntityBody e : entities) {
+            e.view.draw(worldStage.getBatch(),1f);
+        }
+        worldStage.getBatch().end();
         debugRenderer.render(worldPhysics, viewCam.combined);
     }
     public void resize(int width, int height){
@@ -188,10 +190,10 @@ public class WorldManager {
     public void GenerateAsteroid(int posX, int posY, int size){
         int start = VoxelCollection.maxSize/2-size/2;
         int end = VoxelCollection.maxSize/2+size/2;
-        VoxelCollection astVox = new VoxelCollection(new Voxel(IDs.ROCK_TEX), new Vector2(posX,posY));
+        VoxelCollection astVox = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX), new Vector2(posX,posY));
         for (int i = start; i < end; i++){
             for (int j = start; j < end; j++){
-                astVox.addVoxelIndex(new Voxel(IDs.ROCK_TEX),i,j);
+                astVox.addVoxelIndex(Voxel.Build(IDs.ROCK_TEX),i,j);
             }
         }
         StaticGrid astGrid = new StaticGrid(astVox);

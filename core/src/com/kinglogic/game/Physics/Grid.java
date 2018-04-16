@@ -9,10 +9,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.VoxelUtils;
 import com.kinglogic.game.Constants;
+import com.kinglogic.game.Interfaces.Controllable;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 
@@ -25,7 +27,7 @@ import java.util.List;
  * Container for physics and rendering of grids
  */
 
-public class Grid {
+public class Grid implements Controllable{
     public VoxelCollection voxels;
     public Body myBody;
     //public ChainShape shape;
@@ -153,5 +155,81 @@ public class Grid {
             myBody.destroyFixture(s.fixture);
             physicsShapes.remove(s);
         }
+    }
+
+    @Override
+    public void GoForeward() {
+        myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(1000f*myBody.getMass()),true);
+    }
+
+    @Override
+    public void GoBackward() {
+        myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(-1000f/4f*myBody.getMass()),true);
+    }
+
+    @Override
+    public void GoLeft() {
+        myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(-1000f/2f*myBody.getMass()),true);
+    }
+
+    @Override
+    public void GoRight() {
+        myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(1000f/2f*myBody.getMass()),true);
+    }
+
+    @Override
+    public void RotateLeft() {
+        myBody.applyTorque(300f*myBody.getMass(),true);
+    }
+
+    @Override
+    public void RotateRight() {
+        myBody.applyTorque(-300f*myBody.getMass(),true);
+    }
+
+
+    @Override
+    public void Enter(Controllable toCtrl) {
+
+    }
+
+    @Override
+    public void Exit() {
+
+    }
+
+    @Override
+    public void Activate() {
+
+    }
+
+    @Override
+    public void FireMain() {
+
+    }
+
+    @Override
+    public void FireAlt() {
+
+    }
+
+    @Override
+    public void Deactivate() {
+
+    }
+
+    @Override
+    public boolean isControlling() {
+        return false;
+    }
+
+    @Override
+    public boolean isControlling(Controllable that) {
+        return false;
+    }
+
+    @Override
+    public Actor GetView() {
+        return voxels;
     }
 }

@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Align;
+import com.kinglogic.game.Actors.Voxel.VoxelCollection;
+import com.kinglogic.game.Physics.Grid;
 import com.kinglogic.game.TestInputProcessor;
 
 /**
@@ -33,20 +36,18 @@ public class CameraManager {
 
     public void Update(float delta){
         if(toTrack != null){
-//            mainCamera.rotate(1f);
-//            mainCamera.position.x = toTrack.getX();
-//            mainCamera.position.y = toTrack.getY();
-//            mainCamera.translate(-mainCamera.position.x,-mainCamera.position.y);
             mainCamera.position.x = 0;
             mainCamera.position.y = 0;
-//            mainCamera.rotate(-oldMainCamRotation);
-            mainCamera.translate((new Vector2(toTrack.getX(),toTrack.getY())));
+            if(toTrack instanceof VoxelCollection)
+                mainCamera.translate(new Vector2(
+                        toTrack.getX()+VoxelCollection.maxSize/2*ResourceManager.voxelPixelSize,
+                        toTrack.getY()+VoxelCollection.maxSize/2*ResourceManager.voxelPixelSize));//best so far
+            else
+                mainCamera.translate(new Vector2(toTrack.getX(),toTrack.getY()));//best so far
+//            mainCamera.translate(toTrack.localToStageCoordinates(new Vector2(toTrack.getX(),toTrack.getY())));
+//            mainCamera.translate(toTrack.localToStageCoordinates(new Vector2(toTrack.getX(),toTrack.getY())));
             mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);
-//            mainCamera.rotate(toTrack.getRotation());
-//            oldMainCamRotation = toTrack.getRotation();
+
         }
-//        mainCamera.update(true);
-
-
     }
 }

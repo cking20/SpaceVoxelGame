@@ -47,11 +47,11 @@ public class GameManager {
         }
         if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
             tip.player.RotateLeft();
-            tip.dyn.myBody.applyTorque(1000f*tip.dyn.myBody.getMass(),true);
+//            tip.dyn.myBody.applyTorque(1000f*tip.dyn.myBody.getMass(),true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
             tip.player.RotateRight();
-            tip.dyn.myBody.applyTorque(-1000f*tip.dyn.myBody.getMass(),true);
+//            tip.dyn.myBody.applyTorque(-1000f*tip.dyn.myBody.getMass(),true);
         }
     }
 

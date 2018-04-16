@@ -193,7 +193,7 @@ public class VoxelUtils {
         HashMap<Vector2,LinkedList<FromEdge>> edgeslist = new HashMap();
         for(int i = 0; i < state.length; i++){
             for(int j = 0; j < state[0].length; j++){
-                if(state[i][j] != null) {
+                if(state[i][j] != null && state[i][j].properties.is(VoxelProperties.COLLIDABLE)) {
                     //save the firstSpot
                     if(firstX < 0){
                         firstX = i;
@@ -203,19 +203,19 @@ public class VoxelUtils {
                     byte maping = 0;
                     //right 8
                     if (i + 1 < state.length)
-                        if (state[i + 1][j] == null)
+                        if (state[i + 1][j] == null || !state[i + 1][j].properties.is(VoxelProperties.COLLIDABLE))
                             maping ^= 8;
                     //bottom 4
                     if (j - 1 > 0)
-                        if (state[i][j - 1] == null)
+                        if (state[i][j - 1] == null || !state[i][j - 1].properties.is(VoxelProperties.COLLIDABLE))
                             maping ^= 4;
                     //left 2
                     if (i - 1 > 0)
-                        if (state[i - 1][j] == null)
+                        if (state[i - 1][j] == null || !state[i - 1][j].properties.is(VoxelProperties.COLLIDABLE))
                             maping ^= 2;
                     //top 1
                     if (j + 1 < state.length)
-                        if (state[i][j + 1] == null)
+                        if (state[i][j + 1] == null || !state[i][j + 1].properties.is(VoxelProperties.COLLIDABLE))
                             maping ^= 1;
 
                     edgeslist.putAll(map(maping, i, j));
@@ -289,7 +289,7 @@ public class VoxelUtils {
         boolean foundOneFlag = false;
         for(int i = 0; i < state.length; i++){
             for(int j = 0; j < state[0].length; j++){
-                if(state[i][j] != null){
+                if(state[i][j] != null && state[i][j].properties.is(VoxelProperties.COLLIDABLE)){
                     foundOneFlag = true;
                     verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
                     verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));

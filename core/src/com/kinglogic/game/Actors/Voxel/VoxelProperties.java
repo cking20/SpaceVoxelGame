@@ -14,7 +14,7 @@ public class VoxelProperties {
     }
 
     public boolean is(byte property){
-        return (properties ^ property) == property;
+        return !((properties ^ property) == property);
     }
     public void setProperty(boolean c, byte property){
         if(c)
@@ -22,4 +22,8 @@ public class VoxelProperties {
         else
             properties &= ~property;
     }
+    public void copy(VoxelProperties toCopy){
+        properties = toCopy.properties;
+    }
+
 }

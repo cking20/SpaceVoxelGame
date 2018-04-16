@@ -4,9 +4,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Interfaces.Controllable;
+import com.kinglogic.game.Managers.CameraManager;
 import com.kinglogic.game.Managers.ResourceManager;
 
 import java.util.HashSet;
@@ -21,6 +23,7 @@ public class EntityBody  implements Controllable{
     //public ChainShape shape;
     public PhysicsShape physicsShape;
     public BodyDef bodyDef;
+    private Controllable controlling;
 
     public EntityBody(String name, Vector2 position){
         view = new Entity(name);
@@ -57,42 +60,62 @@ public class EntityBody  implements Controllable{
 
     @Override
     public void GoForeward() {
+        if(controlling != null)
+            controlling.GoForeward();
+        else
         myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(1000f*myBody.getMass()),true);
     }
 
     @Override
     public void GoBackward() {
+        if(controlling != null)
+            controlling.GoBackward();
+        else
         myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(-1000f/4f*myBody.getMass()),true);
     }
 
     @Override
     public void GoLeft() {
+        if(controlling != null)
+            controlling.GoLeft();
+        else
         myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(-1000f/2f*myBody.getMass()),true);
     }
 
     @Override
     public void GoRight() {
-        myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(1000f/2f*myBody.getMass()),true);
+        if(controlling != null)
+            controlling.GoRight();
+        else
+            myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(1000f/2f*myBody.getMass()),true);
     }
 
     @Override
     public void RotateLeft() {
-        myBody.applyTorque(300f*myBody.getMass(),true);
+        if(controlling != null)
+            controlling.RotateLeft();
+        else
+            myBody.applyTorque(300f*myBody.getMass(),true);
     }
 
     @Override
     public void RotateRight() {
-        myBody.applyTorque(-300f*myBody.getMass(),true);
+        if(controlling != null)
+            controlling.RotateRight();
+        else
+            myBody.applyTorque(-300f*myBody.getMass(),true);
     }
 
     @Override
-    public void Enter() {
-
+    public void Enter(Controllable toControl) {
+        CameraManager.ins().Track(toControl.GetView());
+        controlling = toControl;
     }
 
     @Override
     public void Exit() {
-
+        CameraManager.ins().Track(view);
+        controlling = null;
     }
 
     @Override
@@ -113,5 +136,20 @@ public class EntityBody  implements Controllable{
     @Override
     public void Deactivate() {
 
+    }
+
+    @Override
+    public boolean isControlling() {
+        return controlling != null;
+    }
+
+    @Override
+    public boolean isControlling(Controllable that) {
+        return that.equals(controlling);
+    }
+
+    @Override
+    public Actor GetView() {
+        return view;
     }
 }

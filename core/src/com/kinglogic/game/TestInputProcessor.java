@@ -26,11 +26,10 @@ public class TestInputProcessor implements InputProcessor {
         player = new EntityBody("player", new Vector2(450,300));
         WorldManager.ins().addEntityToWorld(player);
         CameraManager.ins().Track(player.view);
-        stc = new Grid( new VoxelCollection(new Voxel(blockName),new Vector2(400,300)));
+        stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);
         WorldManager.ins().GenerateAsteroid(100,100, 10);
-        VoxelCollection vc = new VoxelCollection(new Voxel(blockName),new Vector2(200,300));
-        vc.setRotation(45);
+        VoxelCollection vc = new VoxelCollection(Voxel.Build(blockName),new Vector2(200,300));
         dyn = new DynamicGrid(vc);
 
         WorldManager.ins().addGridToWorld(dyn);
@@ -57,6 +56,12 @@ public class TestInputProcessor implements InputProcessor {
         }
         else if(character == '3'){
             blockName = IDs.ROCK_TEX;
+        }
+        else if(character == ' '){
+            if(player.isControlling())
+                player.Exit();
+            else
+                player.Enter(dyn);
         }
 
         return false;

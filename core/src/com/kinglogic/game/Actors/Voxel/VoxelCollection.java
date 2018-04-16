@@ -1,6 +1,7 @@
 package com.kinglogic.game.Actors.Voxel;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
@@ -21,7 +22,7 @@ import java.util.Queue;
  * Holds Data pertaining to grid of squares
  */
 public class VoxelCollection extends Group {
-    public static int maxSize = 250;
+    public static int maxSize = 20;
     Voxel[][] grid;
 
     /**
@@ -220,7 +221,7 @@ public class VoxelCollection extends Group {
     /**
      * @return the first not null Voxel in the grid
      */
-    private Voxel getFirst(){
+    public Voxel getFirst(){
         for(int i = 0; i < grid.length; i++){
             for(int j = 0; j < grid[0].length; j++){
                 if(grid[i][j] != null)
