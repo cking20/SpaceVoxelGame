@@ -35,7 +35,7 @@ public class EntityBody  implements Controllable{
 // We set our body to dynamic, for something like ground which doesn't move we would set it to StaticBody
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.linearDamping = 1.5f;
-        bodyDef.angularDamping = 1.5f;
+        bodyDef.angularDamping = 5f;
 // Set our body's starting position in the world
         bodyDef.position.set(position.x,position.y);
     }
@@ -95,7 +95,7 @@ public class EntityBody  implements Controllable{
         if(controlling != null)
             controlling.RotateLeft();
         else
-            myBody.applyTorque(300f*myBody.getMass(),true);
+            myBody.applyTorque(700f*myBody.getMass(),true);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class EntityBody  implements Controllable{
         if(controlling != null)
             controlling.RotateRight();
         else
-            myBody.applyTorque(-300f*myBody.getMass(),true);
+            myBody.applyTorque(-700f*myBody.getMass(),true);
     }
 
     @Override

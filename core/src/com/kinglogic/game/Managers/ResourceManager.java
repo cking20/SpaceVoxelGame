@@ -24,6 +24,8 @@ public class ResourceManager {
     private final TextureAtlas spriteAtlas;
     private ArrayList<Shape> shapes;
 
+    public Texture nebula;
+
 
     public static ResourceManager ins() {
         if(instance == null)
@@ -39,6 +41,7 @@ public class ResourceManager {
         ui.getFont("font").getData().setScale(.3f,.3f);
         voxelAtlas = new TextureAtlas(Gdx.files.internal("images/voxelAtlas.atlas"));
         spriteAtlas = new TextureAtlas(Gdx.files.internal("images/spriteAtlas.atlas"));
+        nebula = new Texture(Gdx.files.internal("images/nebula.png"));
 
     }
     public PolygonShape getNewPolyShape(){
@@ -63,6 +66,7 @@ public class ResourceManager {
         ui.dispose();
         voxelAtlas.dispose();
         spriteAtlas.dispose();
+        nebula.dispose();
 
     }
 

@@ -1,6 +1,7 @@
 package com.kinglogic.game.Managers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kinglogic.game.Actors.Entities.Entity;
@@ -22,19 +24,27 @@ import com.kinglogic.game.Physics.StaticGrid;
 
 import java.util.HashSet;
 
+import box2dLight.DirectionalLight;
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
+
 /**
  * Created by chris on 4/1/2018.
  */
 
 public class WorldManager {
+    private static final boolean debug = false;
     private static WorldManager instance;
     private Stage worldStage;
     private World worldPhysics;
+    private RayHandler rayHandler;
     private Viewport view;
     public final OrthographicCamera viewCam;
     private Box2DDebugRenderer debugRenderer;
     private HashSet<Grid> grids;
     private HashSet<EntityBody> entities;
+
+    private Image background;
 
 
     public static WorldManager ins() {
@@ -50,8 +60,18 @@ public class WorldManager {
         view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*ResourceManager.ins().calculateAspectRatio(), viewCam);
         view.apply();
         BuildWorldt();
-        worldStage.setDebugAll(true);
-        worldStage.setDebugInvisible(false);
+        if(debug) {
+            worldStage.setDebugAll(true);
+            worldStage.setDebugInvisible(false);
+        }
+        rayHandler = new RayHandler(worldPhysics);
+        rayHandler.setAmbientLight(.4f);
+        rayHandler.setShadows(true);
+//        PointLight pl = new PointLight(rayHandler,400, new Color(Color.rgba8888(1.0f, 1.0f, 1.0f, 1.0f)),ResourceManager.voxelPixelSize*100,0,0);
+//        pl.setSoftnessLength(50f);
+        DirectionalLight dl = new DirectionalLight(rayHandler,1000,
+                new Color(Color.rgba8888(.10f, .10f, .10f, 1.0f)),-95);
+        dl.setSoftnessLength(50f);
         debugRenderer = new Box2DDebugRenderer();
     }
 
@@ -79,10 +99,16 @@ public class WorldManager {
     }
 
     public void BuildWorldt(){
-        if(worldStage == null)
+        if(worldStage == null) {
             worldStage = new Stage(view);
-        if(worldPhysics == null)
+            background = new Image(ResourceManager.ins().nebula);
+            background.scaleBy(1.5f,1.5f);
+            background.moveBy(-background.getWidth()/2, -background.getHeight()/2);
+            worldStage.addActor(background);
+        }
+        if(worldPhysics == null){
             worldPhysics = new World(new Vector2(0,0), true);
+        }
         //todo generate stuff with a procedural algorithm
     }
 
@@ -95,9 +121,15 @@ public class WorldManager {
         }
         worldStage.act(delta);
         doPhysicsStep(delta);
+        rayHandler.update();
+        rayHandler.setCombinedMatrix((OrthographicCamera) worldStage.getCamera());
     }
 
     public void render(){
+        background.setPosition(
+                CameraManager.ins().mainCamera.position.x-background.getWidth()*background.getScaleX()/2,
+                CameraManager.ins().mainCamera.position.y-background.getHeight()*background.getScaleY()/2);
+
         worldStage.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         worldStage.getViewport().apply(true);
 
@@ -109,7 +141,9 @@ public class WorldManager {
             e.view.draw(worldStage.getBatch(),1f);
         }
         worldStage.getBatch().end();
-        debugRenderer.render(worldPhysics, viewCam.combined);
+        rayHandler.render();
+        if(debug)
+            debugRenderer.render(worldPhysics, viewCam.combined);
     }
     public void resize(int width, int height){
         worldStage.getViewport().update(width,height, true);
@@ -132,6 +166,8 @@ public class WorldManager {
             worldStage.dispose();
         if(worldPhysics != null)
             worldPhysics.dispose();
+        if(rayHandler != null)
+            rayHandler.dispose();
     }
 
     public Vector2 screenToWorldCoords(Vector2 pos){

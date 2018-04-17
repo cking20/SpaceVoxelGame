@@ -22,7 +22,7 @@ import java.util.Queue;
  * Holds Data pertaining to grid of squares
  */
 public class VoxelCollection extends Group {
-    public static int maxSize = 20;
+    public static int maxSize = 250;
     Voxel[][] grid;
 
     /**

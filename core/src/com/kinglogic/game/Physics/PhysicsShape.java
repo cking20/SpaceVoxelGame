@@ -35,7 +35,8 @@ public class PhysicsShape {
 
     public PhysicsShape(Body b, Entity view){
         PolygonShape ps = ResourceManager.ins().getNewPolyShape();
-        ps.setAsBox(view.getWidth()/2,view.getHeight()/2, new Vector2(view.getWidth()/2, view.getHeight()/2),view.getRotation());
+        ps.setAsBox(view.getWidth()/2-1f,view.getHeight()/2-1f, new Vector2(view.getWidth()/2, view.getHeight()/2),view.getRotation());
+
         shape = ps;
 
         fixtureDef = new FixtureDef();
