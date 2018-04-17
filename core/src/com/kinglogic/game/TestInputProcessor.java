@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.kinglogic.game.AI.BaseAIBody;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Managers.CameraManager;
@@ -22,11 +23,14 @@ public class TestInputProcessor implements InputProcessor {
     public Grid dyn;
     public Grid stc;
     public EntityBody player;
+    public BaseAIBody enemy;
     public TestInputProcessor(){
         player = new EntityBody("player", new Vector2(450,300));
         WorldManager.ins().addEntityToWorld(player);
         WorldManager.ins().ApplyLightToBody(player.myBody);
         CameraManager.ins().Track(player.view);
+        enemy = new BaseAIBody("player", new Vector2(400,300));
+        WorldManager.ins().addEntityToWorld(enemy);
         stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);
         WorldManager.ins().GenerateAsteroid(100,100, 10);

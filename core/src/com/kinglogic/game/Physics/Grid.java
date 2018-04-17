@@ -179,12 +179,12 @@ public class Grid implements Controllable{
 
     @Override
     public void RotateLeft() {
-        myBody.applyTorque(300f*myBody.getMass(),true);
+        myBody.applyTorque(300f*myBody.getMass()*myBody.getFixtureList().size,true);
     }
 
     @Override
     public void RotateRight() {
-        myBody.applyTorque(-300f*myBody.getMass(),true);
+        myBody.applyTorque(-300f*myBody.getMass()*myBody.getFixtureList().size,true);
     }
 
 

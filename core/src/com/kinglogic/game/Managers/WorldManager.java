@@ -18,6 +18,7 @@ import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
+import com.kinglogic.game.Interfaces.AI;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
@@ -66,7 +67,7 @@ public class WorldManager {
             worldStage.setDebugInvisible(false);
         }
         rayHandler = new RayHandler(worldPhysics);
-        rayHandler.setAmbientLight(.4f);
+        rayHandler.setAmbientLight(.6f);
         rayHandler.setShadows(true);
 //        PointLight pl = new PointLight(rayHandler,400, new Color(Color.rgba8888(1.0f, 1.0f, 1.0f, 1.0f)),ResourceManager.voxelPixelSize*100,0,0);
 //        pl.setSoftnessLength(50f);
@@ -74,6 +75,7 @@ public class WorldManager {
                 new Color(Color.rgba8888(.10f, .10f, .10f, 1.0f)),-95);
         dl.setSoftnessLength(50f);
         debugRenderer = new Box2DDebugRenderer();
+
     }
 
     public boolean addVoxelScreenPosition(float x, float y, String block){
@@ -119,6 +121,8 @@ public class WorldManager {
         }
         for(EntityBody e : entities) {
             e.updateRendering();
+            if(e instanceof AI)
+                ((AI) e).Think(worldPhysics);
         }
         worldStage.act(delta);
         doPhysicsStep(delta);

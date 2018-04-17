@@ -8,6 +8,7 @@ import com.kinglogic.game.GameAdapter;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.fullscreen = Constants.FULLSCREEN;
 		config.width = Constants.START_WIDTH;
 		config.height = Constants.START_HEIGHT;
 		new LwjglApplication(new GameAdapter(), config);
