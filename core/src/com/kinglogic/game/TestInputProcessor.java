@@ -25,6 +25,7 @@ public class TestInputProcessor implements InputProcessor {
     public TestInputProcessor(){
         player = new EntityBody("player", new Vector2(450,300));
         WorldManager.ins().addEntityToWorld(player);
+        WorldManager.ins().ApplyLightToBody(player.myBody);
         CameraManager.ins().Track(player.view);
         stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);

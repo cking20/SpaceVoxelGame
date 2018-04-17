@@ -38,16 +38,26 @@ public class CameraManager {
         if(toTrack != null){
             mainCamera.position.x = 0;
             mainCamera.position.y = 0;
-            if(toTrack instanceof VoxelCollection)
+            if(toTrack instanceof VoxelCollection) {
+                /*
                 mainCamera.translate(new Vector2(
-                        toTrack.getX()+VoxelCollection.maxSize/2*ResourceManager.voxelPixelSize,
-                        toTrack.getY()+VoxelCollection.maxSize/2*ResourceManager.voxelPixelSize));//best so far
-            else
-                mainCamera.translate(new Vector2(toTrack.getX(),toTrack.getY()));//best so far
-//            mainCamera.translate(toTrack.localToStageCoordinates(new Vector2(toTrack.getX(),toTrack.getY())));
-//            mainCamera.translate(toTrack.localToStageCoordinates(new Vector2(toTrack.getX(),toTrack.getY())));
-            mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);
-
+                        toTrack.getX() + VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize,
+                        toTrack.getY() + VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize));//best so far
+                mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);
+                */
+                mainCamera.translate(new Vector2(
+                        toTrack.getX(),
+                        toTrack.getY()));//best so far
+                Vector2 rotTrans = new Vector2(
+                        VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize,
+                        VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
+                rotTrans = rotTrans.rotate(toTrack.getRotation());
+                mainCamera.translate(rotTrans);
+                mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);
+            }else {
+                mainCamera.translate(new Vector2(toTrack.getX(), toTrack.getY()));//best so far
+                mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);
+            }
         }
     }
 }

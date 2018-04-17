@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -234,6 +235,13 @@ public class WorldManager {
         }
         StaticGrid astGrid = new StaticGrid(astVox);
         addGridToWorld(astGrid);
+    }
+
+    public void ApplyLightToBody(Body b){
+        PointLight pl = new PointLight(rayHandler,60, new Color(Color.rgba8888(.10f, .10f, .10f, 1.0f)),
+                ResourceManager.voxelPixelSize*20, 0,0);
+        pl.attachToBody(b,8f,8f);
+        pl.setSoftnessLength(50f);
     }
 
 }
