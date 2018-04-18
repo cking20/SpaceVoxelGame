@@ -33,7 +33,7 @@ public class TestInputProcessor implements InputProcessor {
         WorldManager.ins().addEntityToWorld(enemy);
         stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);
-        WorldManager.ins().GenerateAsteroid(100,100, 10);
+        WorldManager.ins().GenerateAsteroid(100,100, 50);
         VoxelCollection vc = new VoxelCollection(Voxel.Build(blockName),new Vector2(200,300));
         dyn = new DynamicGrid(vc);
 

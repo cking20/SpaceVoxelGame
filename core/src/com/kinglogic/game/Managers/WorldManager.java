@@ -67,7 +67,7 @@ public class WorldManager {
             worldStage.setDebugInvisible(false);
         }
         rayHandler = new RayHandler(worldPhysics);
-        rayHandler.setAmbientLight(.6f);
+        rayHandler.setAmbientLight(.8f);//.6f);
         rayHandler.setShadows(true);
 //        PointLight pl = new PointLight(rayHandler,400, new Color(Color.rgba8888(1.0f, 1.0f, 1.0f, 1.0f)),ResourceManager.voxelPixelSize*100,0,0);
 //        pl.setSoftnessLength(50f);
@@ -232,13 +232,17 @@ public class WorldManager {
         int start = VoxelCollection.maxSize/2-size/2;
         int end = VoxelCollection.maxSize/2+size/2;
         VoxelCollection astVox = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX), new Vector2(posX,posY));
+        boolean[][] putBlocks = PCGManager.ins().generateBlandAsteroid(size);
         for (int i = start; i < end; i++){
             for (int j = start; j < end; j++){
-                astVox.addVoxelIndex(Voxel.Build(IDs.ROCK_TEX),i,j);
+                if(putBlocks[i-start][j-start])
+                    astVox.hardAddVoxelIndex(Voxel.Build(IDs.ROCK_TEX),i,j);
             }
         }
         StaticGrid astGrid = new StaticGrid(astVox);
         addGridToWorld(astGrid);
+        astGrid.voxels.checkAllConnected();
+        astGrid.recalculateShape();
     }
 
     public void ApplyLightToBody(Body b){

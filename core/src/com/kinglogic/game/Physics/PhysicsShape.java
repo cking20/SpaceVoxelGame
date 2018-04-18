@@ -25,7 +25,7 @@ public class PhysicsShape {
     public PhysicsShape(Shape s, Body b){
         shape = s;
         fixtureDef = new FixtureDef();
-        fixtureDef.density = 0.5f;
+        fixtureDef.density = 5f;
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.6f; // Make it bounce a little bit
         fixtureDef.shape = shape;

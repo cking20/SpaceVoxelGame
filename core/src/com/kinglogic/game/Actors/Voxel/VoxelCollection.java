@@ -108,15 +108,26 @@ public class VoxelCollection extends Group {
         } else return false;
     }
 
+    public boolean hardAddVoxelIndex(Voxel v, int x, int y){
+        if(!validPosition(x,y))return false;
+        if(grid[x][y] == null) {
+            grid[x][y] = v;
+            super.addActor(v);
+            v.setPosition((x * ResourceManager.voxelPixelSize), (y * ResourceManager.voxelPixelSize));
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Attempts to remove a block at screen position
      * @param screenPosition
      * @return true iff a block has been removed
      */
     public boolean removeVoxelScreenPos(Vector2 screenPosition){
-        System.out.println("remove screenpos @"+screenPosition);
+//        System.out.println("remove screenpos @"+screenPosition);
         Vector2 position = mapWorldPointToIndexies(WorldManager.ins().screenToWorldCoords(screenPosition));
-        System.out.println("remove indexpos @"+position);
+//        System.out.println("remove indexpos @"+position);
         int x = (int)position.x;
         int y = (int)position.y;
         return removeVoxelIndex(x,y);
@@ -136,32 +147,32 @@ public class VoxelCollection extends Group {
             Voxel v = grid[x][y];
             super.removeActor(v);
             grid[x][y] = null;
-            //todo Splitting algorithm
             Voxel[][] toRemove;
-            VoxelUtils.Index ref = getFirstIndex();
+            VoxelUtils.Index ref = getCenterIndex();//getFirstIndex();
+            if(grid[ref.x][ref.y] == null)
+                ref = getFirstIndex();
             if(grid[x][y+1] != null)
                 if(!connects(new VoxelUtils.Index(x,y+1),ref)){
 //                    System.out.println("should cascade up");
-                    toRemove = removeConnectedTo(x,y+1);
-//todo ADDED GetRotation/////////////////////////////////////////////////////////////////////////////////////////////
+                    toRemove = removeConnectedTo(ref.x,ref.y);//removeConnectedTo(x,y+1);
                     WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             if(grid[x][y-1] != null)
                 if(!connects(new VoxelUtils.Index(x,y-1),ref)){
 //                    System.out.println("should cascade down");
-                    toRemove = removeConnectedTo(x,y-1);
+                    toRemove = removeConnectedTo(ref.x,ref.y);////removeConnectedTo(x,y-1);
                     WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             if(grid[x-1][y] != null)
                 if(!connects(new VoxelUtils.Index(x-1,y),ref)){
 //                    System.out.println("should cascade left");
-                    toRemove = removeConnectedTo(x+1,y);
+                    toRemove = removeConnectedTo(ref.x,ref.y);////removeConnectedTo(x+1,y);
                     WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             if(grid[x+1][y] != null)
                 if(!connects(new VoxelUtils.Index(x+1,y),ref)){
 //                    System.out.println("should cascade right");
-                    toRemove = removeConnectedTo(x-1,y);
+                    toRemove = removeConnectedTo(ref.x,ref.y);////removeConnectedTo(x-1,y);
                     if(toRemove != null)
                         WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
@@ -172,6 +183,59 @@ public class VoxelCollection extends Group {
         }
 
     }
+
+    /**
+     * WARNING THIS SHOULD ONLY EVER BE USED ON WORLD STARTUP!!!!!!
+     */
+    public void checkAllConnected(){
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid.length; y++) {
+                if(validPosition(x,y)){
+                    if(grid[x][y] != null) {
+                        Voxel v = grid[x][y];
+                        Voxel[][] toRemove;
+                        VoxelUtils.Index ref = getCenterIndex();//getFirstIndex();
+                        if(grid[ref.x][ref.y] == null)
+                            ref = getFirstIndex();
+                        if (grid[x][y] != null)
+                            if (!connects(new VoxelUtils.Index(x, y), ref)) {
+                                //                    System.out.println("should cascade up");
+                                toRemove = removeConnectedTo(x, y);
+                                WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(), getY()), this.getRotation())));
+                            }
+                        if (grid[x][y + 1] != null)
+                            if (!connects(new VoxelUtils.Index(x, y + 1), ref)) {
+    //                    System.out.println("should cascade up");
+                                toRemove = removeConnectedTo(x, y + 1);
+                                WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(), getY()), this.getRotation())));
+                            }
+                        if (grid[x][y - 1] != null)
+                            if (!connects(new VoxelUtils.Index(x, y - 1), ref)) {
+    //                    System.out.println("should cascade down");
+                                toRemove = removeConnectedTo(x, y - 1);
+                                WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(), getY()), this.getRotation())));
+                            }
+                        if (grid[x - 1][y] != null)
+                            if (!connects(new VoxelUtils.Index(x - 1, y), ref)) {
+    //                    System.out.println("should cascade left");
+                                toRemove = removeConnectedTo(x + 1, y);
+                                WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(), getY()), this.getRotation())));
+                            }
+                        if (grid[x + 1][y] != null)
+                            if (!connects(new VoxelUtils.Index(x + 1, y), ref)) {
+    //                    System.out.println("should cascade right");
+                                toRemove = removeConnectedTo(x - 1, y);
+                                if (toRemove != null)
+                                    WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(), getY()), this.getRotation())));
+                            }
+                    }
+                }
+            }
+        }
+    }
+
+
+
 
     /**
      * Transforms a position in world units to an index into this grid

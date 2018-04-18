@@ -86,7 +86,6 @@ public class Grid implements Controllable{
 
 
 
-
                 bodyDef.position.set(voxels.getX(),voxels.getY());
             } else {
                 System.err.println("default shape");
@@ -128,6 +127,7 @@ public class Grid implements Controllable{
         }
         return verts;
     }
+
     public boolean addVoxelScreenPos(Voxel v, Vector2 screenPosition){
         boolean good = voxels.addVoxelScreenPos(v,screenPosition);
         if(good) {
@@ -138,6 +138,7 @@ public class Grid implements Controllable{
         }
         return good;
     }
+
     public boolean removeVoxelScreenPos(Vector2 screenPosition){
         boolean good = voxels.removeVoxelScreenPos(screenPosition);
         if(good) {
