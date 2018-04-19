@@ -154,25 +154,25 @@ public class VoxelCollection extends Group {
             if(grid[x][y+1] != null)
                 if(!connects(new VoxelUtils.Index(x,y+1),ref)){
 //                    System.out.println("should cascade up");
-                    toRemove = removeConnectedTo(ref.x,ref.y);//removeConnectedTo(x,y+1);
+                    toRemove = removeConnectedTo(x,y+1);
                     WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             if(grid[x][y-1] != null)
                 if(!connects(new VoxelUtils.Index(x,y-1),ref)){
 //                    System.out.println("should cascade down");
-                    toRemove = removeConnectedTo(ref.x,ref.y);////removeConnectedTo(x,y-1);
+                    toRemove = removeConnectedTo(x,y-1);
                     WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             if(grid[x-1][y] != null)
                 if(!connects(new VoxelUtils.Index(x-1,y),ref)){
 //                    System.out.println("should cascade left");
-                    toRemove = removeConnectedTo(ref.x,ref.y);////removeConnectedTo(x+1,y);
+                    toRemove = removeConnectedTo(x+1,y);
                     WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
             if(grid[x+1][y] != null)
                 if(!connects(new VoxelUtils.Index(x+1,y),ref)){
 //                    System.out.println("should cascade right");
-                    toRemove = removeConnectedTo(ref.x,ref.y);////removeConnectedTo(x-1,y);
+                    toRemove = removeConnectedTo(x-1,y);
                     if(toRemove != null)
                         WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(toRemove, new Vector2(getX(),getY()),this.getRotation())));
                 }
@@ -392,6 +392,33 @@ public class VoxelCollection extends Group {
                 }
             }
         }
+        //count the number in each
+        int baseCount = 0;
+        int removedCount = 0;
+        if(delta != null){
+            for (int i = 0; i < maxSize; i++) {
+                for (int j = 0; j < maxSize; j++) {
+                    if(delta[i][j] != null)
+                        removedCount++;
+                    if(grid[i][j] != null)
+                        baseCount++;
+                }
+            }
+        }
+        if(removedCount > baseCount){
+            Voxel[][] temp = delta;
+            delta = grid;
+            grid = temp;
+            for(int i = 0; i < grid.length; i++){
+                for(int j = 0; j < grid[0].length; j++){
+                    if(grid[i][j] != null) {
+                        super.addActor(grid[i][j]);
+                    }
+                }
+            }
+
+        }
+
         return delta;
     }
 

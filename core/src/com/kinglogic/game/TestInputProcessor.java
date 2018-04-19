@@ -29,7 +29,7 @@ public class TestInputProcessor implements InputProcessor {
         WorldManager.ins().addEntityToWorld(player);
         WorldManager.ins().ApplyLightToBody(player.myBody);
         CameraManager.ins().Track(player.view);
-        enemy = new BaseAIBody("player", new Vector2(400,300));
+        enemy = new BaseAIBody("Yellowparasite", new Vector2(400,300));
         WorldManager.ins().addEntityToWorld(enemy);
         stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);

@@ -4,9 +4,16 @@ size: 32,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-player
+Yellowparasite
   rotate: false
   xy: 2, 2
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 2, 24
   size: 16, 32
   orig: 16, 32
   offset: 0, 0

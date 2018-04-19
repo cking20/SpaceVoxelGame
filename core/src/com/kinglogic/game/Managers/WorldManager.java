@@ -35,7 +35,7 @@ import box2dLight.RayHandler;
  */
 
 public class WorldManager {
-    private static final boolean debug = false;
+    private static final boolean debug = true;
     private static WorldManager instance;
     private Stage worldStage;
     private World worldPhysics;
