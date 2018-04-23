@@ -86,4 +86,86 @@ public class PCGManager {
         return (MathUtils.sin(2*MathUtils.PI * frequency*nx + seedX) + MathUtils.sin(2*MathUtils.PI * frequency*ny + seedY));
 
     }
+
+    public boolean[][] generateBetterAsteroid(int size){
+        boolean[][] asteroid = new boolean[size][size];
+        float chanceToExist = .45f;//anywhere from .4(lots of systems, to .6 just a few pockets)
+        int starve = 3;
+//        int overpop = 4;
+        int birthNum = 4;
+        int numSteps = 6;
+
+        //generate the map
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                asteroid[i][j] = (randomizer.nextFloat() < chanceToExist);
+            }
+        }
+        System.out.println(DebugGen(asteroid));
+
+        for (int i = 0; i < numSteps; i++) {
+            asteroid = genStep(asteroid,starve,birthNum);
+            System.out.println(DebugGen(asteroid));
+        }
+        return asteroid;
+    }
+
+    private boolean[][] genStep(boolean[][] state, int starve, int birthNum){
+        boolean[][] newState = new boolean[state.length][state.length];
+        for (int i = 0; i < state.length; i++) {
+            for (int j = 0; j < state.length; j++) {
+                int nghbrs = countNeighbors(i,j,state);
+                if(state[i][j]){
+                    if(nghbrs < starve)
+                        newState[i][j] = false;
+                    else
+                        newState[i][j] = true;
+                }else {
+                    if(nghbrs > birthNum)
+                        newState[i][j] = true;
+                    else
+                        newState[i][j] = false;
+                }
+            }
+        }
+        return newState;
+    }
+
+    private int countNeighbors(int x, int y, boolean[][] oldState){
+        int count = 0;
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                int nx = x+i;
+                int ny = y+j;
+                if(i == 0 && j == 0) {
+                    //do nothing with center
+                }else {
+                    if (nx < 0 || ny < 0 || nx >= oldState.length || ny >= oldState.length) {
+                        //count+=1;
+                    } else if (oldState[nx][ny]) {
+                        count+=1;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
+    private String DebugGen(boolean[][] state){
+        String print = "";
+        for (int i = 0; i < state.length; i++) {
+            for (int j = 0; j < state.length; j++) {
+                if(state[i][j])
+                    print+=" 0";
+                else
+                    print+=" _";
+            }
+            print+="\n";
+        }
+        return print;
+    }
+
+
+
+
 }

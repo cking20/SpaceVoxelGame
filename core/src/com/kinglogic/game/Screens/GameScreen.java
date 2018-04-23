@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kinglogic.game.Managers.CameraManager;
+import com.kinglogic.game.Managers.GUIManager;
 import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.SpaceGame;
@@ -20,53 +21,56 @@ import com.kinglogic.game.SpaceGame;
 
 public class GameScreen implements Screen {
     SpaceGame theGame;
-    Stage gui;
-    private Viewport view;
-    private OrthographicCamera viewCam;
-    private float aspectRatio;
+//    Stage gui;
+//    private Viewport view;
+//    private OrthographicCamera viewCam;
+//    private float aspectRatio;
 
     public GameScreen(SpaceGame game){
         theGame = game;
-        aspectRatio = (float) Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
-        viewCam = new OrthographicCamera();
-        view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*aspectRatio, viewCam);
-        view.apply();
-        gui = new Stage(view);
+//        aspectRatio = (float) Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
+//        viewCam = new OrthographicCamera();
+//        view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*aspectRatio, viewCam);
+//        view.apply();
+//        gui = new Stage(view);
     }
 
     @Override
     public void show() {
-        aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
-        gui.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+//        aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
+//        gui.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
 
     }
 
     @Override
     public void render(float delta) {
-        aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
-        gui.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
+//        aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
+//        gui.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         //Clear the screen from the last frame
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //Set the entire screen to this color
         Gdx.gl.glClearColor(.078f, .047f, .101f, 1);
         //render the actors
         WorldManager.ins().render();
-        gui.draw();
+        GUIManager.ins().render();
+//        gui.draw();
 
         //perform the actions of the actors
         GameManager.ins().Update(delta);
         WorldManager.ins().update(delta);
+        GUIManager.ins().update(delta);
         CameraManager.ins().Update(delta);
-        gui.act(delta);
+//        gui.act(delta);
 
 
     }
 
     @Override
     public void resize(int width, int height) {
-        aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
-        gui.getViewport().update(width,height,true);
+//        aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
+//        gui.getViewport().update(width,height,true);
         WorldManager.ins().resize(width,height);
+        GUIManager.ins().resize(width,height);
 
     }
 
@@ -87,6 +91,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        gui.dispose();
+//        gui.dispose();
+        GameManager.ins().dispose();
     }
 }

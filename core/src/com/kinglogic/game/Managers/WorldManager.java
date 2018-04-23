@@ -23,7 +23,9 @@ import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
 import com.kinglogic.game.Physics.StaticGrid;
+import com.kinglogic.game.Physics.WorldContactListner;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import box2dLight.DirectionalLight;
@@ -35,7 +37,7 @@ import box2dLight.RayHandler;
  */
 
 public class WorldManager {
-    private static final boolean debug = true;
+    private static final boolean debug = false;
     private static WorldManager instance;
     private Stage worldStage;
     private World worldPhysics;
@@ -45,6 +47,9 @@ public class WorldManager {
     private Box2DDebugRenderer debugRenderer;
     private HashSet<Grid> grids;
     private HashSet<EntityBody> entities;
+
+    private ArrayList<Vector2> removalQueue;
+    private ArrayList<Vector2> addalQueue;
 
     private Image background;
 
@@ -58,6 +63,8 @@ public class WorldManager {
     private WorldManager(){
         grids = new HashSet<Grid>();
         entities = new HashSet<EntityBody>();
+        removalQueue = new ArrayList<Vector2>();
+        addalQueue = new ArrayList<Vector2>();
         viewCam = CameraManager.ins().mainCamera;
         view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*ResourceManager.ins().calculateAspectRatio(), viewCam);
         view.apply();
@@ -66,14 +73,13 @@ public class WorldManager {
             worldStage.setDebugAll(true);
             worldStage.setDebugInvisible(false);
         }
+        worldPhysics.setContactListener(new WorldContactListner());
         rayHandler = new RayHandler(worldPhysics);
         rayHandler.setAmbientLight(.8f);//.6f);
         rayHandler.setShadows(true);
-//        PointLight pl = new PointLight(rayHandler,400, new Color(Color.rgba8888(1.0f, 1.0f, 1.0f, 1.0f)),ResourceManager.voxelPixelSize*100,0,0);
-//        pl.setSoftnessLength(50f);
-        DirectionalLight dl = new DirectionalLight(rayHandler,1000,
-                new Color(Color.rgba8888(.10f, .10f, .10f, 1.0f)),-95);
-        dl.setSoftnessLength(50f);
+//        DirectionalLight dl = new DirectionalLight(rayHandler,1000,
+//                new Color(Color.rgba8888(.10f, .10f, .10f, 1.0f)),-95);
+//        dl.setSoftnessLength(50f);
         debugRenderer = new Box2DDebugRenderer();
 
     }
@@ -89,17 +95,30 @@ public class WorldManager {
         return hitFlag;
     }
 
-    public boolean removeVoxelScreenPosition(float x, float y){
+    public void removeVoxelScreenPosition(float x, float y){
+//        boolean hitFlag = false;
+        removalQueue.add(screenToWorldCoords(new Vector2(x,y)));
+//        return hitFlag;
+    }
+
+    public boolean addVoxelWorldPosition(float x, float y, String block){
         boolean hitFlag = false;
-        HashSet<Grid> gridsClone = (HashSet<Grid>) grids.clone();
-        for(Grid g : gridsClone){
-            if(g.removeVoxelScreenPos(new Vector2(x,y))){
+        for(Grid g : grids){
+            if(g.addVoxelWorldPos(Voxel.Build(block),new Vector2(x,y))){
                 hitFlag = true;
                 rethinkShape(g);
             }
         }
         return hitFlag;
     }
+
+    public void removeVoxelWorldPosition(float x, float y){
+//        boolean hitFlag = false;
+        removalQueue.add(new Vector2(x,y));
+//        return hitFlag;
+    }
+
+
 
     public void BuildWorldt(){
         if(worldStage == null) {
@@ -126,6 +145,7 @@ public class WorldManager {
         }
         worldStage.act(delta);
         doPhysicsStep(delta);
+        removeQueued();
         rayHandler.update();
         rayHandler.setCombinedMatrix((OrthographicCamera) worldStage.getCamera());
     }
@@ -152,6 +172,19 @@ public class WorldManager {
     }
     public void resize(int width, int height){
         worldStage.getViewport().update(width,height, true);
+    }
+    private void removeQueued(){
+        for (Vector2 wp : removalQueue){
+            HashSet<Grid> gridsClone = (HashSet<Grid>) grids.clone();
+            for(Grid g : gridsClone){
+                if(g.removeVoxelWorldPos(new Vector2(wp.x,wp.y))){
+                    rethinkShape(g);
+                }
+            }
+        }
+        removalQueue.clear();
+
+
     }
 
     private float accumulator = 0;
@@ -185,6 +218,7 @@ public class WorldManager {
             //todo make funciton in Grid to parse through voxels and create fixture
             //d.recalculateShape();
             d.myBody = worldPhysics.createBody(d.bodyDef);
+            d.myBody.setUserData(d);
             System.out.println(d.myBody);
             System.out.println(d.physicsShapes);
             d.recalculateShape();
@@ -208,6 +242,7 @@ public class WorldManager {
             //todo make funciton in Grid to parse through voxels and create fixture
             //d.recalculateShape();
             e.myBody = worldPhysics.createBody(e.bodyDef);
+            e.myBody.setUserData(e);
             e.CreateFixture();
             entities.add(e);
         }
@@ -232,7 +267,7 @@ public class WorldManager {
         int start = VoxelCollection.maxSize/2-size/2;
         int end = VoxelCollection.maxSize/2+size/2;
         VoxelCollection astVox = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX), new Vector2(posX,posY));
-        boolean[][] putBlocks = PCGManager.ins().generateBlandAsteroid(size);
+        boolean[][] putBlocks = PCGManager.ins().generateBetterAsteroid(size);
         for (int i = start; i < end; i++){
             for (int j = start; j < end; j++){
                 if(putBlocks[i-start][j-start])

@@ -90,6 +90,16 @@ public class VoxelCollection extends Group {
         int y = (int)position.y;
         return addVoxelIndex(v,x,y);
     }
+    public boolean addVoxelWorldPos(Voxel v, Vector2 worldPosition){
+//        System.out.println("Screen pos:" + screenPosition);
+//        Vector2 worldPosition = WorldManager.ins().screenToWorldCoords(screenPosition);
+//        System.out.println("World pos:" + worldPosition);
+        Vector2 position = mapWorldPointToIndexies(worldPosition);
+//        System.out.println("index pos:" + position);
+        int x = (int)position.x;
+        int y = (int)position.y;
+        return addVoxelIndex(v,x,y);
+    }
 
     /**
      * Add a voxel to this collection in index units
@@ -131,7 +141,14 @@ public class VoxelCollection extends Group {
         int x = (int)position.x;
         int y = (int)position.y;
         return removeVoxelIndex(x,y);
-
+    }
+    public boolean removeVoxelWorldPos(Vector2 worldPosition){
+//        System.out.println("remove screenpos @"+screenPosition);
+        Vector2 position = mapWorldPointToIndexies(worldPosition);
+//        System.out.println("remove indexpos @"+position);
+        int x = (int)position.x;
+        int y = (int)position.y;
+        return removeVoxelIndex(x,y);
     }
 
     /**

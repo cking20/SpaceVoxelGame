@@ -8,4 +8,5 @@ public class IDs {
     public static final String METAL_TEX = "metal";
     public static final String TECH_TEX = "tech";
     public static final String ROCK_TEX = "rock";
+    public static final String BASE_TEX = "base";
 }

@@ -54,7 +54,7 @@ public class DynamicGrid extends Grid{
             bodyDef.position.set(voxels.getX(),voxels.getY());
 
         } else {
-            System.err.println("default shape");
+            System.out.println("default shape");
 //            verts = new Vector2[4];
 //            verts[0] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
 //            verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);

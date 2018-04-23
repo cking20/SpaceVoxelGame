@@ -34,6 +34,7 @@ public class EntityBody  implements Controllable{
 
 // We set our body to dynamic, for something like ground which doesn't move we would set it to StaticBody
         bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.bullet = true;
         bodyDef.linearDamping = 1.5f;
         bodyDef.angularDamping = 5f;
 // Set our body's starting position in the world

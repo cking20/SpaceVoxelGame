@@ -150,6 +150,28 @@ public class Grid implements Controllable{
         return good;
     }
 
+    public boolean addVoxelWorldPos(Voxel v, Vector2 screenPosition){
+        boolean good = voxels.addVoxelWorldPos(v,screenPosition);
+        if(good) {
+            recalculateShape();
+//            MassData d = myBody.getMassData();
+//            d.mass += Constants.BLOCK_MASS;
+//            myBody.setMassData(d);
+        }
+        return good;
+    }
+
+    public boolean removeVoxelWorldPos(Vector2 screenPosition){
+        boolean good = voxels.removeVoxelWorldPos(screenPosition);
+        if(good) {
+            recalculateShape();
+//            MassData d = myBody.getMassData();
+//            d.mass -= Constants.BLOCK_MASS;
+//            myBody.setMassData(d);
+        }
+        return good;
+    }
+
     public void dispose(){
         for(PhysicsShape s : (HashSet<PhysicsShape>)physicsShapes.clone()){
             ResourceManager.ins().disposeOfShape(s.shape);

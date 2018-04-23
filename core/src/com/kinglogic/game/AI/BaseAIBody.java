@@ -8,6 +8,8 @@ import com.kinglogic.game.Interfaces.AI;
 import com.kinglogic.game.Interfaces.Controllable;
 import com.kinglogic.game.Physics.EntityBody;
 
+import java.util.ArrayList;
+
 /**
  * Created by chris on 4/17/2018.
  */
@@ -15,6 +17,7 @@ import com.kinglogic.game.Physics.EntityBody;
 public class BaseAIBody extends EntityBody implements AI {
     public BaseAIBody(String name, Vector2 position) {
         super(name, position);
+
     }
 
     @Override
