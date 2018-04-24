@@ -3,6 +3,7 @@ package com.kinglogic.game.Physics;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.kinglogic.game.Actors.Entities.Entity;
@@ -11,6 +12,7 @@ import com.kinglogic.game.Interfaces.Controllable;
 import com.kinglogic.game.Managers.CameraManager;
 import com.kinglogic.game.Managers.ResourceManager;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -22,10 +24,15 @@ public class EntityBody  implements Controllable{
     public Body myBody;
     //public ChainShape shape;
     public PhysicsShape physicsShape;
+    public PhysicsShape sight;
     public BodyDef bodyDef;
     private Controllable controlling;
 
+    public float viewDistance = 20f;
+    protected ArrayList<EntityBody> perceptions;
+
     public EntityBody(String name, Vector2 position){
+        perceptions = new ArrayList<EntityBody>();
         view = new Entity(name);
         bodyDef = new BodyDef();
         if(myBody != null){
@@ -34,7 +41,7 @@ public class EntityBody  implements Controllable{
 
 // We set our body to dynamic, for something like ground which doesn't move we would set it to StaticBody
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.bullet = true;
+//        bodyDef.bullet = true;
         bodyDef.linearDamping = 1.5f;
         bodyDef.angularDamping = 5f;
 // Set our body's starting position in the world
@@ -43,6 +50,25 @@ public class EntityBody  implements Controllable{
     public void CreateFixture(){
         if(myBody != null){
             physicsShape = new PhysicsShape(myBody, view);
+            Filter filter = new Filter();
+            filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET | FilterIDs.SENSOR;
+            filter.categoryBits = FilterIDs.ENTITY;
+            physicsShape.fixture.setFilterData(filter);
+            physicsShape.fixture.setUserData(this);
+        }
+    }
+
+    public void CreateSight(float radius){
+        if(myBody != null) {
+            sight = new PhysicsShape(myBody, view, radius);
+            sight.fixture.setDensity(0);
+            myBody.resetMassData();
+            Filter filter = new Filter();
+            filter.maskBits = FilterIDs.ENTITY;
+            filter.categoryBits = FilterIDs.SENSOR;
+            sight.fixture.setFilterData(filter);
+            sight.fixture.setSensor(true);
+            sight.fixture.setUserData(this);
         }
     }
 
@@ -51,6 +77,12 @@ public class EntityBody  implements Controllable{
         //voxels.rotateBy(10f);
         //System.out.println("rot="+myBody.getTransform().getRotation());
         view.setRotation((float) Math.toDegrees(myBody.getTransform().getRotation()));
+    }
+    public void enterSight(EntityBody seeing){
+        perceptions.add(seeing);
+    }
+    public void exitSight(EntityBody seeing){
+        perceptions.remove(seeing);
     }
 
     public void dispose(){

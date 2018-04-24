@@ -101,11 +101,11 @@ public class PCGManager {
                 asteroid[i][j] = (randomizer.nextFloat() < chanceToExist);
             }
         }
-        System.out.println(DebugGen(asteroid));
+//        System.out.println(DebugGen(asteroid));
 
         for (int i = 0; i < numSteps; i++) {
             asteroid = genStep(asteroid,starve,birthNum);
-            System.out.println(DebugGen(asteroid));
+//            System.out.println(DebugGen(asteroid));
         }
         return asteroid;
     }

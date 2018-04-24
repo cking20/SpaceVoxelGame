@@ -21,6 +21,7 @@ import com.kinglogic.game.SpaceGame;
 
 public class GameScreen implements Screen {
     SpaceGame theGame;
+    private float accumulator = 0f;
 //    Stage gui;
 //    private Viewport view;
 //    private OrthographicCamera viewCam;
@@ -55,11 +56,15 @@ public class GameScreen implements Screen {
         GUIManager.ins().render();
 //        gui.draw();
 
+
         //perform the actions of the actors
+
         GameManager.ins().Update(delta);
-        WorldManager.ins().update(delta);
         GUIManager.ins().update(delta);
+        WorldManager.ins().update(delta);
         CameraManager.ins().Update(delta);
+
+
 //        gui.act(delta);
 
 

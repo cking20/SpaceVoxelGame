@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
@@ -40,7 +41,13 @@ public class Grid implements Controllable{
         bodyDef = new BodyDef();
         physicsShapes = new HashSet<PhysicsShape>();
         if(myBody != null){
-            physicsShapes.add(new PhysicsShape(ResourceManager.ins().getNewChainShape(), myBody));
+            PhysicsShape s = new PhysicsShape(ResourceManager.ins().getNewChainShape(), myBody);
+            Filter filter = new Filter();
+            filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET;
+            filter.categoryBits = FilterIDs.GRID;
+            s.fixture.setFilterData(filter);
+            physicsShapes.add(s);
+//            physicsShapes.add(new PhysicsShape(ResourceManager.ins().getNewChainShape(), myBody));
         }
         //recalculateShape();
 
@@ -81,7 +88,12 @@ public class Grid implements Controllable{
                 for (Vector2[] chain : verts){
                     ChainShape stat = ResourceManager.ins().getNewChainShape();
                     stat.createChain(chain);
-                    physicsShapes.add(new PhysicsShape(stat, myBody));
+                    PhysicsShape s = new PhysicsShape(stat, myBody);
+                    Filter filter = new Filter();
+                    filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET;
+                    filter.categoryBits = FilterIDs.GRID;
+                    s.fixture.setFilterData(filter);
+                    physicsShapes.add(s);
                 }
 
 

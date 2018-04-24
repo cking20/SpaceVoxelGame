@@ -2,6 +2,7 @@ package com.kinglogic.game.Physics;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
@@ -48,13 +49,19 @@ public class DynamicGrid extends Grid{
                 vertPos[6] = v[i*4+3].x;
                 vertPos[7] = v[i*4+3].y;
                 temp.set(vertPos);
-                physicsShapes.add(new PhysicsShape(temp, myBody));
+                PhysicsShape s = new PhysicsShape(temp, myBody);
+                Filter filter = new Filter();
+                filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET;
+                filter.categoryBits = FilterIDs.GRID;
+                s.fixture.setFilterData(filter);
+                physicsShapes.add(s);
+//                physicsShapes.add(new PhysicsShape(temp, myBody));
             }
 
             bodyDef.position.set(voxels.getX(),voxels.getY());
 
         } else {
-            System.out.println("default shape");
+//            System.out.println("default shape");
 //            verts = new Vector2[4];
 //            verts[0] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
 //            verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);

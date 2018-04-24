@@ -31,15 +31,17 @@ public class TestInputProcessor implements InputProcessor {
     public EntityBody player;
     public BaseAIBody enemy;
     public TestInputProcessor(){
-        player = new EntityBody("player", new Vector2(450,300));
+        player = new EntityBody("player", new Vector2(800,400));
         WorldManager.ins().addEntityToWorld(player);
         WorldManager.ins().ApplyLightToBody(player.myBody);
         CameraManager.ins().Track(player.view);
-        enemy = new DestructoEnemy("Yellowparasite", new Vector2(800,300));
-        WorldManager.ins().addEntityToWorld(enemy);
+        for (int i = 0; i < 20; i++) {
+            enemy = new DestructoEnemy("Yellowparasite", new Vector2(400,300));
+            WorldManager.ins().addEntityToWorld(enemy);
+        }
         stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);
-        WorldManager.ins().GenerateAsteroid(100,100, 50);
+        WorldManager.ins().GenerateAsteroid(600,100, 50);
         VoxelCollection vc = new VoxelCollection(Voxel.Build(blockName),new Vector2(200,300));
         dyn = new DynamicGrid(vc);
 
@@ -57,13 +59,14 @@ public class TestInputProcessor implements InputProcessor {
             }
             public boolean axisMoved (Controller controller, int axisCode, float value){
 //                System.out.println("code: "+axisCode+" value:"+value);
+                /*
                 if(axisCode == 4){
                     if(value > 0){
                         player.RotateLeft();
                     }else {
                         player.RotateRight();
                     }
-                }
+                }*/
                 return true;
             }
 //            public boolean povMoved (Controller controller, int povCode, PovDirection value);
@@ -103,6 +106,12 @@ public class TestInputProcessor implements InputProcessor {
                 player.Exit();
             else
                 player.Enter(dyn);
+        }
+        else if(character == '-'){
+            CameraManager.ins().mainCamera.zoom-=.1;
+        }
+        else if(character == '='){
+            CameraManager.ins().mainCamera.zoom+=.1;
         }
 
         return false;

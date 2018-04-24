@@ -228,10 +228,10 @@ public class VoxelUtils {
 
 
             Vector2 firstPos = new Vector2(firstX*ResourceManager.voxelPixelSize, firstY*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
-            System.out.println("adding first position = "+firstPos);
+//            System.out.println("adding first position = "+firstPos);
 
             if(edgeslist.size() == 0){
-                System.out.println("edgesList of size 0");
+//                System.out.println("edgesList of size 0");
                 return null;
             }
             while (edgeslist.size() > 0) {
@@ -242,7 +242,7 @@ public class VoxelUtils {
                     firstPos = new Vector2(firstX * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, firstY * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
                     currentList = edgeslist.remove(firstPos);
                     if (currentList == null){//then its really northing there
-                        System.out.println("null currents list");
+//                        System.out.println("null currents list");
                         break;
                     }
                 }
@@ -284,6 +284,31 @@ public class VoxelUtils {
      * @return list of rectangles whos verts are at i*4+0, i*4+1, i*4+2, i*4+3
      */
     public static List<Vector2[]> LeastRects(Voxel[][] state){
+        //todo make this only use the largest possible rectangles not a rect per block
+        List<Vector2> verts = new ArrayList<Vector2>();
+        boolean foundOneFlag = false;
+        for(int i = 0; i < state.length; i++){
+            for(int j = 0; j < state[0].length; j++){
+                if(state[i][j] != null && state[i][j].properties.is(VoxelProperties.COLLIDABLE)){
+                    foundOneFlag = true;
+                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
+                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
+                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                }
+            }
+        }
+        if(foundOneFlag){
+            Vector2[] vs  = new Vector2[verts.size()];
+            vs = verts.toArray(vs);
+            List<Vector2[]> ret = new LinkedList<Vector2[]>();
+            ret.add(vs);
+            return ret;
+        }
+        else return null;
+    }
+
+    public static List<Vector2[]> LeastRects2(Voxel[][] state){
         //todo make this only use the largest possible rectangles not a rect per block
         List<Vector2> verts = new ArrayList<Vector2>();
         boolean foundOneFlag = false;

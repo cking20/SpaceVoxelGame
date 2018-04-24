@@ -2,6 +2,7 @@ package com.kinglogic.game.Managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -53,6 +54,9 @@ public class WorldManager {
 
     private Image background;
 
+    //debug
+    FPSLogger fapsLogger;
+
 
     public static WorldManager ins() {
         if(instance == null)
@@ -65,6 +69,7 @@ public class WorldManager {
         entities = new HashSet<EntityBody>();
         removalQueue = new ArrayList<Vector2>();
         addalQueue = new ArrayList<Vector2>();
+        fapsLogger = new FPSLogger();
         viewCam = CameraManager.ins().mainCamera;
         view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*ResourceManager.ins().calculateAspectRatio(), viewCam);
         view.apply();
@@ -151,6 +156,7 @@ public class WorldManager {
     }
 
     public void render(){
+        fapsLogger.log();
         background.setPosition(
                 CameraManager.ins().mainCamera.position.x-background.getWidth()*background.getScaleX()/2,
                 CameraManager.ins().mainCamera.position.y-background.getHeight()*background.getScaleY()/2);
@@ -161,11 +167,11 @@ public class WorldManager {
         CameraManager.ins().Update(0f);
 
         worldStage.draw();
-        worldStage.getBatch().begin();
-        for(EntityBody e : entities) {
-            e.view.draw(worldStage.getBatch(),1f);
-        }
-        worldStage.getBatch().end();
+//        worldStage.getBatch().begin();
+//        for(EntityBody e : entities) {
+//            e.view.draw(worldStage.getBatch(),1f);
+//        }
+//        worldStage.getBatch().end();
         rayHandler.render();
         if(debug)
             debugRenderer.render(worldPhysics, viewCam.combined);
@@ -219,8 +225,8 @@ public class WorldManager {
             //d.recalculateShape();
             d.myBody = worldPhysics.createBody(d.bodyDef);
             d.myBody.setUserData(d);
-            System.out.println(d.myBody);
-            System.out.println(d.physicsShapes);
+//            System.out.println(d.myBody);
+//            System.out.println(d.physicsShapes);
             d.recalculateShape();
             //d.fixture.add(d.myBody.createFixture(d.fixtureDef));
             grids.add(d);
@@ -239,11 +245,10 @@ public class WorldManager {
     public void addEntityToWorld(EntityBody e){
         if(!entities.contains(e)) {
             worldStage.addActor(e.view);
-            //todo make funciton in Grid to parse through voxels and create fixture
-            //d.recalculateShape();
             e.myBody = worldPhysics.createBody(e.bodyDef);
             e.myBody.setUserData(e);
             e.CreateFixture();
+            e.CreateSight(e.viewDistance);
             entities.add(e);
         }
     }
@@ -274,8 +279,9 @@ public class WorldManager {
                     astVox.hardAddVoxelIndex(Voxel.Build(IDs.ROCK_TEX),i,j);
             }
         }
-        StaticGrid astGrid = new StaticGrid(astVox);
+        DynamicGrid astGrid = new DynamicGrid(astVox);
         addGridToWorld(astGrid);
+//        astGrid.myBody.setTransform(posX,posY,0);
         astGrid.voxels.checkAllConnected();
         astGrid.recalculateShape();
     }

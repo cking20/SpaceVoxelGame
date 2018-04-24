@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.kinglogic.game.Interfaces.AI;
 import com.kinglogic.game.Interfaces.Controllable;
 import com.kinglogic.game.Physics.EntityBody;
+import com.kinglogic.game.Physics.PhysicsShape;
 
 import java.util.ArrayList;
 
@@ -15,8 +16,11 @@ import java.util.ArrayList;
  */
 
 public class BaseAIBody extends EntityBody implements AI {
+    public EntityBody targeting;
+
     public BaseAIBody(String name, Vector2 position) {
         super(name, position);
+        this.viewDistance = 200f;
 
     }
 
@@ -24,11 +28,32 @@ public class BaseAIBody extends EntityBody implements AI {
     public void Think(World perception) {
         Array<Body> pr = new Array<Body>();
         perception.getBodies(pr);
+        if(targeting != null)
+            AIUtils.Persue(this, targeting);
 
-        GoForeward();
-        RotateLeft();
+        //n^2 bad
+//        for (EntityBody e: perceptions) {
+//            AIUtils.Persue(this, e);
+//        }
+    }
+    @Override
+    public void CreateFixture(){
+        super.CreateFixture();
+        physicsShape.fixture.setFriction(0f);
 
-
+    }
+    @Override
+    public void enterSight(EntityBody seeing){
+        perceptions.add(seeing);
+        targeting = seeing;
+    }
+    @Override
+    public void exitSight(EntityBody seeing){
+        perceptions.remove(seeing);
+        if(!perceptions.isEmpty())
+            targeting = perceptions.get(0);
+        else
+            targeting = null;
     }
 
     @Override

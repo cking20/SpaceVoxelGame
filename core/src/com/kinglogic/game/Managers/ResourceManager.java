@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -48,6 +49,11 @@ public class ResourceManager {
         PolygonShape p = new PolygonShape();
         shapes.add(p);
         return p;
+    }
+    public CircleShape getNewCircleShape(){
+        CircleShape c = new CircleShape();
+        shapes.add(c);
+        return c;
     }
     public ChainShape getNewChainShape(){
         ChainShape s = new ChainShape();

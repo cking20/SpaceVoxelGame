@@ -40,7 +40,7 @@ public class GUIManager {
 
     public void update(float delta){
         Vector2 pos = screenToWorldCoords(targetPosition);
-        System.out.println(pos);
+//        System.out.println(pos);
 //        MoveToAction mta = new MoveToAction();
 //        mta.setPosition(pos.x, pos.y);
 //        mta.setDuration(0f);
