@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -22,6 +23,7 @@ import com.kinglogic.game.Constants;
 import com.kinglogic.game.Interfaces.AI;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.EntityBody;
+import com.kinglogic.game.Physics.FilterIDs;
 import com.kinglogic.game.Physics.Grid;
 import com.kinglogic.game.Physics.StaticGrid;
 import com.kinglogic.game.Physics.WorldContactListner;
@@ -38,7 +40,7 @@ import box2dLight.RayHandler;
  */
 
 public class WorldManager {
-    private static final boolean debug = false;
+    private static final boolean debug = Constants.DEBUG;
     private static WorldManager instance;
     private Stage worldStage;
     private World worldPhysics;
@@ -75,16 +77,20 @@ public class WorldManager {
         view.apply();
         BuildWorldt();
         if(debug) {
-            worldStage.setDebugAll(true);
-            worldStage.setDebugInvisible(false);
+//            worldStage.setDebugAll(true);
+//            worldStage.setDebugInvisible(false);
+            worldStage.setDebugUnderMouse(true);
         }
         worldPhysics.setContactListener(new WorldContactListner());
         rayHandler = new RayHandler(worldPhysics);
-        rayHandler.setAmbientLight(.8f);//.6f);
+        rayHandler.setAmbientLight(.1f);//.8f);
         rayHandler.setShadows(true);
-//        DirectionalLight dl = new DirectionalLight(rayHandler,1000,
-//                new Color(Color.rgba8888(.10f, .10f, .10f, 1.0f)),-95);
-//        dl.setSoftnessLength(50f);
+        DirectionalLight dl = new DirectionalLight(rayHandler,1000,
+                new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),-90);
+        dl.setSoftnessLength(50f);
+        Filter dlF = new Filter();
+        dlF.maskBits = FilterIDs.GRID;
+        dl.setContactFilter(dlF);
         debugRenderer = new Box2DDebugRenderer();
 
     }
@@ -156,7 +162,7 @@ public class WorldManager {
     }
 
     public void render(){
-        fapsLogger.log();
+        background.setScale(4f*CameraManager.ins().mainCamera.zoom);
         background.setPosition(
                 CameraManager.ins().mainCamera.position.x-background.getWidth()*background.getScaleX()/2,
                 CameraManager.ins().mainCamera.position.y-background.getHeight()*background.getScaleY()/2);
@@ -173,8 +179,10 @@ public class WorldManager {
 //        }
 //        worldStage.getBatch().end();
         rayHandler.render();
-        if(debug)
+        if(debug) {
             debugRenderer.render(worldPhysics, viewCam.combined);
+            fapsLogger.log();
+        }
     }
     public void resize(int width, int height){
         worldStage.getViewport().update(width,height, true);
@@ -287,8 +295,11 @@ public class WorldManager {
     }
 
     public void ApplyLightToBody(Body b){
-        PointLight pl = new PointLight(rayHandler,60, new Color(Color.rgba8888(.10f, .10f, .10f, 1.0f)),
+        Filter f = new Filter();
+        f.maskBits = FilterIDs.GRID;
+        PointLight pl = new PointLight(rayHandler,60, new Color(Color.rgba8888(.20f, .40f, .10f, 1.0f)),
                 ResourceManager.voxelPixelSize*20, 0,0);
+        pl.setContactFilter(f);
         pl.attachToBody(b,8f,8f);
         pl.setSoftnessLength(50f);
     }

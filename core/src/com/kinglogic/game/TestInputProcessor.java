@@ -15,10 +15,13 @@ import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Managers.CameraManager;
 import com.kinglogic.game.Managers.IDs;
+import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
+import com.kinglogic.game.Physics.Projectile;
+import com.kinglogic.game.Player.PlayerBody;
 
 /**
  * Created by chris on 4/1/2018.
@@ -31,11 +34,11 @@ public class TestInputProcessor implements InputProcessor {
     public EntityBody player;
     public BaseAIBody enemy;
     public TestInputProcessor(){
-        player = new EntityBody("player", new Vector2(800,400));
+        player = new PlayerBody("player", new Vector2(800,400));
         WorldManager.ins().addEntityToWorld(player);
         WorldManager.ins().ApplyLightToBody(player.myBody);
         CameraManager.ins().Track(player.view);
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 40; i++) {
             enemy = new DestructoEnemy("Yellowparasite", new Vector2(400,300));
             WorldManager.ins().addEntityToWorld(enemy);
         }
@@ -112,6 +115,9 @@ public class TestInputProcessor implements InputProcessor {
         }
         else if(character == '='){
             CameraManager.ins().mainCamera.zoom+=.1;
+        }
+        else if(character == '0'){
+            player.FireMain();
         }
 
         return false;

@@ -26,9 +26,10 @@ public class EntityBody  implements Controllable{
     public PhysicsShape physicsShape;
     public PhysicsShape sight;
     public BodyDef bodyDef;
-    private Controllable controlling;
+    protected Controllable controlling;
 
     public float viewDistance = 20f;
+    public float speed = 1000f;
     protected ArrayList<EntityBody> perceptions;
 
     public EntityBody(String name, Vector2 position){
@@ -96,7 +97,7 @@ public class EntityBody  implements Controllable{
         if(controlling != null)
             controlling.GoForeward();
         else
-        myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(1000f*myBody.getMass()),true);
+        myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(speed*myBody.getMass()),true);
     }
 
     @Override
@@ -104,7 +105,7 @@ public class EntityBody  implements Controllable{
         if(controlling != null)
             controlling.GoBackward();
         else
-        myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(-1000f/4f*myBody.getMass()),true);
+        myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(-speed/4f*myBody.getMass()),true);
     }
 
     @Override
@@ -112,7 +113,7 @@ public class EntityBody  implements Controllable{
         if(controlling != null)
             controlling.GoLeft();
         else
-        myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(-1000f/2f*myBody.getMass()),true);
+        myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(-speed/2f*myBody.getMass()),true);
     }
 
     @Override
@@ -120,7 +121,7 @@ public class EntityBody  implements Controllable{
         if(controlling != null)
             controlling.GoRight();
         else
-            myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(1000f/2f*myBody.getMass()),true);
+            myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(speed/2f*myBody.getMass()),true);
     }
 
     @Override

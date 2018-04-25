@@ -3,12 +3,14 @@ package com.kinglogic.game.Managers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.kinglogic.game.Physics.Projectile;
 
 import java.util.ArrayList;
 
@@ -24,7 +26,7 @@ public class ResourceManager {
     private final TextureAtlas voxelAtlas;
     private final TextureAtlas spriteAtlas;
     private ArrayList<Shape> shapes;
-
+//    private Projectile[] projecttilePool;
     public Texture nebula;
 
 
@@ -36,6 +38,7 @@ public class ResourceManager {
 
     private ResourceManager(){
         shapes = new ArrayList<Shape>();
+//        projecttilePool = new Projectile[50];
         ui = new Skin(Gdx.files.internal("skin/skin.json"));
 //            ui.getFont("font").getData().
         ui.getFont("font").setUseIntegerPositions(false);
@@ -50,6 +53,9 @@ public class ResourceManager {
         shapes.add(p);
         return p;
     }
+//    public Projectile Fire(Vector2 position, Vector2 velocity){
+//
+//    }
     public CircleShape getNewCircleShape(){
         CircleShape c = new CircleShape();
         shapes.add(c);

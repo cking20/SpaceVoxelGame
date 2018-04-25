@@ -28,13 +28,7 @@ public class BaseAIBody extends EntityBody implements AI {
     public void Think(World perception) {
         Array<Body> pr = new Array<Body>();
         perception.getBodies(pr);
-        if(targeting != null)
-            AIUtils.Persue(this, targeting);
 
-        //n^2 bad
-//        for (EntityBody e: perceptions) {
-//            AIUtils.Persue(this, e);
-//        }
     }
     @Override
     public void CreateFixture(){

@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 public class DestructoEnemy extends Enemy {
     public DestructoEnemy(String name, Vector2 position) {
         super(name, position);
+        this.speed = 20f;
     }
 
     @Override
@@ -19,6 +20,14 @@ public class DestructoEnemy extends Enemy {
 
     @Override
     public String Speak(){
-        return "im a destructo addy!";
+        return "im a destructo Baddy!";
+    }
+    @Override
+    public void GoForeward() {
+        if(this.controlling != null)
+            controlling.GoForeward();
+        else{
+            myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(speed*myBody.getMass()),true);
+        }
     }
 }

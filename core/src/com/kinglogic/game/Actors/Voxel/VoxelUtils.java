@@ -308,19 +308,38 @@ public class VoxelUtils {
         else return null;
     }
 
-    public static List<Vector2[]> LeastRects2(Voxel[][] state){
-        //todo make this only use the largest possible rectangles not a rect per block
+    public static List<Vector2[]> LeastRectsByCol(Voxel[][] state){
+        int startPos = 0;
+        int endPos = 0;
+        boolean drawing = false;
         List<Vector2> verts = new ArrayList<Vector2>();
         boolean foundOneFlag = false;
         for(int i = 0; i < state.length; i++){
             for(int j = 0; j < state[0].length; j++){
                 if(state[i][j] != null && state[i][j].properties.is(VoxelProperties.COLLIDABLE)){
                     foundOneFlag = true;
-                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
-                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
-                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
-                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                    if(!drawing){
+                        drawing = !drawing;
+                        startPos = j;
+                    }
+                }else{
+                    if(drawing){
+                        drawing = !drawing;
+                        endPos = j-1;
+                        verts.add(new Vector2(i*ResourceManager.voxelPixelSize, endPos*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                        verts.add(new Vector2(i*ResourceManager.voxelPixelSize, startPos*ResourceManager.voxelPixelSize));
+                        verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, startPos*ResourceManager.voxelPixelSize));
+                        verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, endPos*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                    }
                 }
+            }
+            if(drawing){
+                drawing = !drawing;
+                endPos = state[0].length-1;
+                verts.add(new Vector2(i*ResourceManager.voxelPixelSize, endPos*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                verts.add(new Vector2(i*ResourceManager.voxelPixelSize, startPos*ResourceManager.voxelPixelSize));
+                verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, startPos*ResourceManager.voxelPixelSize));
+                verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, endPos*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
             }
         }
         if(foundOneFlag){

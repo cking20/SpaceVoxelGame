@@ -1,9 +1,7 @@
 package com.kinglogic.game.Physics;
 
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.VoxelUtils;
@@ -88,7 +86,7 @@ public class DynamicGrid extends Grid{
     @Override
     public List<Vector2[]> recalculateVerts(){
         //todo new voxel utils function
-        List<Vector2[]> verticies = VoxelUtils.LeastRects(voxels.getGrid());
+        List<Vector2[]> verticies = VoxelUtils.LeastRectsByCol(voxels.getGrid());
         if(verticies != null) {
 //            Vector2[] ret = new Vector2[verticies.size()];
             verts = verticies;//.toArray(ret);

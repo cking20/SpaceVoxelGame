@@ -3,6 +3,7 @@ package com.kinglogic.game.AI;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.kinglogic.game.Actors.Entities.Entity;
+import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Physics.EntityBody;
 
 /**
@@ -10,6 +11,17 @@ import com.kinglogic.game.Physics.EntityBody;
  */
 
 public class AIUtils {
+    public static void Swarm(EntityBody me, EntityBody leader){
+        Vector2 currVelocity =leader.myBody.getLinearVelocity();
+        Vector2 future = leader.myBody.getPosition();
+        Vector2 distance = me.myBody.getPosition();
+        distance = distance.sub(leader.myBody.getPosition());
+        if(distance.len() > ResourceManager.voxelPixelSize){
+            future = future.add(currVelocity);
+            Seek(me, future);
+        }
+
+    }
     public static void Persue(EntityBody me, EntityBody target){
         //Assuming the max velocity is 180ish
         //make prediction with a time heuristic(will be finniky)

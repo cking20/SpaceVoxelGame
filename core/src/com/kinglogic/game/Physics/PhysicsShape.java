@@ -63,4 +63,16 @@ public class PhysicsShape {
         fixture = b.createFixture(fixtureDef);
 
     }
+    public PhysicsShape(Body b, float height, float width, Vector2 center, float rotation){
+        PolygonShape ps = ResourceManager.ins().getNewPolyShape();
+        ps.setAsBox(height,width, center, rotation);
+        shape = ps;
+        fixtureDef = new FixtureDef();
+        fixtureDef.density = 0.5f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+        fixtureDef.shape = shape;
+        fixture = b.createFixture(fixtureDef);
+
+    }
 }

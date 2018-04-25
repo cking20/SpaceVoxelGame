@@ -1,20 +1,27 @@
 
 spriteAtlas.png
-size: 32,64
+size: 128,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 Yellowparasite
   rotate: false
-  xy: 2, 2
+  xy: 44, 31
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 2, 24
-  size: 16, 32
-  orig: 16, 32
+  xy: 2, 11
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+projectile
+  rotate: false
+  xy: 2, 2
+  size: 19, 7
+  orig: 19, 7
   offset: 0, 0
   index: -1

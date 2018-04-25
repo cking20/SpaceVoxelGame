@@ -28,6 +28,7 @@ public class GameManager {
         ResourceManager.ins();
         WorldManager.ins();
         GUIManager.ins();
+        SoundManager.ins();
         tip = new TestInputProcessor();
         Gdx.input.setInputProcessor(tip);
         mousePos = new Vector2(0,0);
@@ -62,8 +63,6 @@ public class GameManager {
             tip.player.RotateRight();
 //            tip.dyn.myBody.applyTorque(-1000f*tip.dyn.myBody.getMass(),true);
         }
-
-
 
 
 
@@ -107,6 +106,7 @@ public class GameManager {
         ResourceManager.ins().dispose();
         WorldManager.ins().dispose();
         GUIManager.ins().dispose();
+        SoundManager.ins().dispose();
     }
 
 }
