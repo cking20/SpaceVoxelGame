@@ -16,7 +16,12 @@ public class InventoryActor extends Group {
 
     public InventoryActor(ArrayList<Voxel> voxels){
         myTable = new Table();
+
         for (int i = 0; i < voxels.size(); i++) {
+            for (int j = 0; j < rowLen; j++) {
+                myTable.addActor(voxels.get(i));
+            }
+            myTable.row();
 
         }
 

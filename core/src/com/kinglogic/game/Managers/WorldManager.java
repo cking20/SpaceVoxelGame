@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -43,6 +44,8 @@ public class WorldManager {
     private static final boolean debug = Constants.DEBUG;
     private static WorldManager instance;
     private Stage worldStage;
+    private Group gridsGroup;
+    private Group entityGroup;
     private World worldPhysics;
     private RayHandler rayHandler;
     private Viewport view;
@@ -83,11 +86,11 @@ public class WorldManager {
         }
         worldPhysics.setContactListener(new WorldContactListner());
         rayHandler = new RayHandler(worldPhysics);
-        rayHandler.setAmbientLight(.1f);//.8f);
+        rayHandler.setAmbientLight(.0f);//.8f);
         rayHandler.setShadows(true);
-        DirectionalLight dl = new DirectionalLight(rayHandler,1000,
-                new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),-90);
-        dl.setSoftnessLength(50f);
+        DirectionalLight dl = new DirectionalLight(rayHandler,100,
+                new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),-91);
+        dl.setSoftnessLength(300f);
         Filter dlF = new Filter();
         dlF.maskBits = FilterIDs.GRID;
         dl.setContactFilter(dlF);
@@ -134,10 +137,14 @@ public class WorldManager {
     public void BuildWorldt(){
         if(worldStage == null) {
             worldStage = new Stage(view);
+            gridsGroup = new Group();
+            entityGroup = new Group();
             background = new Image(ResourceManager.ins().nebula);
             background.scaleBy(1.5f,1.5f);
             background.moveBy(-background.getWidth()/2, -background.getHeight()/2);
             worldStage.addActor(background);
+            worldStage.addActor(gridsGroup);
+            worldStage.addActor(entityGroup);
         }
         if(worldPhysics == null){
             worldPhysics = new World(new Vector2(0,0), true);
@@ -158,7 +165,7 @@ public class WorldManager {
         doPhysicsStep(delta);
         removeQueued();
         rayHandler.update();
-        rayHandler.setCombinedMatrix((OrthographicCamera) worldStage.getCamera());
+        rayHandler.setCombinedMatrix(CameraManager.ins().mainCamera);//worldStage.getCamera());
     }
 
     public void render(){
@@ -228,7 +235,7 @@ public class WorldManager {
 
     public void addGridToWorld(Grid d){
         if(!grids.contains(d)) {
-            worldStage.addActor(d.voxels);
+            gridsGroup.addActor(d.voxels);
             //todo make funciton in Grid to parse through voxels and create fixture
             //d.recalculateShape();
             d.myBody = worldPhysics.createBody(d.bodyDef);
@@ -252,7 +259,7 @@ public class WorldManager {
 
     public void addEntityToWorld(EntityBody e){
         if(!entities.contains(e)) {
-            worldStage.addActor(e.view);
+            entityGroup.addActor(e.view);
             e.myBody = worldPhysics.createBody(e.bodyDef);
             e.myBody.setUserData(e);
             e.CreateFixture();
@@ -297,11 +304,11 @@ public class WorldManager {
     public void ApplyLightToBody(Body b){
         Filter f = new Filter();
         f.maskBits = FilterIDs.GRID;
-        PointLight pl = new PointLight(rayHandler,60, new Color(Color.rgba8888(.20f, .40f, .10f, 1.0f)),
-                ResourceManager.voxelPixelSize*20, 0,0);
+        PointLight pl = new PointLight(rayHandler,60, new Color(Color.rgba8888(.40f, .40f, .20f, 1.0f)),
+                ResourceManager.voxelPixelSize*40, 0,0);
         pl.setContactFilter(f);
         pl.attachToBody(b,8f,8f);
-        pl.setSoftnessLength(50f);
+        pl.setSoftnessLength(100f);
     }
 
 }

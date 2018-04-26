@@ -12,7 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kinglogic.game.Physics.Projectile;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Queue;
 
 /**
  * Created by chris on 4/1/2018.
@@ -26,7 +28,7 @@ public class ResourceManager {
     private final TextureAtlas voxelAtlas;
     private final TextureAtlas spriteAtlas;
     private ArrayList<Shape> shapes;
-//    private Projectile[] projecttilePool;
+    private Queue<Projectile> projecttilePool;
     public Texture nebula;
 
 
@@ -38,6 +40,7 @@ public class ResourceManager {
 
     private ResourceManager(){
         shapes = new ArrayList<Shape>();
+        projecttilePool = new ArrayDeque<Projectile>();
 //        projecttilePool = new Projectile[50];
         ui = new Skin(Gdx.files.internal("skin/skin.json"));
 //            ui.getFont("font").getData().
@@ -69,6 +72,22 @@ public class ResourceManager {
     public void disposeOfShape(Shape s){
         shapes.remove(s);
         s.dispose();
+    }
+    public Projectile getProjectile(String texName, Vector2 position){
+        Projectile p;
+        if(projecttilePool.size() < 50){
+            p = new Projectile(texName, position);
+            projecttilePool.add(p);
+            WorldManager.ins().addEntityToWorld(p);
+        }else {
+            p = projecttilePool.poll();
+            WorldManager.ins().removeEntityFromWorld(p);
+            p = new Projectile(texName, position);
+            projecttilePool.add(p);
+            WorldManager.ins().addEntityToWorld(p);
+        }
+//        p.myBody.setTransform(position.x, position.y, 0);
+        return p;
     }
 
     public void dispose(){

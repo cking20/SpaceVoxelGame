@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 public class DestructoEnemy extends Enemy {
     public DestructoEnemy(String name, Vector2 position) {
         super(name, position);
-        this.speed = 20f;
+        this.speed = 200f;
     }
 
     @Override

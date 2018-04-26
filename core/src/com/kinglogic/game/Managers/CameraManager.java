@@ -55,7 +55,12 @@ public class CameraManager {
                 mainCamera.translate(rotTrans);
                 mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);
             }else {
-                mainCamera.translate(new Vector2(toTrack.getX(), toTrack.getY()));//best so far
+                Vector2 center = new Vector2(toTrack.getX(), toTrack.getY());
+                if(toTrack.getScaleX() > 0)
+                    center.add(new Vector2(toTrack.getWidth()/2, toTrack.getHeight()/2).rotate(toTrack.getRotation()));
+                else
+                    center.add(new Vector2(-toTrack.getWidth()/2, toTrack.getHeight()/2).rotate(toTrack.getRotation()));
+                mainCamera.translate(center);//best so far
                 mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);
             }
         }

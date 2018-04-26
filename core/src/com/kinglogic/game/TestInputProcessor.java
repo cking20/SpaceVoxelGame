@@ -31,10 +31,10 @@ public class TestInputProcessor implements InputProcessor {
     public String blockName = IDs.METAL_TEX;
     public Grid dyn;
     public Grid stc;
-    public EntityBody player;
+    public PlayerBody player;
     public BaseAIBody enemy;
     public TestInputProcessor(){
-        player = new PlayerBody("player", new Vector2(800,400));
+        player = new PlayerBody("player", new Vector2(800,500));
         WorldManager.ins().addEntityToWorld(player);
         WorldManager.ins().ApplyLightToBody(player.myBody);
         CameraManager.ins().Track(player.view);
@@ -44,8 +44,10 @@ public class TestInputProcessor implements InputProcessor {
         }
         stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);
-        WorldManager.ins().GenerateAsteroid(600,100, 50);
-        VoxelCollection vc = new VoxelCollection(Voxel.Build(blockName),new Vector2(200,300));
+        for (int i = 0; i < 10; i++) {
+            WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),100, 50);
+        }
+        VoxelCollection vc = new VoxelCollection(Voxel.Build(blockName),new Vector2(800,550));
         dyn = new DynamicGrid(vc);
 
         WorldManager.ins().addGridToWorld(dyn);
@@ -110,15 +112,7 @@ public class TestInputProcessor implements InputProcessor {
             else
                 player.Enter(dyn);
         }
-        else if(character == '-'){
-            CameraManager.ins().mainCamera.zoom-=.1;
-        }
-        else if(character == '='){
-            CameraManager.ins().mainCamera.zoom+=.1;
-        }
-        else if(character == '0'){
-            player.FireMain();
-        }
+
 
         return false;
     }

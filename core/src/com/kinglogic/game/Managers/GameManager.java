@@ -50,10 +50,12 @@ public class GameManager {
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
 //            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().rotate90(1).scl(1000f*tip.dyn.myBody.getMass()),true);
             tip.player.GoLeft();
+            tip.player.TurnLeft();
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
 //            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().rotate90(1).scl(1000f*tip.dyn.myBody.getMass()),true);
             tip.player.GoRight();
+            tip.player.TurnRight();
         }
         if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
             tip.player.RotateLeft();
@@ -63,12 +65,22 @@ public class GameManager {
             tip.player.RotateRight();
 //            tip.dyn.myBody.applyTorque(-1000f*tip.dyn.myBody.getMass(),true);
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.MINUS)){
+            CameraManager.ins().mainCamera.zoom-=.01;
+        }
+        else if(Gdx.input.isKeyPressed(Input.Keys.EQUALS)){
+            CameraManager.ins().mainCamera.zoom+=.01;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.NUM_0)){
+            tip.player.FireMain();
+        }
 
 
 
 
 
         if(Controllers.getControllers().size > 0) {
+            //axis
             if (Controllers.getControllers().get(0).getAxis(4) > .5) {
                 tip.player.RotateLeft();
             } else if (Controllers.getControllers().get(0).getAxis(4) < -.5) {
@@ -81,9 +93,22 @@ public class GameManager {
             }
             if (Controllers.getControllers().get(0).getAxis(1) < -.5) {
                 tip.player.GoLeft();
+                tip.player.TurnLeft();
             } else if (Controllers.getControllers().get(0).getAxis(1) > .5) {
                 tip.player.GoRight();
+                tip.player.TurnRight();
             }
+            //buttons
+            if (Controllers.getControllers().get(0).getButton(2)) {
+                tip.player.FireMain();
+            }
+            if (Controllers.getControllers().get(0).getButton(9)) {
+                CameraManager.ins().mainCamera.zoom-=.01;
+            }
+            if (Controllers.getControllers().get(0).getButton(8)) {
+                CameraManager.ins().mainCamera.zoom+=.01;
+            }
+
             //cursor
             if (Controllers.getControllers().get(0).getAxis(3) < -.5) {
                 mousePos.x += delta;
