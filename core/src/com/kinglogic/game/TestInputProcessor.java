@@ -16,6 +16,7 @@ import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Managers.CameraManager;
 import com.kinglogic.game.Managers.GUIManager;
 import com.kinglogic.game.Managers.IDs;
+import com.kinglogic.game.Managers.PCGManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.DynamicGrid;
@@ -45,17 +46,29 @@ public class TestInputProcessor implements InputProcessor {
         }
         stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
         WorldManager.ins().addGridToWorld(stc);
-        for (int i = 0; i < 10; i++) {
-            WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),100, 50);
+
+        ////
+        boolean[][] seededMap = PCGManager.ins().generateBetterAsteroid(6, .8f);
+        float[][] densities = PCGManager.ins().genDensityMap(seededMap, .1f, .5f);
+        for (int i = 0; i < densities.length; i++) {
+            for (int j = 0; j < densities[0].length; j++) {
+                WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),(j*ResourceManager.voxelPixelSize*50)-(3*ResourceManager.voxelPixelSize*50), 50, densities[i][j]);
+            }
         }
+
+        ////
+//        for (int i = 0; i < 10; i++) {
+//            WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),100, 50, (float)i/20f+.1f);
+//        }
+
         VoxelCollection vc = new VoxelCollection(Voxel.Build(blockName),new Vector2(800,550));
         dyn = new DynamicGrid(vc);
 
         WorldManager.ins().addGridToWorld(dyn);
     }
+
     @Override
     public boolean keyDown(int keycode) {
-
         return false;
     }
 

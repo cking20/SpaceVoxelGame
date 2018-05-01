@@ -13,7 +13,7 @@ import com.kinglogic.game.Managers.ResourceManager;
 public class Voxel extends Image {
     public VoxelProperties properties;
 
-    private Voxel(String name){
+    public Voxel(String name){
         super(ResourceManager.ins().getVoxTex(name));
         properties = new VoxelProperties();
         properties.setProperty(true,VoxelProperties.COLLIDABLE);

@@ -87,9 +87,9 @@ public class PCGManager {
 
     }
 
-    public boolean[][] generateBetterAsteroid(int size){
+    public boolean[][] generateBetterAsteroid(int size, float density){
         boolean[][] asteroid = new boolean[size][size];
-        float chanceToExist = .3f;//anywhere from .4(lots of systems, to .6 just a few pockets)
+        float chanceToExist = density;//anywhere from .4(lots of systems, to .6 just a few pockets)
         int starve = 3;
 //        int overpop = 4;
         int birthNum = 4;
@@ -108,6 +108,18 @@ public class PCGManager {
 //            System.out.println(DebugGen(asteroid));
         }
         return asteroid;
+    }
+    public float[][] genDensityMap(boolean[][] state, float min, float max){
+        float[][] density = new float[state.length][state[0].length];
+        float delta = (max-min)/8f;
+        for (int i = 0; i < state.length; i++) {
+            for (int j = 0; j < state.length; j++) {
+                int nghbrs = countNeighbors(i,j,state);
+                density[i][j] = min+(delta*nghbrs);
+
+            }
+        }
+        return density;
     }
 
     private boolean[][] genStep(boolean[][] state, int starve, int birthNum){

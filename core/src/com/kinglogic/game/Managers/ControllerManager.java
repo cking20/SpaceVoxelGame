@@ -21,6 +21,9 @@ public class ControllerManager {
     private Vector2 mousePos;
     private TestInputProcessor tip;
 
+    private String playersCurrentBlock = IDs.METAL_TEX;
+    private int currentBlockIndex = 0;
+
 
     public static ControllerManager ins(){
         if(instance == null)
@@ -113,10 +116,14 @@ public class ControllerManager {
                     System.out.println("up");
                 if(value == PovDirection.south)
                     System.out.println("down");
-                if(value == PovDirection.west)
-                    System.out.println("left");
-                if(value == PovDirection.east)
-                    System.out.println("right");
+                if(value == PovDirection.west) {
+                    PreviousBlock();
+                    GUIManager.ins().selectedBlockName = playersCurrentBlock;
+                }   //System.out.println("left");
+                if(value == PovDirection.east) {
+                    NextBlock();
+                    GUIManager.ins().selectedBlockName = playersCurrentBlock;
+                }    //System.out.println("right");
                 return false;
             }
 
@@ -180,14 +187,14 @@ public class ControllerManager {
 //            }
             if (Controllers.getControllers().get(0).getButton(9)) {
                 //ZOOM IN
-                CameraManager.ins().mainCamera.zoom-=.01;
+                CameraManager.ins().mainCamera.zoom-=.05;
             }
             if (Controllers.getControllers().get(0).getButton(8)) {
                 //ZOOM OUT
-                CameraManager.ins().mainCamera.zoom+=.01;
+                CameraManager.ins().mainCamera.zoom+=.05;
             }
             if (Controllers.getControllers().get(0).getButton(4)) {
-                WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, tip.blockName);
+                WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName);
             }
             if (Controllers.getControllers().get(0).getButton(5)) {
                 WorldManager.ins().removeVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
@@ -215,10 +222,10 @@ public class ControllerManager {
                 tip.player.RotateRight();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.MINUS)){
-                CameraManager.ins().mainCamera.zoom-=.01;
+                CameraManager.ins().mainCamera.zoom-=.05;
             }
             else if(Gdx.input.isKeyPressed(Input.Keys.EQUALS)){
-                CameraManager.ins().mainCamera.zoom+=.01;
+                CameraManager.ins().mainCamera.zoom+=.05;
             }
             if(Gdx.input.isKeyPressed(Input.Keys.NUM_0)){
                 tip.player.FireMain();
@@ -228,6 +235,20 @@ public class ControllerManager {
             GUIManager.ins().targetPosition = mousePos;
         }
 
+    }
+
+    private void NextBlock(){
+        currentBlockIndex++;
+        currentBlockIndex = currentBlockIndex % IDs.ins().getNumBlockIds();
+        System.out.println(currentBlockIndex);
+        playersCurrentBlock = IDs.ins().getID(currentBlockIndex);
+    }
+    private void PreviousBlock(){
+        currentBlockIndex--;
+        if(currentBlockIndex < 0)
+            currentBlockIndex = IDs.ins().getNumBlockIds()-1;
+        System.out.println(currentBlockIndex);
+        playersCurrentBlock = IDs.ins().getID(currentBlockIndex);
     }
 
 

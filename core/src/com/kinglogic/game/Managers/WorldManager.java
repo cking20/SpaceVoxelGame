@@ -93,7 +93,7 @@ public class WorldManager {
         }
         worldPhysics.setContactListener(new WorldContactListner());
         rayHandler = new RayHandler(worldPhysics);
-        rayHandler.setAmbientLight(.0f);//.8f);
+        rayHandler.setAmbientLight(.8f);//.8f);
         rayHandler.setShadows(true);
         DirectionalLight dl = new DirectionalLight(rayHandler,100,
                 new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),-91);
@@ -171,9 +171,9 @@ public class WorldManager {
             if(e instanceof AI)
                 ((AI) e).Think(worldPhysics);
         }
+        removeQueued();
         worldStage.act(delta);
         doPhysicsStep(delta);
-        removeQueued();
         rayHandler.update();
         rayHandler.setCombinedMatrix(CameraManager.ins().mainCamera);//worldStage.getCamera());
     }
@@ -198,8 +198,8 @@ public class WorldManager {
         rayHandler.render();
         if(debug) {
             debugRenderer.render(worldPhysics, viewCam.combined);
-            fapsLogger.log();
         }
+        fapsLogger.log();
     }
     public void resize(int width, int height){
         worldStage.getViewport().update(width,height, true);
@@ -216,15 +216,20 @@ public class WorldManager {
         removalQueue.clear();
 
         for(EntityBody e : entityRemovalQueue){
+            //System.out.println("REMOVING " + e);
+            if(e == null) continue;
+            if(e.myBody == null) continue;
             entities.remove(e);
             entityGroup.removeActor(e.view);
             //worldStage.getActors().removeValue(e.view,true);
             if(e.myBody != null){
                 e.dispose();
                 worldPhysics.destroyBody(e.myBody);
+                e.myBody = null;
             }
         }
         entityRemovalQueue.clear();
+        //System.out.println("Done removing");
 
 
     }
@@ -321,11 +326,11 @@ public class WorldManager {
     }
 
 
-    public void GenerateAsteroid(int posX, int posY, int size){
+    public void GenerateAsteroid(int posX, int posY, int size, float density){
         int start = VoxelCollection.maxSize/2-size/2;
         int end = VoxelCollection.maxSize/2+size/2;
         VoxelCollection astVox = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX), new Vector2(posX,posY));
-        boolean[][] putBlocks = PCGManager.ins().generateBetterAsteroid(size);
+        boolean[][] putBlocks = PCGManager.ins().generateBetterAsteroid(size, density);
         for (int i = start; i < end; i++){
             for (int j = start; j < end; j++){
                 if(putBlocks[i-start][j-start])
