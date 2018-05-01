@@ -2,6 +2,8 @@ package com.kinglogic.game.Managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ChainShape;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import com.kinglogic.game.Physics.Projectile;
 
 import java.util.ArrayDeque;
@@ -29,6 +32,10 @@ public class ResourceManager {
     private final TextureAtlas spriteAtlas;
     private ArrayList<Shape> shapes;
     private Queue<Projectile> projecttilePool;
+    private TextureAtlas particleAtlas;
+    private ParticleEffectPool explosionPool;
+    private Array<ParticleEffectPool.PooledEffect> effects;
+    private ParticleEffect explosion;
     public Texture nebula;
 
 
@@ -41,6 +48,12 @@ public class ResourceManager {
     private ResourceManager(){
         shapes = new ArrayList<Shape>();
         projecttilePool = new ArrayDeque<Projectile>();
+        explosion = new ParticleEffect();
+        effects = new Array<ParticleEffectPool.PooledEffect>();
+        //explosion.lo
+        particleAtlas = new TextureAtlas(Gdx.files.internal("particles/particleAtlas.atlas"));
+        explosion.load(Gdx.files.internal("particles/Explosion"), particleAtlas, "whitelight");
+        explosionPool = new ParticleEffectPool(explosion, 1, 10);
 //        projecttilePool = new Projectile[50];
         ui = new Skin(Gdx.files.internal("skin/skin.json"));
 //            ui.getFont("font").getData().
@@ -51,6 +64,19 @@ public class ResourceManager {
         nebula = new Texture(Gdx.files.internal("images/nebula.png"));
 
     }
+    public void Update(float delta){
+        WorldManager.ins().getBatch().begin();
+        for (int i = effects.size - 1; i >= 0; i--) {
+            ParticleEffectPool.PooledEffect effect = effects.get(i);
+            effect.draw(WorldManager.ins().getBatch(), delta);
+            if (effect.isComplete()) {
+                effect.free();
+                effects.removeIndex(i);
+            }
+        }
+        WorldManager.ins().getBatch().end();
+    }
+
     public PolygonShape getNewPolyShape(){
         PolygonShape p = new PolygonShape();
         shapes.add(p);
@@ -89,14 +115,29 @@ public class ResourceManager {
 //        p.myBody.setTransform(position.x, position.y, 0);
         return p;
     }
+    public void disposeOfProjectile(Projectile p){
+        projecttilePool.remove(p);
+        WorldManager.ins().removeEntityFromWorld(p);
+    }
 
+    public void createExplosionEffect(Vector2 position){
+        ParticleEffectPool.PooledEffect p = explosionPool.obtain();
+        p.setPosition(position.x,position.y);
+        effects.add(p);
+    }
     public void dispose(){
         for(Shape s: shapes){
             s.dispose();
         }
+        for (int i = effects.size - 1; i >= 0; i--)
+            effects.get(i).free();
+        effects.clear();
+        explosionPool.clear();
+        explosion.dispose();
         ui.dispose();
         voxelAtlas.dispose();
         spriteAtlas.dispose();
+        particleAtlas.dispose();
         nebula.dispose();
 
     }

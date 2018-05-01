@@ -89,7 +89,7 @@ public class PCGManager {
 
     public boolean[][] generateBetterAsteroid(int size){
         boolean[][] asteroid = new boolean[size][size];
-        float chanceToExist = .45f;//anywhere from .4(lots of systems, to .6 just a few pockets)
+        float chanceToExist = .3f;//anywhere from .4(lots of systems, to .6 just a few pockets)
         int starve = 3;
 //        int overpop = 4;
         int birthNum = 4;

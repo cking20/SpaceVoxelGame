@@ -1,5 +1,6 @@
 package com.kinglogic.game.Player;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Filter;
@@ -15,6 +16,7 @@ import com.kinglogic.game.Physics.Projectile;
  */
 
 public class PlayerBody extends EntityBody {
+    public Vector2 buildPosition;
     PhysicsShape groundSensor;
     boolean mirrorView = false;
     boolean onGround = false;
@@ -23,6 +25,7 @@ public class PlayerBody extends EntityBody {
 
     public PlayerBody(String name, Vector2 position) {
         super(name, position);
+        buildPosition = new Vector2(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
     }
 
     @Override
@@ -66,7 +69,6 @@ public class PlayerBody extends EntityBody {
             groundSensor.fixture.setFilterData(filter);
             groundSensor.fixture.setSensor(true);
             groundSensor.fixture.setUserData("ground");
-
         }
 
     }
@@ -77,7 +79,7 @@ public class PlayerBody extends EntityBody {
         Projectile p;
         if(mirrorView)
             p = ResourceManager.ins().getProjectile("projectile",myBody.getPosition()
-                    .add(new Vector2(0,ResourceManager.voxelPixelSize*1.5f).rotate(view.getRotation()))
+                    .add(new Vector2(-ResourceManager.voxelPixelSize/2,ResourceManager.voxelPixelSize*1.5f).rotate(view.getRotation()))
                     .add(myBody.getTransform().getOrientation().scl(ResourceManager.voxelPixelSize)));
 //            p = new Projectile("projectile", myBody.getPosition()
 //                    .add(new Vector2(0,ResourceManager.voxelPixelSize*1.5f).rotate(view.getRotation()))
@@ -85,7 +87,7 @@ public class PlayerBody extends EntityBody {
 //            );
         else
             p = ResourceManager.ins().getProjectile("projectile",myBody.getPosition()
-                    .add(new Vector2(0,ResourceManager.voxelPixelSize).rotate(view.getRotation()))
+                    .add(new Vector2(ResourceManager.voxelPixelSize,ResourceManager.voxelPixelSize).rotate(view.getRotation()))
                     .add(myBody.getTransform().getOrientation().scl(ResourceManager.voxelPixelSize)));
 //            p = new Projectile("projectile", myBody.getPosition()
 //                    .add(new Vector2(0,ResourceManager.voxelPixelSize).rotate(view.getRotation()))
@@ -97,6 +99,9 @@ public class PlayerBody extends EntityBody {
             p.Fire(myBody.getTransform().getOrientation().scl(2000f));
     }
 
+    public Vector2 getBuildPosition(){
+        return buildPosition;
+    }
     public void SetTouchingGround(boolean t){
         onGround = t;
     }

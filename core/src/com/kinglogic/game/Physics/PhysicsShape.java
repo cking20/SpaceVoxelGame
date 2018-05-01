@@ -49,6 +49,21 @@ public class PhysicsShape {
 
     }
 
+    public PhysicsShape(Body b, Vector2 pos, float radius){
+        CircleShape c = ResourceManager.ins().getNewCircleShape();
+        c.setRadius(radius);
+        c.setPosition(pos);
+        shape = c;
+        shape.setRadius(radius);
+        fixtureDef = new FixtureDef();
+        fixtureDef.density = 5f;
+        fixtureDef.friction = 0.4f;
+        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+        fixtureDef.shape = shape;
+        fixture = b.createFixture(fixtureDef);
+
+    }
+
     public PhysicsShape(Body b, Entity view){
         PolygonShape ps = ResourceManager.ins().getNewPolyShape();
         ps.setAsBox(view.getWidth()/2-1f,view.getHeight()/2-1f, new Vector2(view.getWidth()/2, view.getHeight()/2),view.getRotation());

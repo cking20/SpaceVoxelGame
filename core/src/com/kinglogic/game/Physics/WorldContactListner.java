@@ -9,6 +9,8 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.kinglogic.game.AI.DestructoEnemy;
 import com.kinglogic.game.AI.Enemy;
+import com.kinglogic.game.Actors.Entities.Entity;
+import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Player.PlayerBody;
 
@@ -60,11 +62,19 @@ public class WorldContactListner implements ContactListener {
             }
 
             if(isDynGridHittingDynGrid(a,b)){
-                handleRemoveGridVoxel(a,b,contact.getWorldManifold());
+                handleGridhitGridCollision(a,b,contact.getWorldManifold());
                 return;
             }
             if(isDynGridHittingDynGrid(b,a)){
-                handleRemoveGridVoxel(b,a,contact.getWorldManifold());
+                handleGridhitGridCollision(b,a,contact.getWorldManifold());
+                return;
+            }
+            if(isBulltetHittingEntity(a,b)){
+                handleBulletEntityHit(a,b,contact.getWorldManifold());
+                return;
+            }
+            if(isBulltetHittingEntity(b,a)){
+                handleBulletEntityHit(b,a,contact.getWorldManifold());
                 return;
             }
 
@@ -110,6 +120,12 @@ public class WorldContactListner implements ContactListener {
     public void postSolve(Contact contact, ContactImpulse impulse) {
     }
 
+    private void handleBulletEntityHit(Fixture a, Fixture b, WorldManifold m){
+        WorldManager.ins().removeEntityFromWorld((Projectile)a.getBody().getUserData());
+        WorldManager.ins().removeEntityFromWorld((EntityBody) b.getBody().getUserData());
+        ResourceManager.ins().createExplosionEffect(m.getPoints()[0]);
+        System.out.println("HITTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+    }
     private void handleRemoveGridVoxel(Fixture a, Fixture b, WorldManifold m){
 //        System.out.println("handle that shit");
         Vector2[] points = m.getPoints();
@@ -119,8 +135,21 @@ public class WorldContactListner implements ContactListener {
         }
 
     }
+    private void handleGridhitGridCollision(Fixture a, Fixture b, WorldManifold m){
+        if(a.getBody().getLinearVelocity().len() < 10f &&  b.getBody().getLinearVelocity().len()< 10f) return;
+        Vector2[] points = m.getPoints();
+        for(Vector2 p : points){
+//            System.out.println(p);
+            WorldManager.ins().removeVoxelWorldPosition(p.x,p.y);
+        }
+
+    }
     private boolean isEnemyHittingEnemy(Fixture a, Fixture b){
         return a.getBody().getUserData() instanceof Enemy && b.getBody().getUserData() instanceof Enemy;
+    }
+
+    private boolean isBulltetHittingEntity(Fixture a, Fixture b){
+        return a.getUserData() instanceof Projectile && b.getUserData() instanceof EntityBody;
     }
 
     private boolean isGroundSensorHittingGround(Fixture a, Fixture b){

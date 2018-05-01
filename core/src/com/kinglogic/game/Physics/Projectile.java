@@ -24,7 +24,7 @@ public class Projectile extends EntityBody{
         if(myBody != null){
             physicsShape = new PhysicsShape(myBody, view);
             Filter filter = new Filter();
-            filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET | FilterIDs.SENSOR;
+            filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET;
             filter.categoryBits = FilterIDs.ENTITY | FilterIDs.BULLET;
             physicsShape.fixture.setFilterData(filter);
             physicsShape.fixture.setUserData(this);

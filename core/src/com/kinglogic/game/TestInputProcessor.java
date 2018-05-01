@@ -14,6 +14,7 @@ import com.kinglogic.game.AI.DestructoEnemy;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Managers.CameraManager;
+import com.kinglogic.game.Managers.GUIManager;
 import com.kinglogic.game.Managers.IDs;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
@@ -51,34 +52,6 @@ public class TestInputProcessor implements InputProcessor {
         dyn = new DynamicGrid(vc);
 
         WorldManager.ins().addGridToWorld(dyn);
-        Controllers.addListener(new ControllerAdapter(){
-//            public void connected(Controller controller);
-//            public void disconnected(Controller controller);
-            public boolean buttonDown (Controller controller, int buttonCode){
-                System.out.println(buttonCode);
-                return true;
-            }
-            public boolean buttonUp (Controller controller, int buttonCode){
-//                System.out.println(buttonCode);
-                return true;
-            }
-            public boolean axisMoved (Controller controller, int axisCode, float value){
-//                System.out.println("code: "+axisCode+" value:"+value);
-                /*
-                if(axisCode == 4){
-                    if(value > 0){
-                        player.RotateLeft();
-                    }else {
-                        player.RotateRight();
-                    }
-                }*/
-                return true;
-            }
-//            public boolean povMoved (Controller controller, int povCode, PovDirection value);
-//            public boolean xSliderMoved (Controller controller, int sliderCode, boolean value);
-//            public boolean ySliderMoved (Controller controller, int sliderCode, boolean value);
-//            public boolean accelerometerMoved (Controller controller, int accelerometerCode, Vector3 value);
-        });
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -120,11 +93,11 @@ public class TestInputProcessor implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-            WorldManager.ins().addVoxelScreenPosition(screenX,screenY, blockName);
+            WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x,Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, blockName);
             return true;
         }
         if (button == Input.Buttons.RIGHT) {
-            WorldManager.ins().removeVoxelScreenPosition(screenX,screenY);
+            WorldManager.ins().removeVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
             return true;
         }
         return false;

@@ -3,7 +3,7 @@ atlasData: {
 	atlasCurrent: true
 	drawables: [
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/button.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/button.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -20,7 +20,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/button-over.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/button-over.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -37,7 +37,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/button-pressed.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/button-pressed.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -54,7 +54,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/checkbox.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/checkbox.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -71,7 +71,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/checkbox-over.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/checkbox-over.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -88,7 +88,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/checkbox-pressed.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/checkbox-pressed.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -105,7 +105,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/checkbox-pressed-over.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/checkbox-pressed-over.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -122,7 +122,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/font-export.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/font-export.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -139,7 +139,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/font-over-export.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/font-over-export.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -156,7 +156,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/font-pressed-export.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/font-pressed-export.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -173,7 +173,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/list.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/list.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -190,7 +190,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/minus.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/minus.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -207,7 +207,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/plus.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/plus.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -224,7 +224,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -241,7 +241,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-big.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-big.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -258,7 +258,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-big-knob.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-big-knob.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -275,7 +275,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-knob.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-knob.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -292,7 +292,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-vertical.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-vertical.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -309,7 +309,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-vertical-knob.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-vertical-knob.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -326,7 +326,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/radio.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/radio.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -343,7 +343,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/radio-over.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/radio-over.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -360,7 +360,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/radio-pressed.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/radio-pressed.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -377,7 +377,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/scroll-horizontal.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/scroll-horizontal.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -394,7 +394,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/scroll-vertical.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/scroll-vertical.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -411,7 +411,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/select-box.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/select-box.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -428,7 +428,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/select-box-over.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/select-box-over.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -445,7 +445,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/select-box-pressed.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/select-box-pressed.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -462,7 +462,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -479,7 +479,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-before.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-before.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -496,7 +496,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-knob.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-knob.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -513,7 +513,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-knob-pressed.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-knob-pressed.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -530,7 +530,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-vertical.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-vertical.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -547,7 +547,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-vertical-before.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-vertical-before.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -564,7 +564,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/split-pane-horizontal.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/split-pane-horizontal.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -581,7 +581,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/split-pane-vertical.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/split-pane-vertical.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -598,7 +598,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -615,7 +615,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-login.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-login.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -632,7 +632,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-login-selected.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-login-selected.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -649,7 +649,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-password.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-password.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -666,7 +666,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-password-selected.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-password-selected.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -683,7 +683,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-selected.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-selected.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -700,7 +700,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/tooltip.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/tooltip.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -717,7 +717,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/touchpad.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/touchpad.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -734,7 +734,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/touchpad-knob.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/touchpad-knob.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -751,7 +751,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/white.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/white.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -768,7 +768,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/window.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/window.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -785,7 +785,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/button.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/button.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -802,7 +802,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/button-over.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/button-over.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -819,7 +819,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/button-pressed.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/button-pressed.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -836,7 +836,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/checkbox-pressed.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/checkbox-pressed.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -853,7 +853,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/checkbox.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/checkbox.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -870,7 +870,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/checkbox-over.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/checkbox-over.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -887,7 +887,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/radio.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/radio.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -904,7 +904,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/radio-pressed.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/radio-pressed.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -921,7 +921,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/radio-over.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/radio-over.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -938,7 +938,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/white.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/white.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -955,7 +955,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/list.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/list.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -972,7 +972,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -989,7 +989,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -1006,7 +1006,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-knob.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-knob.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1023,7 +1023,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-vertical.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-vertical.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -1040,7 +1040,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-vertical-knob.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-vertical-knob.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1057,7 +1057,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/scroll-horizontal.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/scroll-horizontal.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1074,7 +1074,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/scroll-vertical.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/scroll-vertical.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1091,7 +1091,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/select-box.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/select-box.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -1108,7 +1108,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/select-box-over.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/select-box-over.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1125,7 +1125,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/select-box-pressed.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/select-box-pressed.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1142,7 +1142,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-before.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-before.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1159,7 +1159,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-knob.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-knob.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1176,7 +1176,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-knob-pressed.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-knob-pressed.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1193,7 +1193,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-vertical.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-vertical.9.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -1210,7 +1210,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/slider-vertical-before.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/slider-vertical-before.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1227,7 +1227,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/split-pane-horizontal.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/split-pane-horizontal.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -1244,7 +1244,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/split-pane-vertical.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/split-pane-vertical.png
 			bgColor: {
 				r: 1
 				g: 1
@@ -1261,7 +1261,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/white.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/white.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1278,7 +1278,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1295,7 +1295,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-login.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-login.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1312,7 +1312,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-selected.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-selected.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1329,7 +1329,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-login-selected.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-login-selected.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1346,7 +1346,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-password.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-password.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1363,7 +1363,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/textfield-password-selected.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/textfield-password-selected.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1380,7 +1380,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/tooltip.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/tooltip.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1397,7 +1397,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/touchpad.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/touchpad.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1414,7 +1414,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/touchpad-knob.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/touchpad-knob.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1431,7 +1431,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/plus.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/plus.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1448,7 +1448,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/minus.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/minus.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1465,7 +1465,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/window.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/window.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1482,7 +1482,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/checkbox-pressed-over.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/checkbox-pressed-over.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1499,7 +1499,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-big.9.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-big.9.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1516,7 +1516,7 @@ atlasData: {
 			customized: false
 		}
 		{
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/progress-bar-big-knob.png
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/progress-bar-big-knob.png
 			bgColor: {
 				r: 0
 				g: 0
@@ -1527,6 +1527,40 @@ atlasData: {
 			tint: null
 			tintName: color
 			name: progress-bar-big-knob-c
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
+		{
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/XO.png
+			bgColor: {
+				r: 0
+				g: 0
+				b: 0
+				a: 1
+			}
+			visible: false
+			tint: null
+			tintName: null
+			name: XO
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
+		{
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/XOBold.png
+			bgColor: {
+				r: 0
+				g: 0
+				b: 0
+				a: 1
+			}
+			visible: false
+			tint: null
+			tintName: null
+			name: XOBold
 			tiled: false
 			minWidth: 0
 			minHeight: 0
@@ -1581,17 +1615,27 @@ jsonData: {
 		{
 			class: com.ray3k.skincomposer.data.FontData
 			name: font
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/font-export.fnt
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/font-export.fnt
 		}
 		{
 			class: com.ray3k.skincomposer.data.FontData
 			name: font-over
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/font-over-export.fnt
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/font-over-export.fnt
 		}
 		{
 			class: com.ray3k.skincomposer.data.FontData
 			name: font-pressed
-			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer_data/font-pressed-export.fnt
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/font-pressed-export.fnt
+		}
+		{
+			class: com.ray3k.skincomposer.data.FontData
+			name: XO
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/XO.fnt
+		}
+		{
+			class: com.ray3k.skincomposer.data.FontData
+			name: XOBold
+			file: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer_data/XOBold.fnt
 		}
 	]
 	classStyleMap: {
@@ -1735,7 +1779,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: font
+						value: XO
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -2741,7 +2785,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: font
+						value: XO
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -2830,7 +2874,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: font
+						value: XO
 					}
 					fontColorSelected: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -3121,7 +3165,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: font
+						value: XO
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -3135,7 +3179,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.Color
 						name: disabledFontColor
 						optional: true
-						value: null
+						value: selected
 					}
 					background: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -3527,7 +3571,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: font
+						value: XO
 					}
 					fontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -3891,7 +3935,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: titleFont
 						optional: false
-						value: font
+						value: XOBold
 					}
 					titleFontColor: {
 						class: com.ray3k.skincomposer.data.StyleProperty
@@ -3940,5 +3984,5 @@ preferences: {
 		value: E:/workspace/Neon UI/skin-export
 	}
 }
-saveFile: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer.scmp
+saveFile: C:/Users/chris/Desktop/GameProgrammingHW7/android/assets/skin/composer/composer.scmp
 }

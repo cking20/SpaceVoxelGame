@@ -2,7 +2,10 @@ package com.kinglogic.game.Managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.kinglogic.game.TestInputProcessor;
@@ -14,8 +17,7 @@ import com.kinglogic.game.TestInputProcessor;
 
 public class GameManager {
     private static GameManager instance;
-    private TestInputProcessor tip;
-    private Vector2 mousePos;
+
 
     public static GameManager ins() {
         if(instance == null)
@@ -29,102 +31,11 @@ public class GameManager {
         WorldManager.ins();
         GUIManager.ins();
         SoundManager.ins();
-        tip = new TestInputProcessor();
-        Gdx.input.setInputProcessor(tip);
-        mousePos = new Vector2(0,0);
-
+        ControllerManager.ins();
     }
 
     public void Update(float delta){
-//        Gdx.input.setCursorPosition((int) targetScreenPos.x,(int) targetScreenPos.y);
 
-        //System.out.println(tip.dyn.fixture);
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-//            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().rotate90(1).scl(1000f*tip.dyn.myBody.getMass()),true);
-            tip.player.GoForeward();
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-//            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().rotate90(1).scl(1000f*tip.dyn.myBody.getMass()),true);
-            tip.player.GoBackward();
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-//            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().rotate90(1).scl(1000f*tip.dyn.myBody.getMass()),true);
-            tip.player.GoLeft();
-            tip.player.TurnLeft();
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-//            tip.dyn.myBody.applyForceToCenter(tip.dyn.myBody.getTransform().getOrientation().rotate90(1).scl(1000f*tip.dyn.myBody.getMass()),true);
-            tip.player.GoRight();
-            tip.player.TurnRight();
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
-            tip.player.RotateLeft();
-//            tip.dyn.myBody.applyTorque(1000f*tip.dyn.myBody.getMass(),true);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
-            tip.player.RotateRight();
-//            tip.dyn.myBody.applyTorque(-1000f*tip.dyn.myBody.getMass(),true);
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.MINUS)){
-            CameraManager.ins().mainCamera.zoom-=.01;
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.EQUALS)){
-            CameraManager.ins().mainCamera.zoom+=.01;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.NUM_0)){
-            tip.player.FireMain();
-        }
-
-
-
-
-
-        if(Controllers.getControllers().size > 0) {
-            //axis
-            if (Controllers.getControllers().get(0).getAxis(4) > .5) {
-                tip.player.RotateLeft();
-            } else if (Controllers.getControllers().get(0).getAxis(4) < -.5) {
-                tip.player.RotateRight();
-            }
-            if (Controllers.getControllers().get(0).getAxis(0) < -.5) {
-                tip.player.GoForeward();
-            } else if (Controllers.getControllers().get(0).getAxis(0) > .5) {
-                tip.player.GoBackward();
-            }
-            if (Controllers.getControllers().get(0).getAxis(1) < -.5) {
-                tip.player.GoLeft();
-                tip.player.TurnLeft();
-            } else if (Controllers.getControllers().get(0).getAxis(1) > .5) {
-                tip.player.GoRight();
-                tip.player.TurnRight();
-            }
-            //buttons
-            if (Controllers.getControllers().get(0).getButton(2)) {
-                tip.player.FireMain();
-            }
-            if (Controllers.getControllers().get(0).getButton(9)) {
-                CameraManager.ins().mainCamera.zoom-=.01;
-            }
-            if (Controllers.getControllers().get(0).getButton(8)) {
-                CameraManager.ins().mainCamera.zoom+=.01;
-            }
-
-            //cursor
-            if (Controllers.getControllers().get(0).getAxis(3) < -.5) {
-                mousePos.x += delta;
-//            GUIManager.ins().targetPosition = mousePos;
-            } else if (Controllers.getControllers().get(0).getAxis(3) > .5) {
-                mousePos.x -= delta;
-//            GUIManager.ins().targetPosition = mousePos;
-            }
-            if (Controllers.getControllers().get(0).getAxis(2) < -.5) {
-                mousePos.y += delta;
-//            GUIManager.ins().targetPosition = mousePos;
-            } else if (Controllers.getControllers().get(0).getAxis(2) > .5) {
-                mousePos.y -= delta;
-            }
-        }
-        GUIManager.ins().targetPosition = mousePos;
     }
 
     public void dispose(){
@@ -132,6 +43,7 @@ public class GameManager {
         WorldManager.ins().dispose();
         GUIManager.ins().dispose();
         SoundManager.ins().dispose();
+        ControllerManager.ins().dispose();
     }
 
 }

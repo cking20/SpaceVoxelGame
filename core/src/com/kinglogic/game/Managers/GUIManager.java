@@ -18,7 +18,7 @@ public class GUIManager {
     private OrthographicCamera viewCam;
     private FitViewport view;
 
-    public  Vector2 targetPosition = new Vector2(200,200);
+    public  Vector2 targetPosition = new Vector2(0,0);
     private Image target;
 
     public static GUIManager ins() {
@@ -39,13 +39,13 @@ public class GUIManager {
     }
 
     public void update(float delta){
-        Vector2 pos = screenToWorldCoords(targetPosition);
+        //Vector2 pos = screenToWorldCoords(targetPosition);
 //        System.out.println(pos);
 //        MoveToAction mta = new MoveToAction();
 //        mta.setPosition(pos.x, pos.y);
 //        mta.setDuration(0f);
 //        target.addAction(mta);
-        target.setPosition(pos.x,pos.y);
+        target.setPosition(targetPosition.x,targetPosition.y);
 
         worldStage.act(delta);
     }

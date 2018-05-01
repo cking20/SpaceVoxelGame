@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -57,6 +59,10 @@ public class WorldManager {
     private ArrayList<Vector2> removalQueue;
     private ArrayList<Vector2> addalQueue;
 
+    private ArrayList<EntityBody> entityRemovalQueue;
+
+
+
     private Image background;
 
     //debug
@@ -73,6 +79,7 @@ public class WorldManager {
         grids = new HashSet<Grid>();
         entities = new HashSet<EntityBody>();
         removalQueue = new ArrayList<Vector2>();
+        entityRemovalQueue = new ArrayList<EntityBody>();
         addalQueue = new ArrayList<Vector2>();
         fapsLogger = new FPSLogger();
         viewCam = CameraManager.ins().mainCamera;
@@ -96,6 +103,9 @@ public class WorldManager {
         dl.setContactFilter(dlF);
         debugRenderer = new Box2DDebugRenderer();
 
+    }
+    public Batch getBatch(){
+        return worldStage.getBatch();
     }
 
     public boolean addVoxelScreenPosition(float x, float y, String block){
@@ -205,6 +215,17 @@ public class WorldManager {
         }
         removalQueue.clear();
 
+        for(EntityBody e : entityRemovalQueue){
+            entities.remove(e);
+            entityGroup.removeActor(e.view);
+            //worldStage.getActors().removeValue(e.view,true);
+            if(e.myBody != null){
+                e.dispose();
+                worldPhysics.destroyBody(e.myBody);
+            }
+        }
+        entityRemovalQueue.clear();
+
 
     }
 
@@ -231,6 +252,28 @@ public class WorldManager {
 
     public Vector2 screenToWorldCoords(Vector2 pos){
         return worldStage.screenToStageCoordinates(pos);
+    }
+
+    /**
+     * Raycast from point to point, returning the position of the first hit
+     * @param from
+     * @param to
+     * @return
+     */
+    public Vector2 raycast(Vector2 from, Vector2 to){
+        final Vector2 hitPos = new Vector2();
+        RayCastCallback callback = new RayCastCallback() {
+            @Override
+            public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+                if(fixture.getBody().getUserData() instanceof Grid){
+                    hitPos.x = point.x;
+                    hitPos.y = point.y;
+                }
+                return 0;
+            }
+        };
+        worldPhysics.rayCast(callback, from, to);
+        return hitPos;
     }
 
     public void addGridToWorld(Grid d){
@@ -268,12 +311,7 @@ public class WorldManager {
         }
     }
     public void removeEntityFromWorld(EntityBody e){
-        entities.remove(e);
-        worldStage.getActors().removeValue(e.view,true);
-        if(e.myBody != null){
-            e.dispose();
-            worldPhysics.destroyBody(e.myBody);
-        }
+        entityRemovalQueue.add(e);
     }
 
     public void rethinkShape(Grid d){

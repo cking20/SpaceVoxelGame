@@ -9,8 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kinglogic.game.Managers.CameraManager;
+import com.kinglogic.game.Managers.ControllerManager;
 import com.kinglogic.game.Managers.GUIManager;
 import com.kinglogic.game.Managers.GameManager;
+import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.SpaceGame;
 
@@ -22,18 +24,9 @@ import com.kinglogic.game.SpaceGame;
 public class GameScreen implements Screen {
     SpaceGame theGame;
     private float accumulator = 0f;
-//    Stage gui;
-//    private Viewport view;
-//    private OrthographicCamera viewCam;
-//    private float aspectRatio;
 
     public GameScreen(SpaceGame game){
         theGame = game;
-//        aspectRatio = (float) Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
-//        viewCam = new OrthographicCamera();
-//        view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*aspectRatio, viewCam);
-//        view.apply();
-//        gui = new Stage(view);
     }
 
     @Override
@@ -54,26 +47,19 @@ public class GameScreen implements Screen {
         //render the actors
         WorldManager.ins().render();
         GUIManager.ins().render();
-//        gui.draw();
-
 
         //perform the actions of the actors
-
         GameManager.ins().Update(delta);
+        ControllerManager.ins().Update(delta);
         GUIManager.ins().update(delta);
         WorldManager.ins().update(delta);
+        ResourceManager.ins().Update(delta);
         CameraManager.ins().Update(delta);
-
-
-//        gui.act(delta);
-
 
     }
 
     @Override
     public void resize(int width, int height) {
-//        aspectRatio = (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
-//        gui.getViewport().update(width,height,true);
         WorldManager.ins().resize(width,height);
         GUIManager.ins().resize(width,height);
 
@@ -96,7 +82,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-//        gui.dispose();
         GameManager.ins().dispose();
     }
 }

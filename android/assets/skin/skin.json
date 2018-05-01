@@ -9,6 +9,12 @@ com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	font-pressed: {
 		file: font-pressed-export.fnt
 	}
+	XO: {
+		file: XO.fnt
+	}
+	XOBold: {
+		file: XOBold.fnt
+	}
 }
 com.badlogic.gdx.graphics.Color: {
 	color: {
@@ -226,7 +232,7 @@ com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 		checkboxOn: checkbox-pressed-c
 		checkboxOff: checkbox-c
 		checkboxOver: checkbox-over-c
-		font: font
+		font: XO
 		fontColor: text
 		downFontColor: text-selected
 		checkedFontColor: text-selected
@@ -282,7 +288,7 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: {
-		font: font
+		font: XO
 		fontColor: text
 	}
 	over: {
@@ -296,7 +302,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 	default: {
-		font: font
+		font: XO
 		fontColorSelected: selected
 		fontColorUnselected: text
 		selection: color
@@ -325,8 +331,9 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 	default: {
-		font: font
+		font: XO
 		fontColor: text
+		disabledFontColor: selected
 		background: select-box-c
 		scrollStyle: default
 		listStyle: default
@@ -370,7 +377,7 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {
-		font: font
+		font: XO
 		fontColor: text
 		background: textfield-c
 		focusedBackground: textfield-selected-c
@@ -416,7 +423,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: {
 		background: window-c
-		titleFont: font
+		titleFont: XOBold
 	}
 }
 }
