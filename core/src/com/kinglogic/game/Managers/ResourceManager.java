@@ -53,7 +53,8 @@ public class ResourceManager {
         //explosion.lo
         particleAtlas = new TextureAtlas(Gdx.files.internal("particles/particleAtlas.atlas"));
         explosion.load(Gdx.files.internal("particles/Explosion"), particleAtlas, "whitelight");
-        explosionPool = new ParticleEffectPool(explosion, 1, 10);
+        explosionPool = new ParticleEffectPool(explosion, 2, 10);
+        explosionPool.free(explosionPool.obtain());
 //        projecttilePool = new Projectile[50];
         ui = new Skin(Gdx.files.internal("skin/skin.json"));
 //            ui.getFont("font").getData().

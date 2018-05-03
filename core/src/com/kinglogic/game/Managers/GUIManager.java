@@ -1,6 +1,7 @@
 package com.kinglogic.game.Managers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -23,7 +24,8 @@ public class GUIManager {
     private Image target;
     private SelectedBlockActor selectedBlockActor;
 
-    public String selectedBlockName = IDs.METAL_TEX;
+    public String selectedBlockName = IDs.ins().getID(0);
+    public Color selectedColor = IDs.ins().getColor(0);
 
 
 
@@ -39,7 +41,7 @@ public class GUIManager {
         view = new FitViewport(Gdx.graphics.getHeight(), Gdx.graphics.getHeight()*ResourceManager.ins().calculateAspectRatio(), viewCam);
         view.apply();
 
-        target = new Image(ResourceManager.ins().getVoxTex(IDs.TECH_TEX));
+        target = new Image(ResourceManager.ins().getVoxTex(IDs.getIDList().get(0)));
         worldStage.addActor(target);
         selectedBlockActor = new SelectedBlockActor();
         worldStage.addActor(selectedBlockActor);
@@ -58,7 +60,7 @@ public class GUIManager {
         target.setDrawable(selectedBlockActor.getSelectedDrawable());
         targetPosition.x = targetPosition.x % Gdx.graphics.getWidth();
         targetPosition.y = targetPosition.y % Gdx.graphics.getHeight();
-
+        target.setColor(selectedColor);
         target.setPosition(targetPosition.x,targetPosition.y);
 
         worldStage.act(delta);

@@ -15,6 +15,7 @@ public class Voxel extends Image {
 
     public Voxel(String name){
         super(ResourceManager.ins().getVoxTex(name));
+        this.setName(name);
         properties = new VoxelProperties();
         properties.setProperty(true,VoxelProperties.COLLIDABLE);
     }

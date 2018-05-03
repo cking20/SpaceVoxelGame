@@ -12,7 +12,7 @@ import com.kinglogic.game.Managers.ResourceManager;
  */
 
 public class SelectedBlockActor extends Group {
-    String currentBlockName = IDs.METAL_TEX;
+    String currentBlockName = IDs.getIDList().get(0);
     Voxel currentVoxel;
 
     public SelectedBlockActor(){

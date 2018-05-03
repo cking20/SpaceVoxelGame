@@ -8,6 +8,7 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.kinglogic.game.Player.PlayerBody;
 import com.kinglogic.game.TestInputProcessor;
 
 
@@ -17,7 +18,7 @@ import com.kinglogic.game.TestInputProcessor;
 
 public class GameManager {
     private static GameManager instance;
-
+    private PlayerBody thePlayer;
 
     public static GameManager ins() {
         if(instance == null)
@@ -26,12 +27,21 @@ public class GameManager {
     }
 
     private GameManager(){
+        thePlayer = new PlayerBody("player", new Vector2(800,500));
         CameraManager.ins();
         ResourceManager.ins();
-        WorldManager.ins();
+        WorldManager.ins().addEntityToWorld(thePlayer);
+        WorldManager.ins().addEntityToWorld(thePlayer);
+        WorldManager.ins().ApplyLightToBody(thePlayer.myBody);
+        CameraManager.ins().Track(thePlayer.view);
         GUIManager.ins();
         SoundManager.ins();
         ControllerManager.ins();
+        PersistenceManager.ins();
+    }
+
+    public PlayerBody getThePlayer(){
+        return thePlayer;
     }
 
     public void Update(float delta){

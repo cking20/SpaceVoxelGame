@@ -26,4 +26,11 @@ public class VoxelProperties {
         properties = toCopy.properties;
     }
 
+    public int getData(){
+        return (int)properties;
+    }
+    public void setData(byte b){
+        properties = b;
+    }
+
 }

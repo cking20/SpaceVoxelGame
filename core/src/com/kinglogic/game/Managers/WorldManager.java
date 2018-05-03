@@ -1,5 +1,6 @@
 package com.kinglogic.game.Managers;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
@@ -24,12 +25,14 @@ import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Interfaces.AI;
+import com.kinglogic.game.Models.SectorState;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.FilterIDs;
 import com.kinglogic.game.Physics.Grid;
 import com.kinglogic.game.Physics.StaticGrid;
 import com.kinglogic.game.Physics.WorldContactListner;
+import com.kinglogic.game.Player.PlayerBody;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,13 +56,23 @@ public class WorldManager {
     private Viewport view;
     public final OrthographicCamera viewCam;
     private Box2DDebugRenderer debugRenderer;
-    private HashSet<Grid> grids;
-    private HashSet<EntityBody> entities;
+//    private HashSet<Grid> grids;
+//    private HashSet<EntityBody> entities;
 
     private ArrayList<Vector2> removalQueue;
     private ArrayList<Vector2> addalQueue;
 
     private ArrayList<EntityBody> entityRemovalQueue;
+    private ArrayList<Grid> gridRemovalQueue;
+
+    private String worldName;
+    public SectorState currentLevel;
+
+    private boolean queuedSave = false;
+    private String toLoad = "0";
+    private boolean queuedLoad = false;
+
+
 
 
 
@@ -76,10 +89,15 @@ public class WorldManager {
     }
 
     private WorldManager(){
-        grids = new HashSet<Grid>();
-        entities = new HashSet<EntityBody>();
+        //todo load this dont just create it
+        worldName = "testWorld";
+        currentLevel = new SectorState("0");
+
+//        grids = new HashSet<Grid>();
+//        entities = new HashSet<EntityBody>();
         removalQueue = new ArrayList<Vector2>();
         entityRemovalQueue = new ArrayList<EntityBody>();
+        gridRemovalQueue = new ArrayList<Grid>();
         addalQueue = new ArrayList<Vector2>();
         fapsLogger = new FPSLogger();
         viewCam = CameraManager.ins().mainCamera;
@@ -110,13 +128,25 @@ public class WorldManager {
 
     public boolean addVoxelScreenPosition(float x, float y, String block){
         boolean hitFlag = false;
-        for(Grid g : grids){
+        for(Grid g : currentLevel.grids){
             if(g.addVoxelScreenPos(Voxel.Build(block),new Vector2(x,y))){
                 hitFlag = true;
                 rethinkShape(g);
             }
         }
         return hitFlag;
+    }
+
+    private void LoadSector(String sector){
+        currentLevel = PersistenceManager.ins().LoadLevel(sector);
+    }
+
+    public void QueueLoad(String sector){
+        toLoad = sector;
+        queuedLoad = true;
+    }
+    public void QueueSave(){
+        queuedSave = true;
     }
 
     public void removeVoxelScreenPosition(float x, float y){
@@ -127,7 +157,7 @@ public class WorldManager {
 
     public boolean addVoxelWorldPosition(float x, float y, String block){
         boolean hitFlag = false;
-        for(Grid g : grids){
+        for(Grid g : currentLevel.grids){
             if(g.addVoxelWorldPos(Voxel.Build(block),new Vector2(x,y))){
                 hitFlag = true;
                 rethinkShape(g);
@@ -163,19 +193,51 @@ public class WorldManager {
     }
 
     public void update(float delta){
-        for(Grid g : grids) {
-            g.updateRendering();
+        synchronized (currentLevel) {
+            for (Grid g : currentLevel.grids) {
+                g.updateRendering();
+            }
+            for (EntityBody e : currentLevel.entities) {
+                e.updateRendering();
+                if (e instanceof AI)
+                    ((AI) e).Think(worldPhysics);
+            }
+            removeQueued();
+            worldStage.act(delta);
+            doPhysicsStep(delta);
+            rayHandler.update();
+            rayHandler.setCombinedMatrix(CameraManager.ins().mainCamera);//worldStage.getCamera());
         }
-        for(EntityBody e : entities) {
-            e.updateRendering();
-            if(e instanceof AI)
-                ((AI) e).Think(worldPhysics);
+        if(queuedSave) {
+            queuedSave = false;
+            currentLevel.entities.remove(GameManager.ins().getThePlayer());
+            PersistenceManager.ins().SaveCurretWorldState();
+            currentLevel.entities.add(GameManager.ins().getThePlayer());
         }
-        removeQueued();
-        worldStage.act(delta);
-        doPhysicsStep(delta);
-        rayHandler.update();
-        rayHandler.setCombinedMatrix(CameraManager.ins().mainCamera);//worldStage.getCamera());
+        if(queuedLoad){
+            queuedLoad = false;
+            System.out.println("loading"+toLoad);
+            gridRemovalQueue.addAll(currentLevel.grids);
+            entityRemovalQueue.addAll(currentLevel.entities);
+            removeQueued();
+            currentLevel.entities.remove(GameManager.ins().getThePlayer());
+            SectorState loading = PersistenceManager.ins().LoadLevel(toLoad);
+            currentLevel = loading;
+            System.out.println("loaded"+currentLevel.grids.size()+" grids");
+            synchronized (currentLevel.grids) {
+                HashSet<Grid> gclone = (HashSet<Grid>) currentLevel.grids.clone();
+                for (Grid g : gclone)
+                    LoadGridToWorld(g);
+            }
+            synchronized (currentLevel.entities) {
+                HashSet<EntityBody> eclone = (HashSet<EntityBody>) currentLevel.entities.clone();
+                for (EntityBody e : eclone)
+                    LoadEntityToWorld(e);
+            }
+            currentLevel.entities.add(GameManager.ins().getThePlayer());
+
+        }
+
     }
 
     public void render(){
@@ -206,7 +268,7 @@ public class WorldManager {
     }
     private void removeQueued(){
         for (Vector2 wp : removalQueue){
-            HashSet<Grid> gridsClone = (HashSet<Grid>) grids.clone();
+            HashSet<Grid> gridsClone = (HashSet<Grid>) currentLevel.grids.clone();
             for(Grid g : gridsClone){
                 if(g.removeVoxelWorldPos(new Vector2(wp.x,wp.y))){
                     rethinkShape(g);
@@ -219,7 +281,9 @@ public class WorldManager {
             //System.out.println("REMOVING " + e);
             if(e == null) continue;
             if(e.myBody == null) continue;
-            entities.remove(e);
+            if(e.equals(GameManager.ins().getThePlayer())) continue;
+
+            currentLevel.entities.remove(e);
             entityGroup.removeActor(e.view);
             //worldStage.getActors().removeValue(e.view,true);
             if(e.myBody != null){
@@ -229,6 +293,21 @@ public class WorldManager {
             }
         }
         entityRemovalQueue.clear();
+
+        for(Grid g : gridRemovalQueue){
+            //System.out.println("REMOVING " + e);
+            if(g == null) continue;
+            if(g.myBody == null) continue;
+            currentLevel.grids.remove(g);
+            gridsGroup.removeActor(g.voxels);
+            //worldStage.getActors().removeValue(e.view,true);
+            if(g.myBody != null){
+                g.dispose();
+                worldPhysics.destroyBody(g.myBody);
+                g.myBody = null;
+            }
+        }
+        gridRemovalQueue.clear();
         //System.out.println("Done removing");
 
 
@@ -282,7 +361,7 @@ public class WorldManager {
     }
 
     public void addGridToWorld(Grid d){
-        if(!grids.contains(d)) {
+        if(!currentLevel.grids.contains(d)) {
             gridsGroup.addActor(d.voxels);
             //todo make funciton in Grid to parse through voxels and create fixture
             //d.recalculateShape();
@@ -292,13 +371,27 @@ public class WorldManager {
 //            System.out.println(d.physicsShapes);
             d.recalculateShape();
             //d.fixture.add(d.myBody.createFixture(d.fixtureDef));
-            grids.add(d);
+            currentLevel.grids.add(d);
         }
+    }
+    public void LoadGridToWorld(Grid d){
+            gridsGroup.addActor(d.voxels);
+            //todo make funciton in Grid to parse through voxels and create fixture
+            //d.recalculateShape();
+            d.myBody = worldPhysics.createBody(d.bodyDef);
+            d.myBody.setUserData(d);
+//            System.out.println(d.myBody);
+//            System.out.println(d.physicsShapes);
+            d.recalculateShape();
+            //d.fixture.add(d.myBody.createFixture(d.fixtureDef));
+            //currentLevel.grids.add(d);
+
     }
     public void removeGridFromWorld(Grid g){
         System.out.println("remove grid called");
-        grids.remove(g);
-        worldStage.getActors().removeValue(g.voxels,true);
+        currentLevel.grids.remove(g);
+        gridsGroup.removeActor(g.voxels);
+//        worldStage.getActors().removeValue(g.voxels,true);
         if(g.myBody != null){
             g.dispose();
             worldPhysics.destroyBody(g.myBody);
@@ -306,14 +399,22 @@ public class WorldManager {
     }
 
     public void addEntityToWorld(EntityBody e){
-        if(!entities.contains(e)) {
+        if(!currentLevel.entities.contains(e)) {
             entityGroup.addActor(e.view);
             e.myBody = worldPhysics.createBody(e.bodyDef);
             e.myBody.setUserData(e);
             e.CreateFixture();
             e.CreateSight(e.viewDistance);
-            entities.add(e);
+            currentLevel.entities.add(e);
         }
+    }
+    public void LoadEntityToWorld(EntityBody e){
+            entityGroup.addActor(e.view);
+            e.myBody = worldPhysics.createBody(e.bodyDef);
+            e.myBody.setUserData(e);
+            e.CreateFixture();
+            e.CreateSight(e.viewDistance);
+            //currentLevel.entities.add(e);
     }
     public void removeEntityFromWorld(EntityBody e){
         entityRemovalQueue.add(e);
@@ -321,8 +422,8 @@ public class WorldManager {
 
     public void rethinkShape(Grid d){
 //        d.recalculateShape();
-        if(!grids.contains(d))
-            grids.add(d);
+        if(!currentLevel.grids.contains(d))
+            currentLevel.grids.add(d);
     }
 
 
@@ -352,6 +453,10 @@ public class WorldManager {
         pl.setContactFilter(f);
         pl.attachToBody(b,8f,8f);
         pl.setSoftnessLength(100f);
+    }
+
+    public String getWorldName(){
+        return worldName;
     }
 
 }

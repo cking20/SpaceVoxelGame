@@ -1,8 +1,10 @@
 package com.kinglogic.game.Actors.Voxel;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.kinglogic.game.Managers.GUIManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.DynamicGrid;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Random;
 
 /**
  * Created by chris on 4/1/2018.
@@ -44,6 +47,10 @@ public class VoxelCollection extends Group {
         setPosition(
                 position.x-((maxSize * ResourceManager.voxelPixelSize)/2),
                 position.y-((maxSize * ResourceManager.voxelPixelSize)/2));
+    }
+
+    public VoxelCollection(){
+        grid = new Voxel[maxSize][maxSize];
     }
 
     /**
@@ -81,6 +88,7 @@ public class VoxelCollection extends Group {
      * @return false iff the voxel wasnt added
      */
     public boolean addVoxelScreenPos(Voxel v, Vector2 screenPosition){
+        v.setColor(GUIManager.ins().selectedColor);
 //        System.out.println("Screen pos:" + screenPosition);
         Vector2 worldPosition = WorldManager.ins().screenToWorldCoords(screenPosition);
 //        System.out.println("World pos:" + worldPosition);
@@ -160,6 +168,10 @@ public class VoxelCollection extends Group {
      */
     public boolean removeVoxelIndex(int x, int y){
         if(!validPosition(x,y))return false;
+        if(!validPosition(x+1,y))return false;
+        if(!validPosition(x,y+1))return false;
+        if(!validPosition(x-1,y))return false;
+        if(!validPosition(x,y-1))return false;
         if(grid[x][y] != null) {
             Voxel v = grid[x][y];
             super.removeActor(v);
@@ -402,6 +414,7 @@ public class VoxelCollection extends Group {
         if(delta != null){
             for(int i = 0; i < grid.length; i++){
                 for(int j = 0; j < grid[0].length; j++){
+                    if(!validPosition(i,j))continue;
                     if(delta[i][j] != null) {
                         super.removeActor(grid[i][j]);
                         grid[i][j] = null;

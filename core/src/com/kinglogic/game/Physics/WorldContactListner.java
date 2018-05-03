@@ -96,6 +96,7 @@ public class WorldContactListner implements ContactListener {
             }
             if(isGroundSensorHittingGround(a,b)){
                 ((PlayerBody)a.getBody().getUserData()).SetTouchingGround(false);
+                return;
             }
         }else if(b.isSensor()){
             if(isEntitySightOfEntity(b, a)){
@@ -104,6 +105,7 @@ public class WorldContactListner implements ContactListener {
             }
             if(isGroundSensorHittingGround(b,a)){
                 ((PlayerBody)b.getBody().getUserData()).SetTouchingGround(false);
+                return;
             }
         }else {
 
@@ -181,5 +183,10 @@ public class WorldContactListner implements ContactListener {
             return true;
         }
         return false;
+    }
+
+    //todo restructure this to become more generic
+    private boolean isPlayerHittingGrid(Fixture a, Fixture b){
+        
     }
 }

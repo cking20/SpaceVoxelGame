@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
@@ -14,9 +15,12 @@ import com.kinglogic.game.AI.DestructoEnemy;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Managers.CameraManager;
+import com.kinglogic.game.Managers.ControllerManager;
 import com.kinglogic.game.Managers.GUIManager;
+import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.IDs;
 import com.kinglogic.game.Managers.PCGManager;
+import com.kinglogic.game.Managers.PersistenceManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.DynamicGrid;
@@ -30,40 +34,41 @@ import com.kinglogic.game.Player.PlayerBody;
  */
 
 public class TestInputProcessor implements InputProcessor {
-    public String blockName = IDs.METAL_TEX;
+    //public String blockName = IDs.getIDList().get(0);
     public Grid dyn;
     public Grid stc;
-    public PlayerBody player;
+    //public PlayerBody player;
     public BaseAIBody enemy;
     public TestInputProcessor(){
-        player = new PlayerBody("player", new Vector2(800,500));
-        WorldManager.ins().addEntityToWorld(player);
-        WorldManager.ins().ApplyLightToBody(player.myBody);
-        CameraManager.ins().Track(player.view);
-        for (int i = 0; i < 40; i++) {
-            enemy = new DestructoEnemy("Yellowparasite", new Vector2(400,300));
-            WorldManager.ins().addEntityToWorld(enemy);
-        }
-        stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
-        WorldManager.ins().addGridToWorld(stc);
+//        player = new PlayerBody("player", new Vector2(800,500));
+//        WorldManager.ins().addEntityToWorld(player);
+//        WorldManager.ins().ApplyLightToBody(player.myBody);
+//        CameraManager.ins().Track(player.view);
+//
+//        for (int i = 0; i < 40; i++) {
+//            enemy = new DestructoEnemy("Yellowparasite", new Vector2(400,300));
+//            WorldManager.ins().addEntityToWorld(enemy);
+//        }
+//        stc = new Grid( new VoxelCollection(Voxel.Build(blockName),new Vector2(400,300)));
+//        WorldManager.ins().addGridToWorld(stc);
 
         ////
-        boolean[][] seededMap = PCGManager.ins().generateBetterAsteroid(6, .8f);
-        float[][] densities = PCGManager.ins().genDensityMap(seededMap, .1f, .5f);
-        for (int i = 0; i < densities.length; i++) {
-            for (int j = 0; j < densities[0].length; j++) {
-                WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),(j*ResourceManager.voxelPixelSize*50)-(3*ResourceManager.voxelPixelSize*50), 50, densities[i][j]);
-            }
-        }
+//        boolean[][] seededMap = PCGManager.ins().generateBetterAsteroid(6, .8f);
+//        float[][] densities = PCGManager.ins().genDensityMap(seededMap, .1f, .5f);
+//        for (int i = 0; i < densities.length; i++) {
+//            for (int j = 0; j < densities[0].length; j++) {
+//                WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),(j*ResourceManager.voxelPixelSize*50)-(3*ResourceManager.voxelPixelSize*50), 50, densities[i][j]);
+//            }
+//        }
+
 
         ////
 //        for (int i = 0; i < 10; i++) {
 //            WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),100, 50, (float)i/20f+.1f);
 //        }
 
-        VoxelCollection vc = new VoxelCollection(Voxel.Build(blockName),new Vector2(800,550));
+        VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.getIDList().get(0)),new Vector2(800,550));
         dyn = new DynamicGrid(vc);
-
         WorldManager.ins().addGridToWorld(dyn);
     }
 
@@ -80,23 +85,38 @@ public class TestInputProcessor implements InputProcessor {
     @Override
     public boolean keyTyped(char character) {
         if(character == '1'){
-            blockName = IDs.METAL_TEX;
+            ControllerManager.ins().PreviousBlock();
+            GUIManager.ins().selectedBlockName = ControllerManager.ins().playersCurrentBlock;
+//            blockName = IDs.METAL_TEX;
         }
         else if(character == '2'){
-            blockName = IDs.TECH_TEX;
+            ControllerManager.ins().NextBlock();
+            GUIManager.ins().selectedBlockName = ControllerManager.ins().playersCurrentBlock;
+//            blockName = IDs.TECH_TEX;
 
         }
         else if(character == '3'){
-            blockName = IDs.ROCK_TEX;
+            ControllerManager.ins().NextColor();
+            GUIManager.ins().selectedColor = ControllerManager.ins().playersCurrentColor;
+//            blockName = IDs.ROCK_TEX;
         }
         else if(character == '4'){
-            blockName = IDs.BASE_TEX;
+            ControllerManager.ins().PreviousColor();
+            GUIManager.ins().selectedColor = ControllerManager.ins().playersCurrentColor;
+//            blockName = IDs.BASE_TEX;
+        }
+        else if(character == 's'){
+            WorldManager.ins().QueueSave();
+        }
+        else if(character == 'l'){
+            System.out.println("queued load");
+            WorldManager.ins().QueueLoad("0");
         }
         else if(character == ' '){
-            if(player.isControlling())
-                player.Exit();
+            if(GameManager.ins().getThePlayer().isControlling())
+                GameManager.ins().getThePlayer().Exit();
             else
-                player.Enter(dyn);
+                GameManager.ins().getThePlayer().Enter(dyn);
         }
 
 
@@ -106,7 +126,7 @@ public class TestInputProcessor implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-            WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x,Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, blockName);
+            WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x,Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName);
             return true;
         }
         if (button == Input.Buttons.RIGHT) {

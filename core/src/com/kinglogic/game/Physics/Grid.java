@@ -29,6 +29,8 @@ import java.util.List;
  */
 
 public class Grid implements Controllable{
+    private static int gridID = 0;
+    public String name;
     public VoxelCollection voxels;
     public Body myBody;
     //public ChainShape shape;
@@ -37,6 +39,7 @@ public class Grid implements Controllable{
     public List<Vector2[]> verts;
 
     public Grid(VoxelCollection v){
+        name = ""+(gridID++);
         voxels = v;
         bodyDef = new BodyDef();
         physicsShapes = new HashSet<PhysicsShape>();
@@ -66,6 +69,7 @@ public class Grid implements Controllable{
      */
     public void updateRendering(){
         //System.out.println("update Rendering");
+        if(myBody == null)return;
         voxels.setPosition(myBody.getPosition().x, myBody.getPosition().y);
         //voxels.rotateBy(10f);
         //System.out.println("rot="+myBody.getTransform().getRotation());

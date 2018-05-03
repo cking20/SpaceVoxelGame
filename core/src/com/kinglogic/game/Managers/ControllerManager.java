@@ -7,6 +7,7 @@ import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.kinglogic.game.TestInputProcessor;
@@ -21,8 +22,11 @@ public class ControllerManager {
     private Vector2 mousePos;
     private TestInputProcessor tip;
 
-    private String playersCurrentBlock = IDs.METAL_TEX;
+    public  String playersCurrentBlock = IDs.getIDList().get(0);
     private int currentBlockIndex = 0;
+
+    public Color playersCurrentColor = IDs.getColorList().get(0);
+    private int currentColorIndex = 0;
 
 
     public static ControllerManager ins(){
@@ -53,14 +57,14 @@ public class ControllerManager {
             @Override
             public boolean buttonUp(Controller controller, int buttonCode) {
                 if (buttonCode == 0) {
-                    if(tip.player.isControlling())
-                        tip.player.Exit();
+                    if(GameManager.ins().getThePlayer().isControlling())
+                        GameManager.ins().getThePlayer().Exit();
                     else
-                        tip.player.Enter(tip.dyn);
+                        GameManager.ins().getThePlayer().Enter(tip.dyn);
                 }
                 if (buttonCode == 2) {
                     //FIRE MAIN
-                    tip.player.FireMain();
+                    GameManager.ins().getThePlayer().FireMain();
                 }
 //                if (buttonCode == 9) {
 //                    //ZOOM IN
@@ -83,40 +87,44 @@ public class ControllerManager {
             public boolean axisMoved(Controller controller, int axisCode, float value) {
                 //axis
 //                if (axisCode == 4 && value > .5) {
-//                    tip.player.RotateLeft();
+//                    GameManager.ins().getThePlayer().RotateLeft();
 //                } else if (axisCode == 4 && value < -.5) {
-//                    tip.player.RotateRight();
+//                    GameManager.ins().getThePlayer().RotateRight();
 //                }
 //                if (axisCode == 0 && value < -.5) {
-//                    tip.player.GoForeward();
+//                    GameManager.ins().getThePlayer().GoForeward();
 //                } else if (axisCode == 0 && value > .5) {
-//                    tip.player.GoBackward();
+//                    GameManager.ins().getThePlayer().GoBackward();
 //                }
 //                if (axisCode == 1 && value < -.5) {
-//                    tip.player.GoLeft();
-//                    tip.player.TurnLeft();
+//                    GameManager.ins().getThePlayer().GoLeft();
+//                    GameManager.ins().getThePlayer().TurnLeft();
 //                } else if (axisCode == 1 && value > .5) {
-//                    tip.player.GoRight();
-//                    tip.player.TurnRight();
+//                    GameManager.ins().getThePlayer().GoRight();
+//                    GameManager.ins().getThePlayer().TurnRight();
 //                }
 //
 //                if(axisCode == 3 &&(value > .05 || value < -.05)){
-//                    tip.player.buildPosition.x+=value*5;
+//                    GameManager.ins().getThePlayer().buildPosition.x+=value*5;
 //                }
 //                if(axisCode == 2 &&(value > .05 || value < -.05)) {
-//                    tip.player.buildPosition.y -= value * 5;
+//                    GameManager.ins().getThePlayer().buildPosition.y -= value * 5;
 //                }
-//                GUIManager.ins().targetPosition = tip.player.buildPosition;
+//                GUIManager.ins().targetPosition = GameManager.ins().getThePlayer().buildPosition;
                 return false;
             }
 
             @Override
             public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-                if(value == PovDirection.north)
-                    System.out.println("up");
-                if(value == PovDirection.south)
-                    System.out.println("down");
-                if(value == PovDirection.west) {
+                if(value == PovDirection.north) {
+                    NextColor();
+                    GUIManager.ins().selectedColor = playersCurrentColor;
+//                    System.out.println("up");
+                }if(value == PovDirection.south) {
+                    PreviousColor();
+                    GUIManager.ins().selectedColor = playersCurrentColor;
+//                    System.out.println("down");
+                }if(value == PovDirection.west) {
                     PreviousBlock();
                     GUIManager.ins().selectedBlockName = playersCurrentBlock;
                 }   //System.out.println("left");
@@ -150,40 +158,40 @@ public class ControllerManager {
         if(Controllers.getControllers().size > 0) {
 //            //axis
             if (Controllers.getControllers().get(0).getAxis(4) > .5) {
-                tip.player.RotateLeft();
+                GameManager.ins().getThePlayer().RotateLeft();
             } else if (Controllers.getControllers().get(0).getAxis(4) < -.5) {
-                tip.player.RotateRight();
+                GameManager.ins().getThePlayer().RotateRight();
             }
             if (Controllers.getControllers().get(0).getAxis(0) < -.5) {
-                tip.player.GoForeward();
+                GameManager.ins().getThePlayer().GoForeward();
             } else if (Controllers.getControllers().get(0).getAxis(0) > .5) {
-                tip.player.GoBackward();
+                GameManager.ins().getThePlayer().GoBackward();
             }
             if (Controllers.getControllers().get(0).getAxis(1) < -.5) {
-                tip.player.GoLeft();
-                tip.player.TurnLeft();
+                GameManager.ins().getThePlayer().GoLeft();
+                GameManager.ins().getThePlayer().TurnLeft();
             } else if (Controllers.getControllers().get(0).getAxis(1) > .5) {
-                tip.player.GoRight();
-                tip.player.TurnRight();
+                GameManager.ins().getThePlayer().GoRight();
+                GameManager.ins().getThePlayer().TurnRight();
             }
             float dX = Controllers.getControllers().get(0).getAxis(3);
             float dY = -Controllers.getControllers().get(0).getAxis(2);
             if(dX > .05 || dX < -.05)
-                tip.player.buildPosition.x+=dX*5;
+                GameManager.ins().getThePlayer().buildPosition.x+=dX*5;
             if(dY > .05 || dY < -.05)
-                tip.player.buildPosition.y+=dY*5;
-            GUIManager.ins().targetPosition = tip.player.buildPosition;
+                GameManager.ins().getThePlayer().buildPosition.y+=dY*5;
+            GUIManager.ins().targetPosition = GameManager.ins().getThePlayer().buildPosition;
 
             //buttons
 //            if (Controllers.getControllers().get(0).getButton(0)) {
-//                if(tip.player.isControlling())
-//                    tip.player.Exit();
+//                if(GameManager.ins().getThePlayer().isControlling())
+//                    GameManager.ins().getThePlayer().Exit();
 //                else
-//                    tip.player.Enter(tip.dyn);
+//                    GameManager.ins().getThePlayer().Enter(tip.dyn);
 //            }
 //            if (Controllers.getControllers().get(0).getButton(2)) {
 //                //FIRE MAIN
-//                tip.player.FireMain();
+//                GameManager.ins().getThePlayer().FireMain();
 //            }
             if (Controllers.getControllers().get(0).getButton(9)) {
                 //ZOOM IN
@@ -202,24 +210,24 @@ public class ControllerManager {
 
         } else {//no controllers
             if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-                tip.player.GoForeward();
+                GameManager.ins().getThePlayer().GoForeward();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-                tip.player.GoBackward();
+                GameManager.ins().getThePlayer().GoBackward();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-                tip.player.GoLeft();
-                tip.player.TurnLeft();
+                GameManager.ins().getThePlayer().GoLeft();
+                GameManager.ins().getThePlayer().TurnLeft();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-                tip.player.GoRight();
-                tip.player.TurnRight();
+                GameManager.ins().getThePlayer().GoRight();
+                GameManager.ins().getThePlayer().TurnRight();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
-                tip.player.RotateLeft();
+                GameManager.ins().getThePlayer().RotateLeft();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
-                tip.player.RotateRight();
+                GameManager.ins().getThePlayer().RotateRight();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.MINUS)){
                 CameraManager.ins().mainCamera.zoom-=.05;
@@ -228,7 +236,7 @@ public class ControllerManager {
                 CameraManager.ins().mainCamera.zoom+=.05;
             }
             if(Gdx.input.isKeyPressed(Input.Keys.NUM_0)){
-                tip.player.FireMain();
+                GameManager.ins().getThePlayer().FireMain();
             }
             mousePos.x = Gdx.input.getX();
             mousePos.y = Gdx.graphics.getHeight()-Gdx.input.getY();
@@ -237,18 +245,31 @@ public class ControllerManager {
 
     }
 
-    private void NextBlock(){
+    public void NextBlock(){
         currentBlockIndex++;
         currentBlockIndex = currentBlockIndex % IDs.ins().getNumBlockIds();
         System.out.println(currentBlockIndex);
         playersCurrentBlock = IDs.ins().getID(currentBlockIndex);
     }
-    private void PreviousBlock(){
+    public void PreviousBlock(){
         currentBlockIndex--;
         if(currentBlockIndex < 0)
             currentBlockIndex = IDs.ins().getNumBlockIds()-1;
         System.out.println(currentBlockIndex);
         playersCurrentBlock = IDs.ins().getID(currentBlockIndex);
+    }
+    public void NextColor(){
+        currentColorIndex++;
+        currentColorIndex = currentColorIndex % IDs.ins().getNumColorIds();
+        playersCurrentColor = IDs.ins().getColor(currentColorIndex);
+
+    }
+    public void PreviousColor(){
+        currentColorIndex--;
+        if(currentColorIndex < 0)
+            currentColorIndex = IDs.ins().getNumColorIds()-1;
+        playersCurrentColor = IDs.ins().getColor(currentColorIndex);
+
     }
 
 
