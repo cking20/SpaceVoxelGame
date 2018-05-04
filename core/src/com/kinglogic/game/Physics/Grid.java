@@ -268,6 +268,8 @@ public class Grid implements Controllable{
     }
 
     @Override
+    public void setToControl(Controllable that){}
+    @Override
     public Actor GetView() {
         return voxels;
     }

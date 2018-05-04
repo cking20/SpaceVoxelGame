@@ -21,6 +21,7 @@ public interface Controllable {
     void Deactivate();
     boolean isControlling();
     boolean isControlling(Controllable that);
+    void setToControl(Controllable that);
     Actor GetView();
 
 }

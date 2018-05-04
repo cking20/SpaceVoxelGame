@@ -27,6 +27,7 @@ public class EntityBody  implements Controllable{
     public PhysicsShape sight;
     public BodyDef bodyDef;
     protected Controllable controlling;
+    public Controllable lastControlled;
 
     public float viewDistance = 20f;
     public float speed = 1000f;
@@ -65,7 +66,7 @@ public class EntityBody  implements Controllable{
             sight.fixture.setDensity(0);
             myBody.resetMassData();
             Filter filter = new Filter();
-            filter.maskBits = FilterIDs.ENTITY;
+            filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID;
             filter.categoryBits = FilterIDs.SENSOR;
             sight.fixture.setFilterData(filter);
             sight.fixture.setSensor(true);
@@ -170,6 +171,11 @@ public class EntityBody  implements Controllable{
     @Override
     public void Deactivate() {
 
+    }
+
+    @Override
+    public void setToControl(Controllable that){
+        lastControlled = that;
     }
 
     @Override

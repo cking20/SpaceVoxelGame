@@ -67,9 +67,9 @@ public class TestInputProcessor implements InputProcessor {
 //            WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),100, 50, (float)i/20f+.1f);
 //        }
 
-        VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.getIDList().get(0)),new Vector2(800,550));
-        dyn = new DynamicGrid(vc);
-        WorldManager.ins().addGridToWorld(dyn);
+//        VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.getIDList().get(0)),new Vector2(800,550));
+//        dyn = new DynamicGrid(vc);
+//        WorldManager.ins().addGridToWorld(dyn);
     }
 
     @Override
@@ -116,7 +116,12 @@ public class TestInputProcessor implements InputProcessor {
             if(GameManager.ins().getThePlayer().isControlling())
                 GameManager.ins().getThePlayer().Exit();
             else
-                GameManager.ins().getThePlayer().Enter(dyn);
+                GameManager.ins().getThePlayer().Enter(GameManager.ins().getThePlayer().lastControlled);
+        }
+        else if(character == '.'){
+            VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX),new Vector2(800,550));
+            dyn = new DynamicGrid(vc);
+            WorldManager.ins().addGridToWorld(dyn);
         }
 
 

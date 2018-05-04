@@ -31,20 +31,20 @@ public class IDs {
 
     public static ArrayList<String> getIDList(){
         ArrayList<String> list = new ArrayList<String>();
-        list.add("metal");
-        list.add("tech");
-        list.add("rock");
-        list.add("base");
+        list = ResourceManager.ins().getAllVoxelIDs();
         return list;
     }
 
     public static ArrayList<Color> getColorList(){
         ArrayList<Color> list = new ArrayList<Color>();
         list.add(Color.WHITE);
+        list.add(Color.GRAY);
         list.add(Color.BLACK);
+        list.add(Color.PURPLE);
         list.add(Color.CYAN);
         list.add(Color.GREEN);
         list.add(Color.YELLOW);
+        list.add(Color.ORANGE);
         list.add(Color.RED);
 
         return list;

@@ -26,6 +26,7 @@ import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Interfaces.AI;
 import com.kinglogic.game.Models.SectorState;
+import com.kinglogic.game.Models.WorldState;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.FilterIDs;
@@ -67,6 +68,7 @@ public class WorldManager {
 
     private String worldName;
     public SectorState currentLevel;
+//    private WorldState worldState;
 
     private boolean queuedSave = false;
     private String toLoad = "0";
@@ -92,7 +94,7 @@ public class WorldManager {
         //todo load this dont just create it
         worldName = "testWorld";
         currentLevel = new SectorState("0");
-
+//        worldState = new WorldState(0,0);
 //        grids = new HashSet<Grid>();
 //        entities = new HashSet<EntityBody>();
         removalQueue = new ArrayList<Vector2>();
@@ -361,7 +363,9 @@ public class WorldManager {
     }
 
     public void addGridToWorld(Grid d){
+        System.out.println("add called...");
         if(!currentLevel.grids.contains(d)) {
+            System.out.println("adding grid...");
             gridsGroup.addActor(d.voxels);
             //todo make funciton in Grid to parse through voxels and create fixture
             //d.recalculateShape();

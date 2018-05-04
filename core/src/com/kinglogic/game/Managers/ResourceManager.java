@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -126,6 +127,15 @@ public class ResourceManager {
         p.setPosition(position.x,position.y);
         effects.add(p);
     }
+    public ArrayList<String> getAllVoxelIDs(){
+        ArrayList<String> names = new ArrayList<String>();
+
+        for(TextureAtlas.AtlasRegion t : voxelAtlas.getRegions()){
+            names.add(t.name);
+        }
+        return names;
+    }
+
     public void dispose(){
         for(Shape s: shapes){
             s.dispose();

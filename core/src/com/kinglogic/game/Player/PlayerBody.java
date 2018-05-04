@@ -31,7 +31,7 @@ public class PlayerBody extends EntityBody {
     @Override
     public void CreateFixture(){
         if(myBody != null){
-            physicsShape = new PhysicsShape(myBody, ResourceManager.voxelPixelSize/2,ResourceManager.voxelPixelSize+1,
+            physicsShape = new PhysicsShape(myBody, ResourceManager.voxelPixelSize/2-1,ResourceManager.voxelPixelSize-1,
                     new Vector2(view.getWidth()/2, view.getHeight()/2-1),view.getRotation());
             Filter filter = new Filter();
             filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET | FilterIDs.SENSOR;
