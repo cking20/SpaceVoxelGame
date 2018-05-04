@@ -30,6 +30,8 @@ public class GameManager {
         thePlayer = new PlayerBody("player", new Vector2(800,500));
         CameraManager.ins();
         ResourceManager.ins();
+        WorldManager.ins();
+        PersistenceManager.ins().LoadWorld("infinity");
         WorldManager.ins().addEntityToWorld(thePlayer);
         WorldManager.ins().addEntityToWorld(thePlayer);
         WorldManager.ins().ApplyLightToBody(thePlayer.myBody);
@@ -37,7 +39,6 @@ public class GameManager {
         GUIManager.ins();
         SoundManager.ins();
         ControllerManager.ins();
-        PersistenceManager.ins();
     }
 
     public PlayerBody getThePlayer(){

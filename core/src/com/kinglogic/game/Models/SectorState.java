@@ -1,5 +1,10 @@
 package com.kinglogic.game.Models;
 
+import com.kinglogic.game.Actors.Voxel.Voxel;
+import com.kinglogic.game.Actors.Voxel.VoxelCollection;
+import com.kinglogic.game.Managers.IDs;
+import com.kinglogic.game.Managers.WorldManager;
+import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
 
@@ -12,22 +17,22 @@ import java.util.HashSet;
 
 public class SectorState {
     public String name;
+    public final int x;
+    public final int y;
     public float asteroidDensity;
-    public HashSet<Grid> grids;
-    public HashSet<EntityBody> entities;
 
 
-    public SectorState(String name){
+
+    public SectorState(String name, int i, int j, boolean generate){
+        x = i;
+        y = j;
         this.name = name;
         asteroidDensity = .4f;
-        grids = new HashSet<Grid>();
-        entities = new HashSet<EntityBody>();
+
+        if(generate)
+            WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(new Voxel(IDs.ROCK_TEX),WorldState.mapFromChunkIndex(x,y))));
+
 
     }
-    public void PopulateGrids(ArrayList<Grid> grids){
-        this.grids.addAll(grids);
-    }
-    public void PopulateEntities(ArrayList<EntityBody> entityBodies){
-        this.entities.addAll(entityBodies);
-    }
+
 }

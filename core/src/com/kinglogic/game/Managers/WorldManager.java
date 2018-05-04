@@ -66,9 +66,8 @@ public class WorldManager {
     private ArrayList<EntityBody> entityRemovalQueue;
     private ArrayList<Grid> gridRemovalQueue;
 
-    private String worldName;
-    public SectorState currentLevel;
-//    private WorldState worldState;
+    //private String worldName;
+    public WorldState currentLevel;
 
     private boolean queuedSave = false;
     private String toLoad = "0";
@@ -92,9 +91,8 @@ public class WorldManager {
 
     private WorldManager(){
         //todo load this dont just create it
-        worldName = "testWorld";
-        currentLevel = new SectorState("0");
-//        worldState = new WorldState(0,0);
+//        worldName = "testWorld";
+
 //        grids = new HashSet<Grid>();
 //        entities = new HashSet<EntityBody>();
         removalQueue = new ArrayList<Vector2>();
@@ -137,10 +135,6 @@ public class WorldManager {
             }
         }
         return hitFlag;
-    }
-
-    private void LoadSector(String sector){
-        currentLevel = PersistenceManager.ins().LoadLevel(sector);
     }
 
     public void QueueLoad(String sector){
@@ -223,8 +217,9 @@ public class WorldManager {
             entityRemovalQueue.addAll(currentLevel.entities);
             removeQueued();
             currentLevel.entities.remove(GameManager.ins().getThePlayer());
-            SectorState loading = PersistenceManager.ins().LoadLevel(toLoad);
-            currentLevel = loading;
+//            SectorState loading = PersistenceManager.ins().LoadLevel(toLoad);
+//            currentLevel = loading;
+            PersistenceManager.ins().LoadWorld(toLoad);
             System.out.println("loaded"+currentLevel.grids.size()+" grids");
             synchronized (currentLevel.grids) {
                 HashSet<Grid> gclone = (HashSet<Grid>) currentLevel.grids.clone();
@@ -460,7 +455,7 @@ public class WorldManager {
     }
 
     public String getWorldName(){
-        return worldName;
+        return currentLevel.name;
     }
 
 }
