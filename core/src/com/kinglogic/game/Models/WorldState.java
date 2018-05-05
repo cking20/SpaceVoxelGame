@@ -2,6 +2,8 @@ package com.kinglogic.game.Models;
 
 import com.badlogic.gdx.math.Vector2;
 import com.kinglogic.game.Managers.PersistenceManager;
+import com.kinglogic.game.Managers.ResourceManager;
+import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
 
@@ -54,20 +56,20 @@ public class WorldState {
     }
 
     public static Vector2 mapToChunkIndex(Vector2 worldPos){
-        int x = (int)worldPos.x/chunkSize;
-        int y = (int)worldPos.y/chunkSize;
-
+        int x = (int)worldPos.x/(chunkSize*ResourceManager.voxelPixelSize);
+        int y = (int)worldPos.y/(chunkSize*ResourceManager.voxelPixelSize);
+        System.out.println("mapped to"+x+","+y);
         return new Vector2(x,y);
     }
 
     public static Vector2 mapFromChunkIndex(int x, int y){
-        return new Vector2(x*chunkSize,y*chunkSize);
+        return new Vector2(x*chunkSize* ResourceManager.voxelPixelSize,y*chunkSize*ResourceManager.voxelPixelSize);
     }
 
     public void LoadUpSectors(){
         for (int i = -1; i < 2; i++) {
-            for (int j = 0-1; j < 2; j++) {
-                sectors[i+1][i+1] = PersistenceManager.ins().LoadLevel((x+i),(x+j));
+            for (int j = -1; j < 2; j++) {
+                sectors[i+1][j+1] = PersistenceManager.ins().LoadLevel((x+i),(y+j));
             }
         }
     }
@@ -86,8 +88,11 @@ public class WorldState {
 
     public ArrayList<Grid> GetGridsInSector(SectorState s){
         ArrayList<Grid> grids = new ArrayList<Grid>();
-        for (Grid g: grids) {
+        HashSet<Grid> worldGrids = (HashSet<Grid>) WorldManager.ins().currentLevel.grids.clone();
+        for (Grid g: worldGrids) {
+            System.out.println("grid @"+g.myBody.getPosition());
             Vector2 pos = mapToChunkIndex(g.myBody.getPosition());
+            System.out.println("mapped to "+pos);
             int i = (int)pos.x;
             int j = (int)pos.y;
             if(i == s.x && j == s.y)

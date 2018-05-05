@@ -110,7 +110,7 @@ public class TestInputProcessor implements InputProcessor {
         }
         else if(character == 'l'){
             System.out.println("queued load");
-            WorldManager.ins().QueueLoad("0");
+            WorldManager.ins().QueueLoad("infinity");
         }
         else if(character == ' '){
             if(GameManager.ins().getThePlayer().isControlling())

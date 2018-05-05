@@ -70,7 +70,7 @@ public class WorldManager {
     public WorldState currentLevel;
 
     private boolean queuedSave = false;
-    private String toLoad = "0";
+    private String toLoad = "infinity";
     private boolean queuedLoad = false;
 
 
@@ -383,7 +383,7 @@ public class WorldManager {
 //            System.out.println(d.physicsShapes);
             d.recalculateShape();
             //d.fixture.add(d.myBody.createFixture(d.fixtureDef));
-            //currentLevel.grids.add(d);
+            currentLevel.grids.add(d);
 
     }
     public void removeGridFromWorld(Grid g){

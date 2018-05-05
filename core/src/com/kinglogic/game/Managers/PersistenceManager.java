@@ -85,6 +85,7 @@ public class PersistenceManager {
 
         try {
             File worldState = new File(Gdx.files.getLocalStoragePath() + "/savedata/" + toLoad + "/state.txt");
+            worldState.createNewFile();
             FileInputStream worldDat = new FileInputStream(worldState);
             Scanner leveldatScanner = new Scanner(worldDat);
             String in = "";
@@ -92,7 +93,11 @@ public class PersistenceManager {
                 in+=leveldatScanner.next();
             }
             leveldatScanner.close();
-            WorldState state = WorldStateModel.unjsonifyWorldState(new JSONObject(in));
+            WorldState state;
+            if(in.compareTo("") != 0)
+                state = WorldStateModel.unjsonifyWorldState(new JSONObject(in));
+            else
+                state = new WorldState(toLoad, 0,0);
             //todo this is bad code, the level must be set in the WM before the secotrs are laoaded because their load uses the WorldManager's world name
             WorldManager.ins().currentLevel = state;
             state.LoadUpSectors();
@@ -101,12 +106,17 @@ public class PersistenceManager {
             e.printStackTrace();
             WorldManager.ins().currentLevel = new WorldState(toLoad, 0,0);
             WorldManager.ins().currentLevel.LoadUpSectors();
+        } catch (IOException e) {
+            e.printStackTrace();
+            WorldManager.ins().currentLevel = new WorldState(toLoad, 0,0);
+            WorldManager.ins().currentLevel.LoadUpSectors();
         }
 
     }
 
     public void SaveLevel(SectorState s){
-        String levelPath = Gdx.files.getLocalStoragePath()+"/savedata/"+WorldManager.ins().getWorldName()+"/"+s.name;
+        String levelPath = Gdx.files.getLocalStoragePath()+"/savedata/"+WorldManager.ins().getWorldName()+
+                "/"+s.name;
         File leveldir = new File(levelPath);
 //        if(!leveldir.delete())
 //            System.err.println("couldnt delete old data");
