@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.kinglogic.game.Constants;
 import com.kinglogic.game.Managers.GUIManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
@@ -25,7 +26,7 @@ import java.util.Random;
  * Holds Data pertaining to grid of squares
  */
 public class VoxelCollection extends Group {
-    public static int maxSize = 250;
+    public static int maxSize = Constants.MAX_SIZE;
     Voxel[][] grid;
 
     /**

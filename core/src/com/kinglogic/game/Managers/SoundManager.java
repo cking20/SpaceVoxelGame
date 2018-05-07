@@ -21,7 +21,7 @@ public class SoundManager {
     private SoundManager(){
         song = Gdx.audio.newMusic(Gdx.files.internal("sounds/songs/Monitors.mp3"));
         song.setLooping(true);
-        song.play();
+        //song.play();
     }
 
     public void dispose(){

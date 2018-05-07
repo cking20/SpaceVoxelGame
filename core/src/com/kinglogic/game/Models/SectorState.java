@@ -1,8 +1,13 @@
 package com.kinglogic.game.Models;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.kinglogic.game.AI.DestructoEnemy;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
+import com.kinglogic.game.Constants;
 import com.kinglogic.game.Managers.IDs;
+import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.EntityBody;
@@ -10,6 +15,7 @@ import com.kinglogic.game.Physics.Grid;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 
 /**
  * Created by chris on 5/2/2018.
@@ -29,9 +35,29 @@ public class SectorState {
         this.name = name;
         asteroidDensity = .4f;
 
-        if(generate)
-            WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(new Voxel(IDs.ROCK_TEX),WorldState.mapFromChunkIndex(x,y))));
+        if(generate) {
+            //WorldManager.ins().addGridToWorld(new DynamicGrid(new VoxelCollection(new Voxel(IDs.ROCK_TEX), WorldState.mapFromChunkIndex(x, y))));
+            Random r = new Random();
+            int v = 10;
+            for (int k = 0; k < 2; k++) {
+                int vt = r.nextInt()% 5;
+                v = Math.min(v,Math.abs(vt));
+            }
+            Vector2 pos = WorldState.mapFromChunkIndex(x, y);
+            WorldManager.ins().GenerateAsteroid((int)pos.x, (int)pos.y, WorldState.chunkSize-5, ((float) v)/10);
 
+            v = MathUtils.random(10);
+            for (int k = 0; k < 3; k++) {
+                int vt = MathUtils.random(10);
+                v = Math.min(v,Math.abs(vt));
+            }
+            for (int k = 0; k < v; k++) {
+                Vector2 spawn = WorldState.mapFromChunkIndex(x,y);
+                spawn.x += MathUtils.random(ResourceManager.voxelPixelSize* Constants.MAX_SIZE);
+                spawn.y += MathUtils.random(ResourceManager.voxelPixelSize* Constants.MAX_SIZE);
+                WorldManager.ins().addEntityToWorld(new DestructoEnemy("Yellowparasite", spawn));
+            }
+        }
 
     }
 

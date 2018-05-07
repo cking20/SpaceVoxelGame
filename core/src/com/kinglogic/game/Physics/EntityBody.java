@@ -143,6 +143,7 @@ public class EntityBody  implements Controllable{
 
     @Override
     public void Enter(Controllable toControl) {
+        if(toControl == null)return;
         CameraManager.ins().Track(toControl.GetView());
         controlling = toControl;
     }

@@ -114,6 +114,15 @@ public class PersistenceManager {
 
     }
 
+    public void SaveAndLeaveLevel(SectorState s){
+        System.out.println("leaving "+s.x+", "+s.y);
+        SaveLevel(s);
+        ArrayList<Grid> grids = WorldManager.ins().currentLevel.GetGridsInSector(s);
+        for(Grid g: grids){
+            WorldManager.ins().removeGridFromWorld(g);
+        }
+    }
+
     public void SaveLevel(SectorState s){
         String levelPath = Gdx.files.getLocalStoragePath()+"/savedata/"+WorldManager.ins().getWorldName()+
                 "/"+s.name;

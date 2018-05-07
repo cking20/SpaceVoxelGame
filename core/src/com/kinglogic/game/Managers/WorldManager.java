@@ -1,6 +1,5 @@
 package com.kinglogic.game.Managers;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
@@ -11,8 +10,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -20,20 +17,16 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Interfaces.AI;
-import com.kinglogic.game.Models.SectorState;
 import com.kinglogic.game.Models.WorldState;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.FilterIDs;
 import com.kinglogic.game.Physics.Grid;
-import com.kinglogic.game.Physics.StaticGrid;
 import com.kinglogic.game.Physics.WorldContactListner;
-import com.kinglogic.game.Player.PlayerBody;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -69,9 +62,11 @@ public class WorldManager {
     //private String worldName;
     public WorldState currentLevel;
 
-    private boolean queuedSave = false;
+    private boolean queuedWorldSave = false;
     private String toLoad = "infinity";
-    private boolean queuedLoad = false;
+    private boolean queuedWorldLoad = false;
+    private int lastKnownPlayerPositionX = 0;
+    private int lastKnownPlayerPositionY = 0;
 
 
 
@@ -139,10 +134,10 @@ public class WorldManager {
 
     public void QueueLoad(String sector){
         toLoad = sector;
-        queuedLoad = true;
+        queuedWorldLoad = true;
     }
     public void QueueSave(){
-        queuedSave = true;
+        queuedWorldSave = true;
     }
 
     public void removeVoxelScreenPosition(float x, float y){
@@ -204,14 +199,17 @@ public class WorldManager {
             rayHandler.update();
             rayHandler.setCombinedMatrix(CameraManager.ins().mainCamera);//worldStage.getCamera());
         }
-        if(queuedSave) {
-            queuedSave = false;
+        currentLevel.entities.remove(GameManager.ins().getThePlayer());
+        checkWorldGeneration();
+        currentLevel.entities.add(GameManager.ins().getThePlayer());
+        if(queuedWorldSave) {
+            queuedWorldSave = false;
             currentLevel.entities.remove(GameManager.ins().getThePlayer());
             PersistenceManager.ins().SaveCurretWorldState();
             currentLevel.entities.add(GameManager.ins().getThePlayer());
         }
-        if(queuedLoad){
-            queuedLoad = false;
+        if(queuedWorldLoad){
+            queuedWorldLoad = false;
             System.out.println("loading"+toLoad);
             gridRemovalQueue.addAll(currentLevel.grids);
             entityRemovalQueue.addAll(currentLevel.entities);
@@ -232,8 +230,8 @@ public class WorldManager {
                     LoadEntityToWorld(e);
             }
             currentLevel.entities.add(GameManager.ins().getThePlayer());
-
         }
+
 
     }
 
@@ -293,8 +291,15 @@ public class WorldManager {
 
         for(Grid g : gridRemovalQueue){
             //System.out.println("REMOVING " + e);
-            if(g == null) continue;
-            if(g.myBody == null) continue;
+            if(g == null){
+                currentLevel.grids.remove(g);
+                continue;
+            }
+            if(g.myBody == null){
+                currentLevel.grids.remove(g);
+                gridsGroup.removeActor(g.voxels);
+                continue;
+            }
             currentLevel.grids.remove(g);
             gridsGroup.removeActor(g.voxels);
             //worldStage.getActors().removeValue(e.view,true);
@@ -394,6 +399,7 @@ public class WorldManager {
         if(g.myBody != null){
             g.dispose();
             worldPhysics.destroyBody(g.myBody);
+            g.myBody = null;
         }
     }
 
@@ -425,6 +431,15 @@ public class WorldManager {
             currentLevel.grids.add(d);
     }
 
+    /**
+     * Removes any grids/entities that have no body
+     */
+    public void VerifyWorldState(){
+        for (Grid g : currentLevel.grids)
+            if(g.myBody == null)
+                gridRemovalQueue.add(g);
+    }
+
 
     public void GenerateAsteroid(int posX, int posY, int size, float density){
         int start = VoxelCollection.maxSize/2-size/2;
@@ -442,6 +457,37 @@ public class WorldManager {
 //        astGrid.myBody.setTransform(posX,posY,0);
         astGrid.voxels.checkAllConnected();
         astGrid.recalculateShape();
+    }
+
+
+    private void checkWorldGeneration(){
+        //todo map the player position to an index and save/load appropriate secotrs
+//        currentLevel
+        Vector2 newIndex = WorldState.mapToChunkIndex(GameManager.ins().getThePlayer().myBody.getPosition());
+        int newX = (int)newIndex.x;
+        int newY = (int)newIndex.y;
+        //System.out.println("new"+newY+ "old"+lastKnownPlayerPositionY);
+        //byte alreadyloaded = 0;// bottom left, bottom right, top right, top left
+
+        if(newX > lastKnownPlayerPositionX){
+            System.out.println("shify right");
+            currentLevel.ShiftRight(newX, lastKnownPlayerPositionY);
+            lastKnownPlayerPositionX = newX;
+        } else if(newX < lastKnownPlayerPositionX){
+            System.out.println("shify left");
+            currentLevel.ShiftLeft(newX, lastKnownPlayerPositionY);
+            lastKnownPlayerPositionX = newX;
+        }else if(newY > lastKnownPlayerPositionY){
+            System.out.println("shify up");
+            currentLevel.ShiftCenterUp(lastKnownPlayerPositionX, newY);
+            lastKnownPlayerPositionY = newY;
+        } else if(newY < lastKnownPlayerPositionY){
+            System.out.println("shify down");
+            currentLevel.ShiftDown(lastKnownPlayerPositionX, newY);
+            lastKnownPlayerPositionY = newY;
+        }
+
+        return;
     }
 
     public void ApplyLightToBody(Body b){

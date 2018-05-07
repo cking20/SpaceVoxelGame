@@ -191,38 +191,45 @@ public class Grid implements Controllable{
     public void dispose(){
         for(PhysicsShape s : (HashSet<PhysicsShape>)physicsShapes.clone()){
             ResourceManager.ins().disposeOfShape(s.shape);
-            myBody.destroyFixture(s.fixture);
+            if(myBody != null)
+                myBody.destroyFixture(s.fixture);
             physicsShapes.remove(s);
         }
     }
 
     @Override
     public void GoForeward() {
+        if(myBody != null)
         myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(1000f*myBody.getMass()),true);
     }
 
     @Override
     public void GoBackward() {
+        if(myBody != null)
         myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(-1000f/4f*myBody.getMass()),true);
     }
 
     @Override
     public void GoLeft() {
+        if(myBody != null)
         myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(-1000f/2f*myBody.getMass()),true);
     }
 
     @Override
     public void GoRight() {
+        if(myBody != null)
         myBody.applyForceToCenter(myBody.getTransform().getOrientation().scl(1000f/2f*myBody.getMass()),true);
     }
 
     @Override
     public void RotateLeft() {
+        if(myBody != null)
         myBody.applyTorque(300f*myBody.getMass()*myBody.getFixtureList().size,true);
     }
 
     @Override
     public void RotateRight() {
+        if(myBody != null)
         myBody.applyTorque(-300f*myBody.getMass()*myBody.getFixtureList().size,true);
     }
 
