@@ -28,6 +28,7 @@ public class GUIManager {
     public String selectedBlockName = IDs.ins().getID(0);
     public Color selectedColor = IDs.ins().getColor(0);
     public Label numBlocksLabel;
+    public Label positionLabel;
 
 
 
@@ -46,9 +47,14 @@ public class GUIManager {
         target = new Image(ResourceManager.ins().getVoxTex(IDs.getIDList().get(0)));
         worldStage.addActor(target);
         selectedBlockActor = new SelectedBlockActor();
+        selectedBlockActor.scaleBy(4f);
+        selectedBlockActor.moveBy(0,Gdx.graphics.getHeight()-80);
         worldStage.addActor(selectedBlockActor);
+        positionLabel = new Label("Pos: 0,0", ResourceManager.ins().ui, "default");
+        positionLabel.moveBy(80,Gdx.graphics.getHeight()-40);
+        worldStage.addActor(positionLabel);
         numBlocksLabel = new Label("Resources: 0", ResourceManager.ins().ui, "default");
-        numBlocksLabel.moveBy(0,Gdx.graphics.getHeight()-40);
+        numBlocksLabel.moveBy(80,Gdx.graphics.getHeight()-70);
         worldStage.addActor(numBlocksLabel);
 
     }
@@ -61,6 +67,7 @@ public class GUIManager {
 //        mta.setDuration(0f);
 //        target.addAction(mta);
         //todo optimize this so its not every frame
+        positionLabel.setText("Pos: ("+(int)GameManager.ins().getThePlayer().myBody.getPosition().x+", "+(int)GameManager.ins().getThePlayer().myBody.getPosition().y+")");
         numBlocksLabel.setText("Resources: "+ControllerManager.ins().numBlocks);
         selectedBlockActor.UpdateSelectedBlock(selectedBlockName);
         target.setDrawable(selectedBlockActor.getSelectedDrawable());

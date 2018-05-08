@@ -37,9 +37,6 @@ public class AIUtils {
     public static void Seek(EntityBody me, Vector2 target){
         //steering is target - current
         float angleToTarget = me.myBody.getTransform().getOrientation().angle(target.sub(me.myBody.getPosition()));
-//        me.myBody.getTransform().setRotation(angleToTarget);
-//        me.myBody.setTransform(me.myBody.getPosition(), angleToTarget);
-//        System.out.println("Angle to target: "+angleToTarget);
         if(angleToTarget > 90) {
             me.RotateLeft();
             me.RotateLeft();
@@ -52,12 +49,24 @@ public class AIUtils {
         }
         if(angleToTarget < 30+90f && angleToTarget > -30+90f)
             me.GoForeward();
-//        me.myBody.applyForce(target.sub(me.myBody.getPosition()).scl(-1),me.myBody.getPosition(), true);
-//        Vector2 diff = target.sub(me.myBody.getPosition());
-//        me.myBody.getTransform().setRotation);// + me.GetForwardVector().angle(target);
+    }
+    public static void Flee(EntityBody me, Vector2 target){
+        //steering is target - current
+        float angleToTarget = me.myBody.getTransform().getOrientation().angle(target.sub(me.myBody.getPosition()));
 
+        if(angleToTarget > 90) {
+            me.RotateRight();
+            me.RotateRight();
+            me.RotateRight();
+        }
+        else {
 
-
+            me.RotateLeft();
+            me.RotateLeft();
+            me.RotateLeft();
+        }
+        if(angleToTarget > 30+90f || angleToTarget < -30+90f)
+            me.GoForeward();
     }
 
 /*

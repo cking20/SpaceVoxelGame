@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.kinglogic.game.AI.BaseAIBody;
 import com.kinglogic.game.AI.DestructoEnemy;
+import com.kinglogic.game.AI.RobotFriend;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Managers.CameraManager;
@@ -111,6 +112,9 @@ public class TestInputProcessor implements InputProcessor {
         }
         else if(character == 't'){
             WorldManager.ins();
+        }
+        else if(character == 'f'){
+            WorldManager.ins().addEntityToWorld(new RobotFriend("robot", GameManager.ins().getThePlayer().myBody.getPosition()));
         }
         else if(character == 'g'){
             GameManager.ins().getThePlayer().ToggleGravLock();
