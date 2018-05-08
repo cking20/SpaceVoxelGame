@@ -19,6 +19,7 @@ import com.kinglogic.game.TestInputProcessor;
 public class GameManager {
     private static GameManager instance;
     private PlayerBody thePlayer;
+    private boolean gameOver = false;
 
     public static GameManager ins() {
         if(instance == null)
@@ -34,7 +35,7 @@ public class GameManager {
         PersistenceManager.ins().LoadWorld("infinity");
         WorldManager.ins().addEntityToWorld(thePlayer);
         WorldManager.ins().addEntityToWorld(thePlayer);
-        WorldManager.ins().ApplyLightToBody(thePlayer.myBody);
+//        WorldManager.ins().ApplyLightToBody(thePlayer.myBody);
         CameraManager.ins().Track(thePlayer.view);
         GUIManager.ins();
         SoundManager.ins();
@@ -46,7 +47,13 @@ public class GameManager {
     }
 
     public void Update(float delta){
-
+        if(gameOver){
+            gameOver = !gameOver;
+            thePlayer.myBody.setTransform(0,0,0);
+        }
+    }
+    public void GameOver(){
+        gameOver = true;
     }
 
     public void dispose(){

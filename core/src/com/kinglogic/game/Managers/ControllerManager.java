@@ -10,6 +10,10 @@ import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.kinglogic.game.Actors.Voxel.Voxel;
+import com.kinglogic.game.Actors.Voxel.VoxelCollection;
+import com.kinglogic.game.Physics.DynamicGrid;
+import com.kinglogic.game.Physics.StaticGrid;
 import com.kinglogic.game.TestInputProcessor;
 
 /**
@@ -27,6 +31,8 @@ public class ControllerManager {
 
     public Color playersCurrentColor = IDs.getColorList().get(0);
     private int currentColorIndex = 0;
+    private boolean gravLock = false;
+    public int numBlocks = 0;
 
 
     public static ControllerManager ins(){
@@ -60,11 +66,25 @@ public class ControllerManager {
                     if(GameManager.ins().getThePlayer().isControlling())
                         GameManager.ins().getThePlayer().Exit();
                     else
-                        GameManager.ins().getThePlayer().Enter(tip.dyn);
+                        GameManager.ins().getThePlayer().Enter(GameManager.ins().getThePlayer().lastControlled);
                 }
                 if (buttonCode == 2) {
                     //FIRE MAIN
-                    GameManager.ins().getThePlayer().FireMain();
+                    if(numBlocks > 0) {
+                        GameManager.ins().getThePlayer().FireMain();
+                        numBlocks--;
+                    }
+                }
+                if (buttonCode == 6) {
+                    //FIRE MAIN
+                    GameManager.ins().getThePlayer().ToggleGravLock();
+                }
+                if (buttonCode == 7) {
+                    if(numBlocks > 0) {
+                        numBlocks--;
+                        VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX), GameManager.ins().getThePlayer().myBody.getPosition());
+                        WorldManager.ins().addGridToWorld(new StaticGrid(vc));
+                    }
                 }
 //                if (buttonCode == 9) {
 //                    //ZOOM IN
@@ -154,7 +174,6 @@ public class ControllerManager {
         Controllers.addListener(playerControllerAdapter);
     }
     public void Update(float delta){
-
         if(Controllers.getControllers().size > 0) {
 //            //axis
             if (Controllers.getControllers().get(0).getAxis(4) > .5) {
@@ -195,17 +214,20 @@ public class ControllerManager {
 //            }
             if (Controllers.getControllers().get(0).getButton(9)) {
                 //ZOOM IN
-                CameraManager.ins().mainCamera.zoom-=.05;
+                CameraManager.ins().ZoomIn();
             }
             if (Controllers.getControllers().get(0).getButton(8)) {
                 //ZOOM OUT
-                CameraManager.ins().mainCamera.zoom+=.05;
+                CameraManager.ins().ZoomOut();
             }
             if (Controllers.getControllers().get(0).getButton(4)) {
-                WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName);
+                if(numBlocks > 0)
+                    if(WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName))
+                        numBlocks--;
+//                WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName);
             }
             if (Controllers.getControllers().get(0).getButton(5)) {
-                WorldManager.ins().removeVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
+                WorldManager.ins().playerRemoveVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
             }
 
         } else {//no controllers
@@ -243,6 +265,9 @@ public class ControllerManager {
             GUIManager.ins().targetPosition = mousePos;
         }
 
+    }
+    public void PlayerDestroyedBlock(){
+        numBlocks++;
     }
 
     public void NextBlock(){

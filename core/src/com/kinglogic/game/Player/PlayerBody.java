@@ -16,6 +16,7 @@ import com.kinglogic.game.Physics.Projectile;
  */
 
 public class PlayerBody extends EntityBody {
+    private boolean gravLock = false;
     public Vector2 buildPosition;
     PhysicsShape groundSensor;
     boolean mirrorView = false;
@@ -26,6 +27,11 @@ public class PlayerBody extends EntityBody {
     public PlayerBody(String name, Vector2 position) {
         super(name, position);
         buildPosition = new Vector2(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
+    }
+
+    public void ToggleGravLock(){
+        gravLock = !gravLock;
+        myBody.setFixedRotation(gravLock);
     }
 
     @Override
@@ -53,6 +59,11 @@ public class PlayerBody extends EntityBody {
             //view.moveBy(v.x, v.y);
         }
         view.setRotation((float) Math.toDegrees(myBody.getTransform().getRotation()));
+        if(gravLock) {
+            Vector2 artificialGravity = new Vector2(0,-100000f);
+            artificialGravity.rotate((float) Math.toDegrees(myBody.getTransform().getRotation()));
+            myBody.applyForceToCenter(artificialGravity.x,artificialGravity.y,true);
+        }
 
 
     }

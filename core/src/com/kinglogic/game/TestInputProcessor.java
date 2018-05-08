@@ -35,6 +35,7 @@ import com.kinglogic.game.Player.PlayerBody;
 
 public class TestInputProcessor implements InputProcessor {
     //public String blockName = IDs.getIDList().get(0);
+    private boolean gravLock = false;
     public Grid dyn;
     public Grid stc;
     //public PlayerBody player;
@@ -111,6 +112,9 @@ public class TestInputProcessor implements InputProcessor {
         else if(character == 't'){
             WorldManager.ins();
         }
+        else if(character == 'g'){
+            GameManager.ins().getThePlayer().ToggleGravLock();
+        }
         else if(character == 'l'){
             System.out.println("queued load");
             WorldManager.ins().QueueLoad("infinity");
@@ -134,11 +138,13 @@ public class TestInputProcessor implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
-            WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x,Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName);
+            if(ControllerManager.ins().numBlocks > 0)
+                if(WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName))
+                    ControllerManager.ins().numBlocks--;
             return true;
         }
         if (button == Input.Buttons.RIGHT) {
-            WorldManager.ins().removeVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
+            WorldManager.ins().playerRemoveVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
             return true;
         }
         return false;

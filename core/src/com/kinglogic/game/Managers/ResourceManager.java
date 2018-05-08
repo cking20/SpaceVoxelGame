@@ -37,7 +37,8 @@ public class ResourceManager {
     private ParticleEffectPool explosionPool;
     private Array<ParticleEffectPool.PooledEffect> effects;
     private ParticleEffect explosion;
-    public Texture nebula;
+//    public Texture nebula;
+    private final Array<Texture> background;
 
 
     public static ResourceManager ins() {
@@ -63,8 +64,11 @@ public class ResourceManager {
         ui.getFont("font").getData().setScale(.3f,.3f);
         voxelAtlas = new TextureAtlas(Gdx.files.internal("images/voxelAtlas.atlas"));
         spriteAtlas = new TextureAtlas(Gdx.files.internal("images/spriteAtlas.atlas"));
-        nebula = new Texture(Gdx.files.internal("images/nebula.png"));
-
+//        nebula = new Texture(Gdx.files.internal("images/nebula.png"));
+        background = new Array<Texture>();
+        for (int i = 0; i < 6; i++) {
+            background.add(new Texture(Gdx.files.internal("images/parallax/bkgd_"+i+".png")));
+        }
     }
     public void Update(float delta){
         WorldManager.ins().getBatch().begin();
@@ -135,6 +139,9 @@ public class ResourceManager {
         }
         return names;
     }
+    public Array<Texture> getBackground(){
+        return background;
+    }
 
     public void dispose(){
         for(Shape s: shapes){
@@ -149,7 +156,10 @@ public class ResourceManager {
         voxelAtlas.dispose();
         spriteAtlas.dispose();
         particleAtlas.dispose();
-        nebula.dispose();
+//        nebula.dispose();
+        for (int i = 0; i < background.size; i++) {
+            background.get(i).dispose();
+        }
 
     }
 

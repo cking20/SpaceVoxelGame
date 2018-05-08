@@ -65,4 +65,14 @@ public class CameraManager {
             }
         }
     }
+    public void ZoomIn(){
+        mainCamera.zoom-=.05f;
+        if(mainCamera.zoom < .5f)
+            mainCamera.zoom = .5f;
+    }
+    public void ZoomOut(){
+        mainCamera.zoom+=.05f;
+        if(mainCamera.zoom > 2.5f)
+            mainCamera.zoom = 2.5f;
+    }
 }

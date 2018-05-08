@@ -92,9 +92,9 @@ public class WorldState {
         System.out.println("shifting up");
         //save x= 0
         //todo fix the bug in the saving/loading individual grids
-//        for (int i = 0; i < numChunksToLoad; i++) {
-//            PersistenceManager.ins().SaveAndLeaveLevel(sectors[i][0]);
-//        }
+        for (int i = 0; i < numChunksToLoad; i++) {
+            PersistenceManager.ins().SaveLevel(sectors[i][0]);
+        }
         //shift down
         for (int i = 0; i < numChunksToLoad; i++) {
             for (int j = 1; j < numChunksToLoad-1; j++) {
@@ -113,9 +113,9 @@ public class WorldState {
     }
     public void ShiftDown(int curX, int newY){
         //save x= max-1
-//        for (int i = 0; i < numChunksToLoad; i++) {
-//            PersistenceManager.ins().SaveAndLeaveLevel(sectors[i][numChunksToLoad-1]);
-//        }
+        for (int i = 0; i < numChunksToLoad; i++) {
+            PersistenceManager.ins().SaveLevel(sectors[i][numChunksToLoad-1]);
+        }
         //shift up
         for (int i = 0; i < numChunksToLoad; i++) {
             for (int j = numChunksToLoad-1; j > 0; j--) {
@@ -134,9 +134,9 @@ public class WorldState {
     }
     public void ShiftLeft(int newX, int curY){
         //save y = max-1
-//        for (int i = 0; i < numChunksToLoad; i++) {
-//            PersistenceManager.ins().SaveAndLeaveLevel(sectors[numChunksToLoad-1][i]);
-//        }
+        for (int i = 0; i < numChunksToLoad; i++) {
+            PersistenceManager.ins().SaveLevel(sectors[numChunksToLoad-1][i]);
+        }
         //shift right
         for (int i = 0; i < numChunksToLoad; i++) {
             for (int j = numChunksToLoad-1; j > 0; j--) {
@@ -155,9 +155,9 @@ public class WorldState {
     }
     public void ShiftRight(int newX, int curY){
         //save x= 0
-//        for (int i = 0; i < numChunksToLoad; i++) {
-//            PersistenceManager.ins().SaveAndLeaveLevel(sectors[0][i]);
-//        }
+        for (int i = 0; i < numChunksToLoad; i++) {
+            PersistenceManager.ins().SaveLevel(sectors[0][i]);
+        }
         //shift down
         for (int i = 0; i < numChunksToLoad; i++) {
             for (int j = 1; j < numChunksToLoad-1; j++) {

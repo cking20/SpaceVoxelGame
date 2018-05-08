@@ -7,7 +7,7 @@ import com.badlogic.gdx.Gdx;
  */
 
 public class Constants {
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final boolean FULLSCREEN = false;
     public static final float TIME_STEP = 1/80f;
     public static final int VELOCITY_ITERATIONS = 3;

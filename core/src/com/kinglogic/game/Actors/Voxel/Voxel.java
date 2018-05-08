@@ -22,7 +22,7 @@ public class Voxel extends Image {
 
     public static Voxel Build(String name){
         Voxel v = new Voxel(name);
-        if(name.compareTo(IDs.BASE_TEX) == 0){
+        if(name.compareTo(IDs.BASE_TEX) == 0 || name.compareTo(IDs.GRASS_TEX) == 0 || name.compareTo(IDs.GRID_TEX) == 0){
             v.properties.setProperty(false, VoxelProperties.COLLIDABLE);
         }
         return v;

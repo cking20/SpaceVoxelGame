@@ -20,7 +20,7 @@ public class BaseAIBody extends EntityBody implements AI {
 
     public BaseAIBody(String name, Vector2 position) {
         super(name, position);
-        this.viewDistance = 200f;
+        this.viewDistance = 400f;
 
     }
 

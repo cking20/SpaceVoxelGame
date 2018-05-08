@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.kinglogic.game.AI.DestructoEnemy;
 import com.kinglogic.game.AI.Enemy;
 import com.kinglogic.game.Actors.Entities.Entity;
+import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Player.PlayerBody;
@@ -55,6 +56,14 @@ public class WorldContactListner implements ContactListener {
             }
             if(isDynGridHittingDynGrid(b,a)){
                 handleGridhitGridCollision(b,a,contact.getWorldManifold());
+                return;
+            }
+            if(isEnemyHittingPlayer(a,b)){
+                GameManager.ins().GameOver();
+                return;
+            }
+            if(isEnemyHittingPlayer(b,a)){
+                GameManager.ins().GameOver();
                 return;
             }
 
@@ -161,6 +170,9 @@ public class WorldContactListner implements ContactListener {
     }
     private boolean isEnemyHittingEnemy(Fixture a, Fixture b){
         return a.getBody().getUserData() instanceof Enemy && b.getBody().getUserData() instanceof Enemy;
+    }
+    private boolean isEnemyHittingPlayer(Fixture a, Fixture b){
+        return a.getBody().getUserData() instanceof Enemy && b.getBody().getUserData() instanceof PlayerBody;
     }
 
     private boolean isBulltetHittingEntity(Fixture a, Fixture b){

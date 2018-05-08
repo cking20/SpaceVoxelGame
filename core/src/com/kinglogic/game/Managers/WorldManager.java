@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kinglogic.game.Actors.ParallaxBG;
 import com.kinglogic.game.Actors.Voxel.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
@@ -54,6 +55,7 @@ public class WorldManager {
 //    private HashSet<EntityBody> entities;
 
     private ArrayList<Vector2> removalQueue;
+    private ArrayList<Vector2>playerRemovalQueue;
     private ArrayList<Vector2> addalQueue;
 
     private ArrayList<EntityBody> entityRemovalQueue;
@@ -72,8 +74,8 @@ public class WorldManager {
 
 
 
-    private Image background;
-
+//    private Image background;
+    private ParallaxBG background;
     //debug
     FPSLogger fapsLogger;
 
@@ -91,6 +93,7 @@ public class WorldManager {
 //        grids = new HashSet<Grid>();
 //        entities = new HashSet<EntityBody>();
         removalQueue = new ArrayList<Vector2>();
+        playerRemovalQueue = new ArrayList<Vector2>();
         entityRemovalQueue = new ArrayList<EntityBody>();
         gridRemovalQueue = new ArrayList<Grid>();
         addalQueue = new ArrayList<Vector2>();
@@ -123,7 +126,8 @@ public class WorldManager {
 
     public boolean addVoxelScreenPosition(float x, float y, String block){
         boolean hitFlag = false;
-        for(Grid g : currentLevel.grids){
+        HashSet<Grid> clone = (HashSet<Grid>) currentLevel.grids.clone();
+        for(Grid g : clone){
             if(g.addVoxelScreenPos(Voxel.Build(block),new Vector2(x,y))){
                 hitFlag = true;
                 rethinkShape(g);
@@ -140,9 +144,15 @@ public class WorldManager {
         queuedWorldSave = true;
     }
 
+
     public void removeVoxelScreenPosition(float x, float y){
 //        boolean hitFlag = false;
         removalQueue.add(screenToWorldCoords(new Vector2(x,y)));
+//        return hitFlag;
+    }
+    public void playerRemoveVoxelScreenPosition(float x, float y){
+//        boolean hitFlag = false;
+        playerRemovalQueue.add(screenToWorldCoords(new Vector2(x,y)));
 //        return hitFlag;
     }
 
@@ -170,9 +180,11 @@ public class WorldManager {
             worldStage = new Stage(view);
             gridsGroup = new Group();
             entityGroup = new Group();
-            background = new Image(ResourceManager.ins().nebula);
-            background.scaleBy(1.5f,1.5f);
-            background.moveBy(-background.getWidth()/2, -background.getHeight()/2);
+//            background = new Image(ResourceManager.ins().nebula);
+            background = new ParallaxBG();
+            background.setSpeed(1,1);
+//            background.scaleBy(1.5f,1.5f);
+//            background.moveBy(-background.getWidth()/2, -background.getHeight()/2);
             worldStage.addActor(background);
             worldStage.addActor(gridsGroup);
             worldStage.addActor(entityGroup);
@@ -236,10 +248,11 @@ public class WorldManager {
     }
 
     public void render(){
-        background.setScale(4f*CameraManager.ins().mainCamera.zoom);
-        background.setPosition(
-                CameraManager.ins().mainCamera.position.x-background.getWidth()*background.getScaleX()/2,
-                CameraManager.ins().mainCamera.position.y-background.getHeight()*background.getScaleY()/2);
+        background.setSpeed(GameManager.ins().getThePlayer().myBody.getLinearVelocity().x/100f,-GameManager.ins().getThePlayer().myBody.getLinearVelocity().y/100f);
+//        background.setScale(4f*CameraManager.ins().mainCamera.zoom);
+//        background.setPosition(
+//                CameraManager.ins().mainCamera.position.x-background.getWidth()*background.getScaleX()/2,
+//                CameraManager.ins().mainCamera.position.y-background.getHeight()*background.getScaleY()/2);
 
         worldStage.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),true);
         worldStage.getViewport().apply(true);
@@ -271,6 +284,16 @@ public class WorldManager {
             }
         }
         removalQueue.clear();
+        for (Vector2 wp : playerRemovalQueue){
+            HashSet<Grid> gridsClone = (HashSet<Grid>) currentLevel.grids.clone();
+            for(Grid g : gridsClone){
+                if(g.removeVoxelWorldPos(new Vector2(wp.x,wp.y))){
+                    rethinkShape(g);
+                    ControllerManager.ins().PlayerDestroyedBlock();
+                }
+            }
+        }
+        playerRemovalQueue.clear();
 
         for(EntityBody e : entityRemovalQueue){
             //System.out.println("REMOVING " + e);
