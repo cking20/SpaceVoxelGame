@@ -14,11 +14,10 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kinglogic.game.Actors.ParallaxBG;
-import com.kinglogic.game.Actors.Voxel.Voxel;
+import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Interfaces.AI;
@@ -103,8 +102,8 @@ public class WorldManager {
         view.apply();
         BuildWorldt();
         if(debug) {
-//            worldStage.setDebugAll(true);
-//            worldStage.setDebugInvisible(false);
+            worldStage.setDebugAll(true);
+            worldStage.setDebugInvisible(false);
             worldStage.setDebugUnderMouse(true);
         }
         worldPhysics.setContactListener(new WorldContactListner());
@@ -123,6 +122,7 @@ public class WorldManager {
     public Batch getBatch(){
         return worldStage.getBatch();
     }
+
 
     public boolean addVoxelScreenPosition(float x, float y, String block){
         boolean hitFlag = false;
@@ -171,6 +171,16 @@ public class WorldManager {
 //        boolean hitFlag = false;
         removalQueue.add(new Vector2(x,y));
 //        return hitFlag;
+    }
+
+    public Grid getGridAtWorldPos(Vector2 pos){
+        HashSet<Grid> gridsClone = (HashSet<Grid>) currentLevel.grids.clone();
+        for(Grid g : gridsClone){
+            if(g.isWorldPositionInGrid(new Vector2(pos.x,pos.y))){
+                return g;
+            }
+        }
+        return null;
     }
 
 
@@ -243,7 +253,7 @@ public class WorldManager {
             }
             currentLevel.entities.add(GameManager.ins().getThePlayer());
         }
-
+        VerifyWorldState();
 
     }
 
@@ -416,7 +426,10 @@ public class WorldManager {
     }
     public void removeGridFromWorld(Grid g){
         System.out.println("remove grid called");
-        currentLevel.grids.remove(g);
+        if(!currentLevel.grids.remove(g)){
+            //the grid wasnt removed
+            System.err.println(g+ "not removed");
+        }
         gridsGroup.removeActor(g.voxels);
 //        worldStage.getActors().removeValue(g.voxels,true);
         if(g.myBody != null){

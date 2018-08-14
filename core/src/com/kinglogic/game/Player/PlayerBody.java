@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.EntityBody;
@@ -16,23 +17,22 @@ import com.kinglogic.game.Physics.Projectile;
  */
 
 public class PlayerBody extends EntityBody {
-    private boolean gravLock = false;
     public Vector2 buildPosition;
     PhysicsShape groundSensor;
     boolean mirrorView = false;
     boolean onGround = false;
     boolean shotCooldown = false;
     float shotCooldownTime = 1.0f;
+    float missleSpeed = 2000f;
 
     public PlayerBody(String name, Vector2 position) {
         super(name, position);
+        speed = 4000f;
         buildPosition = new Vector2(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
+
     }
 
-    public void ToggleGravLock(){
-        gravLock = !gravLock;
-        myBody.setFixedRotation(gravLock);
-    }
+
 
     @Override
     public void CreateFixture(){
@@ -46,8 +46,10 @@ public class PlayerBody extends EntityBody {
             physicsShape.fixture.setUserData(this);
         }
     }
+
     @Override
     public void updateRendering(){
+        super.updateRendering();
         view.setPosition(myBody.getPosition().x, myBody.getPosition().y);
         if(mirrorView){
             view.setScaleX(-1);
@@ -59,13 +61,6 @@ public class PlayerBody extends EntityBody {
             //view.moveBy(v.x, v.y);
         }
         view.setRotation((float) Math.toDegrees(myBody.getTransform().getRotation()));
-        if(gravLock) {
-            Vector2 artificialGravity = new Vector2(0,-100000f);
-            artificialGravity.rotate((float) Math.toDegrees(myBody.getTransform().getRotation()));
-            myBody.applyForceToCenter(artificialGravity.x,artificialGravity.y,true);
-        }
-
-
     }
 
     @Override
@@ -105,9 +100,20 @@ public class PlayerBody extends EntityBody {
 //                    .add(myBody.getTransform().getOrientation().scl(ResourceManager.voxelPixelSize)));
         //WorldManager.ins().addEntityToWorld(p);
         if(mirrorView)
-            p.Fire(myBody.getTransform().getOrientation().rotate(180f).scl(2000f));
+            p.Fire(myBody.getTransform().getOrientation().rotate(180f).scl(missleSpeed));
         else
-            p.Fire(myBody.getTransform().getOrientation().scl(2000f));
+            p.Fire(myBody.getTransform().getOrientation().scl(missleSpeed));
+    }
+    @Override
+    public void FireMain(Vector2 direction){
+        Projectile p;
+        p = ResourceManager.ins().getProjectile("projectile",
+                myBody.getPosition()
+                .add(new Vector2(ResourceManager.voxelPixelSize,ResourceManager.voxelPixelSize).rotate(view.getRotation()))
+                .add(direction.rotate90(-1).rotate(view.getRotation()).scl(16f)));
+
+
+        p.Fire((direction).scl(10));
     }
 
     public Vector2 getBuildPosition(){

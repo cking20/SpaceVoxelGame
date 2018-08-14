@@ -20,7 +20,7 @@ public class EntityStateModel {
     }
 
     public static EntityBody unjsonifyEntity(JSONObject json){
-        //todo there is a massive bug here where the entity will not come back as the correct type
+        //todo there hasProperty a massive bug here where the entity will not come back as the correct type
         EntityBody e = new EntityBody(
                 json.getString("name"),
                 new Vector2(json.getFloat("x"), json.getFloat("y"))

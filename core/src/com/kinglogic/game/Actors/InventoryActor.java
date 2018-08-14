@@ -2,7 +2,7 @@ package com.kinglogic.game.Actors;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.kinglogic.game.Actors.Voxel.Voxel;
+import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 
 import java.util.ArrayList;
 

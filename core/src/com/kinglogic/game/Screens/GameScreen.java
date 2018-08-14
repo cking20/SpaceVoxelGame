@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kinglogic.game.ChemestryFramework.ChemistryManager;
 import com.kinglogic.game.Managers.CameraManager;
 import com.kinglogic.game.Managers.ControllerManager;
 import com.kinglogic.game.Managers.GUIManager;
@@ -51,6 +52,7 @@ public class GameScreen implements Screen {
         //perform the actions of the actors
         GameManager.ins().Update(delta);
         ControllerManager.ins().Update(delta);
+        ChemistryManager.ins().Update(delta);
         GUIManager.ins().update(delta);
         WorldManager.ins().update(delta);
         ResourceManager.ins().Update(delta);

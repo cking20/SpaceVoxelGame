@@ -68,7 +68,7 @@ public class GUIManager {
 //        target.addAction(mta);
         //todo optimize this so its not every frame
         positionLabel.setText("Pos: ("+(int)GameManager.ins().getThePlayer().myBody.getPosition().x+", "+(int)GameManager.ins().getThePlayer().myBody.getPosition().y+")");
-        numBlocksLabel.setText("Resources: "+ControllerManager.ins().numBlocks);
+        numBlocksLabel.setText("Resources: "+ControllerManager.ins().numBlocks+" NumGrids:"+WorldManager.ins().currentLevel.grids.size());
         selectedBlockActor.UpdateSelectedBlock(selectedBlockName);
         target.setDrawable(selectedBlockActor.getSelectedDrawable());
         targetPosition.x = targetPosition.x % Gdx.graphics.getWidth();

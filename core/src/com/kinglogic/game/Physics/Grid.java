@@ -5,16 +5,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.MassData;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.kinglogic.game.Actors.Voxel.Voxel;
+import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Actors.Voxel.VoxelUtils;
-import com.kinglogic.game.Constants;
+import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
+import com.kinglogic.game.ChemestryFramework.ChemistryManager;
+import com.kinglogic.game.ChemestryFramework.MaterialModel;
 import com.kinglogic.game.Interfaces.Controllable;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
@@ -28,7 +25,7 @@ import java.util.List;
  * Container for physics and rendering of grids
  */
 
-public class Grid implements Controllable{
+public class Grid implements Controllable, MaterialModel{
     private static int gridID = 0;
     public String name;
     public VoxelCollection voxels;
@@ -37,6 +34,7 @@ public class Grid implements Controllable{
     public HashSet<PhysicsShape> physicsShapes;
     public BodyDef bodyDef;
     public List<Vector2[]> verts;
+    public Vector2 gravity = new Vector2(0f,-98000f);
 
     public Grid(VoxelCollection v){
         name = ""+(gridID++);
@@ -188,6 +186,10 @@ public class Grid implements Controllable{
         return good;
     }
 
+    public boolean isWorldPositionInGrid(Vector2 worldPos){
+        return voxels.isWorldPosInGrid(worldPos);
+    }
+
     public void dispose(){
         for(PhysicsShape s : (HashSet<PhysicsShape>)physicsShapes.clone()){
             ResourceManager.ins().disposeOfShape(s.shape);
@@ -255,7 +257,17 @@ public class Grid implements Controllable{
     }
 
     @Override
+    public void FireMain(Vector2 direction) {
+
+    }
+
+    @Override
     public void FireAlt() {
+
+    }
+
+    @Override
+    public void FireAlt(Vector2 direction) {
 
     }
 
@@ -279,5 +291,67 @@ public class Grid implements Controllable{
     @Override
     public Actor GetView() {
         return voxels;
+    }
+
+
+    //Needed to simulate fluids moving constantly
+    @Override
+    public LinkedList<ChemicalEvent> Output() {
+        return null;
+    }
+
+    @Override
+    public boolean Update(float delta) {
+        return false;
+    }
+
+    @Override
+    public void Recieve(ChemicalEvent event) {
+        //todo send it to the voxel
+        //get the voxel at event position
+        Voxel effected = voxels.getVoxelAtWorldPosition(event.position);
+        if(effected == null) return;
+
+        System.out.println("effected != null, applying force");
+
+        //apply grid specific actions
+        switch (event.event){
+            case TOUCHED:
+                ChemicalEvent e = new ChemicalEvent();
+                e.sentBy = this;
+                e.position = gravity;
+                e.event = ChemistryManager.EventTypes.SEND_GRAVITY;
+                event.sentBy.Recieve(e);
+                break;
+            default:
+                event.sentBy = this;
+                break;
+        }
+        //send the event to that voxel
+        effected.Recieve(event);
+    }
+
+    public void PropagateEvent(ChemicalEvent event, Voxel type, boolean connectedOnly){
+        if(connectedOnly){
+            //todo BFS
+        }
+        else{
+            //all of that type
+            Voxel[][] grid = voxels.getGrid();
+            for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[i].length; j++) {
+                    type.getClass();
+                    if(grid[i][j].getClass().equals(type.getClass())){
+                        ChemicalEvent newEvent = new ChemicalEvent();
+                        newEvent.sentBy = this;
+                        newEvent.event = event.event;
+                        newEvent.element = event.element;
+                        newEvent.position = voxels.mapIndexesToWorldPos(i,j);
+                        ChemistryManager.ins().EnqueueEvent(newEvent);
+                    }
+
+                }
+            }
+        }
     }
 }

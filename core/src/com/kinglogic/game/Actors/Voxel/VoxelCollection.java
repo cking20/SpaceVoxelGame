@@ -1,22 +1,17 @@
 package com.kinglogic.game.Actors.Voxel;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Managers.GUIManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.DynamicGrid;
-import com.kinglogic.game.Physics.Grid;
-import com.kinglogic.game.Physics.StaticGrid;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Random;
 
 /**
  * Created by chris on 4/1/2018.
@@ -113,8 +108,8 @@ public class VoxelCollection extends Group {
     /**
      * Add a voxel to this collection in index units
      * @param v voxel to add
-     * @param x column (0,0 is the bottom left)
-     * @param y row (0,0 is the bottom left)
+     * @param x column (0,0 hasProperty the bottom left)
+     * @param y row (0,0 hasProperty the bottom left)
      * @return false iff the voxel wasnt added
      */
     public boolean addVoxelIndex(Voxel v, int x, int y){
@@ -162,8 +157,8 @@ public class VoxelCollection extends Group {
 
     /**
      * Attempts to remove a block at screen position
-     * @param x column (0,0 is the bottom left)
-     * @param y row (0,0 is the bottom left)
+     * @param x column (0,0 hasProperty the bottom left)
+     * @param y row (0,0 hasProperty the bottom left)
      * @return false iff the voxel wasnt added
      * @return true iff a block has been removed
      */
@@ -280,12 +275,40 @@ public class VoxelCollection extends Group {
     }
 
     /**
+     * Transforms an index to a world position
+     * @param i column
+     * @param j row
+     * @return
+     */
+    public Vector2 mapIndexesToWorldPos(int i, int j){
+        //todo test this
+        Vector2 worldPos = new Vector2(getX(), getY());
+        worldPos.x += i * ResourceManager.voxelPixelSize;
+        worldPos.y += j * ResourceManager.voxelPixelSize;
+        return worldPos;
+    }
+
+    /**
      * @return the actual grid(not a copy)
      */
     public Voxel[][] getGrid(){
         return grid;
     }
 
+    public boolean isWorldPosInGrid(Vector2 worldPos){
+        Vector2 pos = mapWorldPointToIndexies(worldPos);
+        return validPosition((int)pos.x, (int)pos.y);
+    }
+
+    public Voxel getVoxelAtWorldPosition(Vector2 pos){
+        Vector2 p = mapWorldPointToIndexies(pos);
+        int i = (int)p.x;
+        int j = (int)p.y;
+        if(validPosition(i,j)){
+            return grid[i][j];
+        }
+        return null;
+    }
     /**
      * @param x index
      * @param y index
@@ -349,7 +372,7 @@ public class VoxelCollection extends Group {
      * Determins if there exists a path of not null tiles between two indexes
      * @param from start index
      * @param to end index(target)
-     * @return true iff there is a not null path between from and to
+     * @return true iff there hasProperty a not null path between from and to
      */
     private boolean connects(VoxelUtils.Index from, VoxelUtils.Index to){
         //todo improve this
@@ -525,7 +548,7 @@ public class VoxelCollection extends Group {
      * Check to see if a placement at x,y would be connected to a not null tile
      * @param x index
      * @param y index
-     * @return true iff a neighbor of position x,y is not null
+     * @return true iff a neighbor of position x,y hasProperty not null
      */
     public boolean verifyVoxelPlacement(int x, int y){
         boolean isGood = false;

@@ -98,7 +98,7 @@ public class PersistenceManager {
                 state = WorldStateModel.unjsonifyWorldState(new JSONObject(in));
             else
                 state = new WorldState(toLoad, 0,0);
-            //todo this is bad code, the level must be set in the WM before the secotrs are laoaded because their load uses the WorldManager's world name
+            //todo this hasProperty bad code, the level must be set in the WM before the secotrs are laoaded because their load uses the WorldManager's world name
             WorldManager.ins().currentLevel = state;
             state.LoadUpSectors();
             //return state;

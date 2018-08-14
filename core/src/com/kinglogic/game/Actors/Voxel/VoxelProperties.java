@@ -1,36 +1,79 @@
 package com.kinglogic.game.Actors.Voxel;
 
+import com.kinglogic.game.ChemestryFramework.Properties;
+
 /**
  * Created by chris on 4/1/2018.
  */
 
-public class VoxelProperties {
-    public static final byte COLLIDABLE = 1;
+public class VoxelProperties extends Properties{
 
-    private byte properties;
+
+    //These bits will hold the level of each fluid in the voxel
+    //AIR
+    public static final byte AIR_1 = 1;
+    public static final byte AIR_2 = 2;
+
+    //WATER
+    public static final byte WATER_1 = 4;
+    public static final byte WATER_2 = 8;
+
+    //LAVA
+    public static final byte LAVA_1 = 16;
+    public static final byte LAVA_2 = 32;
+
+    //This bit decides if the voxel will send/collect fluids
+    public static final byte PERMEABLE = 64;
+
+
+    private byte fluids;
 
     public VoxelProperties(){
+        level = 1;
+        health = 127;
         properties = 0;
+        fluids = 0;
     }
 
-    public boolean is(byte property){
-        return !((properties ^ property) == property);
+
+    /**
+     * Returns true iff the voxel should allow the transfer of fluids
+     * @return
+     */
+    public boolean isPermeable(){
+        return !((fluids ^ PERMEABLE) == PERMEABLE);
     }
-    public void setProperty(boolean c, byte property){
+    public int getWater(){
+        return fluids ^ WATER_1 + fluids ^ WATER_2;
+    }
+    public int getAir(){
+        return fluids ^ AIR_1 + fluids ^ AIR_2;
+    }
+    public int getLava(){
+        return fluids ^ LAVA_1 + fluids ^ LAVA_2;
+    }
+
+    public void setPermeable(boolean c){
         if(c)
-            properties |= property;
+            fluids |= PERMEABLE;
         else
-            properties &= ~property;
+            fluids &= ~PERMEABLE;
     }
+
     public void copy(VoxelProperties toCopy){
         properties = toCopy.properties;
+        health = toCopy.health;
+        fluids = toCopy.fluids;
+        level = toCopy.level;
     }
 
-    public int getData(){
+    public int getProps(){
         return (int)properties;
     }
-    public void setData(byte b){
+
+    public void setProps(byte b){
         properties = b;
     }
+
 
 }

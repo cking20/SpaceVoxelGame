@@ -1,0 +1,1 @@
+{"name":"97","x":2790.7039,"y":-352.67322,"angle":-0.27276114,"voxels":{"voxels":[{"r":1,"b":1,"g":1,"name":"rock","x":6,"y":5,"properties":1},{"r":1,"b":1,"g":1,"name":"rock","x":7,"y":4,"properties":1},{"r":1,"b":1,"g":1,"name":"rock","x":7,"y":5,"properties":1}]}}

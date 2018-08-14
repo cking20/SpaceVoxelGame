@@ -3,18 +3,10 @@ package com.kinglogic.game.Models;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.kinglogic.game.AI.DestructoEnemy;
-import com.kinglogic.game.Actors.Voxel.Voxel;
-import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
-import com.kinglogic.game.Managers.IDs;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
-import com.kinglogic.game.Physics.DynamicGrid;
-import com.kinglogic.game.Physics.EntityBody;
-import com.kinglogic.game.Physics.Grid;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
 
 /**

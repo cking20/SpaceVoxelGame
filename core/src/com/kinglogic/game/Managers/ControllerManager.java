@@ -3,16 +3,15 @@ package com.kinglogic.game.Managers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.kinglogic.game.Actors.Voxel.Voxel;
+import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
-import com.kinglogic.game.Physics.DynamicGrid;
+import com.kinglogic.game.Constants;
 import com.kinglogic.game.Physics.StaticGrid;
 import com.kinglogic.game.TestInputProcessor;
 
@@ -31,8 +30,10 @@ public class ControllerManager {
 
     public Color playersCurrentColor = IDs.getColorList().get(0);
     private int currentColorIndex = 0;
-    private boolean gravLock = false;
-    public int numBlocks = 0;
+    public int numBlocks = 10000;
+
+    private Vector2 rightStickVec = new Vector2(0,0);
+    private Vector2 leftStickVec = new Vector2(0,0);
 
 
     public static ControllerManager ins(){
@@ -62,75 +63,41 @@ public class ControllerManager {
 
             @Override
             public boolean buttonUp(Controller controller, int buttonCode) {
-                if (buttonCode == 0) {
-                    if(GameManager.ins().getThePlayer().isControlling())
-                        GameManager.ins().getThePlayer().Exit();
-                    else
-                        GameManager.ins().getThePlayer().Enter(GameManager.ins().getThePlayer().lastControlled);
+                if(Constants.DEBUG)
+                    System.out.println("button "+buttonCode + " up");
+                switch (buttonCode){
+                    case 0:// A
+                        Jump();
+                        break;
+                    case 1:// B
+                        break;
+                    case 2:// X
+                        FireMain();
+                        break;
+                    case 3:// Y
+                        break;
+                    case 4:// L_BUMPER
+                        break;
+                    case 5:// R_BUMPER
+                        break;
+                    case 6:// SHARE
+                        GameManager.ins().getThePlayer().ToggleGravLock();
+                        break;
+                    case 7:// MENU
+                        CreateNewGrid();
+                        break;
+                    case 8:// L_STICK
+                        break;
+                    case 9:// R_STICK
+                        break;
+                    case 10://??
+                        break;
                 }
-                if (buttonCode == 2) {
-                    //FIRE MAIN
-                    if(numBlocks > 0) {
-                        GameManager.ins().getThePlayer().FireMain();
-                        numBlocks--;
-                    }
-                }
-                if (buttonCode == 6) {
-                    //FIRE MAIN
-                    GameManager.ins().getThePlayer().ToggleGravLock();
-                }
-                if (buttonCode == 7) {
-                    if(numBlocks > 0) {
-                        numBlocks--;
-                        VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX), GameManager.ins().getThePlayer().myBody.getPosition());
-                        WorldManager.ins().addGridToWorld(new StaticGrid(vc));
-                    }
-                }
-//                if (buttonCode == 9) {
-//                    //ZOOM IN
-//                    CameraManager.ins().mainCamera.zoom-=.01;
-//                }
-//                if (buttonCode == 8) {
-//                    //ZOOM OUT
-//                    CameraManager.ins().mainCamera.zoom+=.01;
-//                }
-//                if (buttonCode == 4) {
-//                    WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, tip.blockName);
-//                }
-//                if (buttonCode == 5) {
-//                    WorldManager.ins().removeVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
-//                }
                 return false;
             }
 
             @Override
             public boolean axisMoved(Controller controller, int axisCode, float value) {
-                //axis
-//                if (axisCode == 4 && value > .5) {
-//                    GameManager.ins().getThePlayer().RotateLeft();
-//                } else if (axisCode == 4 && value < -.5) {
-//                    GameManager.ins().getThePlayer().RotateRight();
-//                }
-//                if (axisCode == 0 && value < -.5) {
-//                    GameManager.ins().getThePlayer().GoForeward();
-//                } else if (axisCode == 0 && value > .5) {
-//                    GameManager.ins().getThePlayer().GoBackward();
-//                }
-//                if (axisCode == 1 && value < -.5) {
-//                    GameManager.ins().getThePlayer().GoLeft();
-//                    GameManager.ins().getThePlayer().TurnLeft();
-//                } else if (axisCode == 1 && value > .5) {
-//                    GameManager.ins().getThePlayer().GoRight();
-//                    GameManager.ins().getThePlayer().TurnRight();
-//                }
-//
-//                if(axisCode == 3 &&(value > .05 || value < -.05)){
-//                    GameManager.ins().getThePlayer().buildPosition.x+=value*5;
-//                }
-//                if(axisCode == 2 &&(value > .05 || value < -.05)) {
-//                    GameManager.ins().getThePlayer().buildPosition.y -= value * 5;
-//                }
-//                GUIManager.ins().targetPosition = GameManager.ins().getThePlayer().buildPosition;
                 return false;
             }
 
@@ -176,13 +143,16 @@ public class ControllerManager {
     public void Update(float delta){
         if(Controllers.getControllers().size > 0) {
 //            //axis
+            rightStickVec = new Vector2(Controllers.getControllers().get(0).getAxis(0),Controllers.getControllers().get(0).getAxis(1)).nor();
+            leftStickVec  = new Vector2(Controllers.getControllers().get(0).getAxis(2),Controllers.getControllers().get(0).getAxis(3)).nor();
+
             if (Controllers.getControllers().get(0).getAxis(4) > .5) {
                 GameManager.ins().getThePlayer().RotateLeft();
             } else if (Controllers.getControllers().get(0).getAxis(4) < -.5) {
                 GameManager.ins().getThePlayer().RotateRight();
             }
             if (Controllers.getControllers().get(0).getAxis(0) < -.5) {
-                GameManager.ins().getThePlayer().GoForeward();
+                //GameManager.ins().getThePlayer().GoForeward();
             } else if (Controllers.getControllers().get(0).getAxis(0) > .5) {
                 GameManager.ins().getThePlayer().GoBackward();
             }
@@ -212,6 +182,9 @@ public class ControllerManager {
 //                //FIRE MAIN
 //                GameManager.ins().getThePlayer().FireMain();
 //            }
+            if (Controllers.getControllers().get(0).getButton(0)) {
+               Jump();
+            }
             if (Controllers.getControllers().get(0).getButton(9)) {
                 //ZOOM IN
                 CameraManager.ins().ZoomIn();
@@ -295,6 +268,28 @@ public class ControllerManager {
             currentColorIndex = IDs.ins().getNumColorIds()-1;
         playersCurrentColor = IDs.ins().getColor(currentColorIndex);
 
+    }
+    public void TogglePlayerControl(){
+        if(GameManager.ins().getThePlayer().isControlling())
+            GameManager.ins().getThePlayer().Exit();
+        else
+            GameManager.ins().getThePlayer().Enter(GameManager.ins().getThePlayer().lastControlled);
+    }
+    public void Jump(){
+        GameManager.ins().getThePlayer().GoForeward();
+    }
+    public void FireMain(){
+        if(numBlocks > 0) {
+            GameManager.ins().getThePlayer().FireMain(rightStickVec);
+            numBlocks--;
+        }
+    }
+    public void CreateNewGrid(){
+        if(numBlocks > 0) {
+            numBlocks--;
+            VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX), GameManager.ins().getThePlayer().myBody.getPosition());
+            WorldManager.ins().addGridToWorld(new StaticGrid(vc));
+        }
     }
 
 

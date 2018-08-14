@@ -1,7 +1,7 @@
 package com.kinglogic.game.Models;
 
 import com.badlogic.gdx.graphics.Color;
-import com.kinglogic.game.Actors.Voxel.Voxel;
+import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 
 import org.json.JSONArray;
@@ -42,7 +42,7 @@ public class VoxelCollectionModel {
             String name = j.getString("name");
             int props = j.getInt("properties");
             Voxel v = new Voxel(name);
-            v.properties.setData((byte) props);
+            v.properties.setProps((byte) props);
             Color c = new Color();
             c.r = j.getFloat("r");
             c.g = j.getFloat("g");
@@ -59,7 +59,7 @@ public class VoxelCollectionModel {
     public static JSONObject jsonifyVoxel(Voxel v){
         JSONObject json = new JSONObject();
         json.put("name", v.getName());
-        json.put("properties", v.properties.getData());
+        json.put("properties", v.properties.getProps());
         json.put("r", v.getColor().r);
         json.put("g", v.getColor().g);
         json.put("b", v.getColor().b);

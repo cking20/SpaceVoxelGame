@@ -17,18 +17,23 @@ import java.util.HashSet;
  * Created by chris on 4/11/2018.
  */
 
+//todo just use a builder pattern jezzzz
 public class PhysicsShape {
     public Shape shape;
     public FixtureDef fixtureDef;
     public Fixture fixture;
 
+    public static float density = .5f;
+    public static float friction = .4f;
+    public static float restitution = .1f;
+
 
     public PhysicsShape(Shape s, Body b){
         shape = s;
         fixtureDef = new FixtureDef();
-        fixtureDef.density = 5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+        fixtureDef.density = density;
+        fixtureDef.friction = friction;
+        fixtureDef.restitution = restitution;
         fixtureDef.shape = shape;
         fixture = b.createFixture(fixtureDef);
 
@@ -41,9 +46,9 @@ public class PhysicsShape {
         shape = c;
         shape.setRadius(radius);
         fixtureDef = new FixtureDef();
-        fixtureDef.density = 5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+        fixtureDef.density = density;
+        fixtureDef.friction = friction;
+        fixtureDef.restitution = restitution;
         fixtureDef.shape = shape;
         fixture = b.createFixture(fixtureDef);
 
@@ -56,9 +61,9 @@ public class PhysicsShape {
         shape = c;
         shape.setRadius(radius);
         fixtureDef = new FixtureDef();
-        fixtureDef.density = 5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+        fixtureDef.density = density;
+        fixtureDef.friction = friction;
+        fixtureDef.restitution = restitution;
         fixtureDef.shape = shape;
         fixture = b.createFixture(fixtureDef);
 
@@ -71,21 +76,20 @@ public class PhysicsShape {
         shape = ps;
 
         fixtureDef = new FixtureDef();
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+        fixtureDef.density = density;
+        fixtureDef.friction = friction;
+        fixtureDef.restitution = restitution;
         fixtureDef.shape = shape;
         fixture = b.createFixture(fixtureDef);
-
     }
     public PhysicsShape(Body b, float height, float width, Vector2 center, float rotation){
         PolygonShape ps = ResourceManager.ins().getNewPolyShape();
         ps.setAsBox(height,width, center, rotation);
         shape = ps;
         fixtureDef = new FixtureDef();
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f; // Make it bounce a little bit
+        fixtureDef.density = density;
+        fixtureDef.friction = friction;
+        fixtureDef.restitution = restitution;
         fixtureDef.shape = shape;
         fixture = b.createFixture(fixtureDef);
 

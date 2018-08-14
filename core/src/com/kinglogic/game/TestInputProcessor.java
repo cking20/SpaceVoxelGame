@@ -3,32 +3,18 @@ package com.kinglogic.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.ControllerAdapter;
-import com.badlogic.gdx.controllers.ControllerListener;
-import com.badlogic.gdx.controllers.Controllers;
-import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.kinglogic.game.AI.BaseAIBody;
-import com.kinglogic.game.AI.DestructoEnemy;
 import com.kinglogic.game.AI.RobotFriend;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
-import com.kinglogic.game.Actors.Voxel.Voxel;
-import com.kinglogic.game.Managers.CameraManager;
+import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Managers.ControllerManager;
 import com.kinglogic.game.Managers.GUIManager;
 import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.IDs;
-import com.kinglogic.game.Managers.PCGManager;
-import com.kinglogic.game.Managers.PersistenceManager;
-import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.DynamicGrid;
-import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
-import com.kinglogic.game.Physics.Projectile;
-import com.kinglogic.game.Player.PlayerBody;
 
 /**
  * Created by chris on 4/1/2018.

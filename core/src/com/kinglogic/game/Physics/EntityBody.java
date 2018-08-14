@@ -8,18 +8,23 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
+import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
+import com.kinglogic.game.ChemestryFramework.ChemistryManager;
+import com.kinglogic.game.ChemestryFramework.MaterialModel;
+import com.kinglogic.game.ChemestryFramework.Properties;
 import com.kinglogic.game.Interfaces.Controllable;
 import com.kinglogic.game.Managers.CameraManager;
 import com.kinglogic.game.Managers.ResourceManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Created by chris on 4/12/2018.
  */
 
-public class EntityBody  implements Controllable{
+public class EntityBody  implements Controllable, MaterialModel{
     public Entity view;
     public Body myBody;
     //public ChainShape shape;
@@ -28,12 +33,21 @@ public class EntityBody  implements Controllable{
     public BodyDef bodyDef;
     protected Controllable controlling;
     public Controllable lastControlled;
+    private boolean gravLock = false;
+    protected EntityProperties properties;
+
 
     public float viewDistance = 20f;
     public float speed = 1000f;
     protected ArrayList<EntityBody> perceptions;
 
     public EntityBody(String name, Vector2 position){
+        properties = new EntityProperties();
+        properties.setProperty(true, Properties.AFFECTED_BY_GRAVITY);
+        properties.setProperty(true, Properties.COLLIDABLE);
+        properties.setProperty(true, Properties.ELECTRICUTABLE);
+        properties.setProperty(true, Properties.FLAMMABLE);
+
         perceptions = new ArrayList<EntityBody>();
         view = new Entity(name);
         bodyDef = new BodyDef();
@@ -79,12 +93,24 @@ public class EntityBody  implements Controllable{
         //voxels.rotateBy(10f);
         //System.out.println("rot="+myBody.getTransform().getRotation());
         view.setRotation((float) Math.toDegrees(myBody.getTransform().getRotation()));
+
+        //apply gravity
+        if(properties.gravity != null) {
+            Vector2 artificialGravity = new Vector2(properties.gravity);
+            artificialGravity.rotate((myBody.getTransform().getRotation()));
+            myBody.applyForceToCenter(artificialGravity.x, artificialGravity.y, true);
+        }
     }
     public void enterSight(EntityBody seeing){
         perceptions.add(seeing);
     }
     public void exitSight(EntityBody seeing){
         perceptions.remove(seeing);
+    }
+
+    public void ToggleGravLock(){
+        gravLock = !gravLock;
+        myBody.setFixedRotation(gravLock);
     }
 
     public void dispose(){
@@ -165,7 +191,17 @@ public class EntityBody  implements Controllable{
     }
 
     @Override
+    public void FireMain(Vector2 direction) {
+
+    }
+
+    @Override
     public void FireAlt() {
+
+    }
+
+    @Override
+    public void FireAlt(Vector2 direction) {
 
     }
 
@@ -192,5 +228,28 @@ public class EntityBody  implements Controllable{
     @Override
     public Actor GetView() {
         return view;
+    }
+
+    @Override
+    public LinkedList<ChemicalEvent> Output() {
+        return null;
+    }
+
+    @Override
+    public boolean Update(float delta) {
+        properties.gravity = null;
+        return false;
+    }
+
+    @Override
+    public void Recieve(ChemicalEvent event) {
+        switch (event.event){
+            case SEND_GRAVITY:
+                if(properties.hasProperty(Properties.AFFECTED_BY_GRAVITY)) {
+                    System.out.println("setting gravity of " + this + " to " + event.position);
+                    properties.gravity = event.position;
+                    ChemistryManager.ins().CheckThis(this);
+                }
+        }
     }
 }

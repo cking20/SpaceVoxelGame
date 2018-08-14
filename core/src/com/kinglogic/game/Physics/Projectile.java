@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.kinglogic.game.Actors.Entities.Entity;
+import com.kinglogic.game.ChemestryFramework.Properties;
 import com.kinglogic.game.Managers.ResourceManager;
 
 /**
@@ -17,7 +18,8 @@ public class Projectile extends EntityBody{
         super(name, position);
         bodyDef.linearDamping =0f;
         bodyDef.bullet = true;
-        this.speed = 2000f;
+        this.properties.setProperty(false,Properties.AFFECTED_BY_GRAVITY);
+        this.speed = 5000f;
     }
     @Override
     public void CreateFixture(){
