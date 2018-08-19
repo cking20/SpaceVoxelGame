@@ -67,12 +67,6 @@ public class WorldManager {
     private boolean queuedWorldSave = false;
     private String toLoad = "infinity";
     private boolean queuedWorldLoad = false;
-    private int lastKnownPlayerPositionX = 0;
-    private int lastKnownPlayerPositionY = 0;
-
-
-
-
 
 //    private Image background;
     private ParallaxBG background;
@@ -147,6 +141,12 @@ public class WorldManager {
         queuedWorldSave = true;
     }
 
+    public void clearLevel(){
+        gridRemovalQueue.addAll(currentLevel.grids);
+        entityRemovalQueue.addAll(currentLevel.entities);
+        entityRemovalQueue.remove(GameManager.ins().getThePlayer());
+        gridRemovalQueue.remove(GameManager.ins().getThePlayer().lastControlled);
+    }
 
     public void removeVoxelScreenPosition(float x, float y){
 //        boolean hitFlag = false;
@@ -241,7 +241,7 @@ public class WorldManager {
         if(queuedWorldSave) {
             queuedWorldSave = false;
             currentLevel.entities.remove(GameManager.ins().getThePlayer());
-            PersistenceManager.ins().SaveCurretWorldState();
+            PersistenceManager.ins().SaveCurrentWorldState();
             currentLevel.entities.add(GameManager.ins().getThePlayer());
         }
         if(queuedWorldLoad){
@@ -417,7 +417,7 @@ public class WorldManager {
     }
 
     public void addGridToWorld(Grid d){
-        System.out.println("add called...");
+        System.out.println("add called on "+ d);
         if(!currentLevel.grids.contains(d)) {
             System.out.println("adding grid...");
             gridsGroup.addActor(d.voxels);
@@ -526,30 +526,28 @@ public class WorldManager {
 
     private void checkWorldGeneration(){
         //todo map the player position to an index and save/load appropriate secotrs
-//        currentLevel
-        Vector2 newIndex = WorldState.mapToChunkIndex(GameManager.ins().getThePlayer().myBody.getPosition());
-        int newX = (int)newIndex.x;
-        int newY = (int)newIndex.y;
-        //System.out.println("new"+newY+ "old"+lastKnownPlayerPositionY);
-        //byte alreadyloaded = 0;// bottom left, bottom right, top right, top left
+        int newX, oldX = currentLevel.getCenterX();
+        int newY, oldY = currentLevel.getCenterY();
+        newX = oldX;
+        newY = oldY;
+        if(GameManager.ins().getThePlayer().myBody.getPosition().x > Constants.SECTOR_SIZE/2)
+            newX++;
+        if(GameManager.ins().getThePlayer().myBody.getPosition().x < -Constants.SECTOR_SIZE/2)
+            newX--;
+        if(GameManager.ins().getThePlayer().myBody.getPosition().y > Constants.SECTOR_SIZE/2)
+            newY++;
+        if(GameManager.ins().getThePlayer().myBody.getPosition().y < -Constants.SECTOR_SIZE/2)
+            newY--;
+        newX %= Constants.NUM_SECTORS/2;
+        newY %= Constants.NUM_SECTORS/2;
+        if(newX != oldX || newY != oldY)
+            currentLevel.ShiftTo(newX,newY);
 
-        if(newX > lastKnownPlayerPositionX){
-            System.out.println("shify right");
-            currentLevel.ShiftRight(newX, lastKnownPlayerPositionY);
-            lastKnownPlayerPositionX = newX;
-        } else if(newX < lastKnownPlayerPositionX){
-            System.out.println("shify left");
-            currentLevel.ShiftLeft(newX, lastKnownPlayerPositionY);
-            lastKnownPlayerPositionX = newX;
-        }else if(newY > lastKnownPlayerPositionY){
-            System.out.println("shify up");
-            currentLevel.ShiftCenterUp(lastKnownPlayerPositionX, newY);
-            lastKnownPlayerPositionY = newY;
-        } else if(newY < lastKnownPlayerPositionY){
-            System.out.println("shify down");
-            currentLevel.ShiftDown(lastKnownPlayerPositionX, newY);
-            lastKnownPlayerPositionY = newY;
-        }
+
+
+
+
+
 
         return;
     }
@@ -558,7 +556,7 @@ public class WorldManager {
         Filter f = new Filter();
         f.maskBits = FilterIDs.GRID;
         PointLight pl = new PointLight(rayHandler,60, new Color(Color.rgba8888(.40f, .40f, .20f, 1.0f)),
-                ResourceManager.voxelPixelSize*40, 0,0);
+                ResourceManager.VOXEL_PIXEL_SIZE *40, 0,0);
         pl.setContactFilter(f);
         pl.attachToBody(b,8f,8f);
         pl.setSoftnessLength(100f);

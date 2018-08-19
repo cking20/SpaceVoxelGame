@@ -45,8 +45,8 @@ public class SectorState {
             }
             for (int k = 0; k < v; k++) {
                 Vector2 spawn = WorldState.mapFromChunkIndex(x,y);
-                spawn.x += MathUtils.random(ResourceManager.voxelPixelSize* Constants.MAX_SIZE);
-                spawn.y += MathUtils.random(ResourceManager.voxelPixelSize* Constants.MAX_SIZE);
+                spawn.x += MathUtils.random(ResourceManager.VOXEL_PIXEL_SIZE * Constants.MAX_GRID_SIZE);
+                spawn.y += MathUtils.random(ResourceManager.VOXEL_PIXEL_SIZE * Constants.MAX_GRID_SIZE);
                 WorldManager.ins().addEntityToWorld(new DestructoEnemy("Yellowparasite", spawn));
             }
         }

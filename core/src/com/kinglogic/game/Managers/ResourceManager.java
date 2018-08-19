@@ -25,7 +25,7 @@ import java.util.Queue;
  */
 
 public class ResourceManager {
-    public static final int voxelPixelSize = 16;
+    public static final int VOXEL_PIXEL_SIZE = 16;
     public Skin ui;
 
     private static ResourceManager instance;

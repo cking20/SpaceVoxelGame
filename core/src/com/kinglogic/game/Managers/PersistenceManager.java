@@ -49,7 +49,7 @@ public class PersistenceManager {
 
     }
 
-    public void SaveCurretWorldState(){
+    public void SaveCurrentWorldState(){
         synchronized (WorldManager.ins().currentLevel) {
             System.out.println("saving "+WorldManager.ins().currentLevel);
             File worldDir = new File(Gdx.files.getLocalStoragePath() + "/savedata/" + WorldManager.ins().getWorldName());
@@ -68,12 +68,8 @@ public class PersistenceManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            SaveLevel(WorldManager.ins().currentLevel.sector);
 
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    SaveLevel(WorldManager.ins().currentLevel.sectors[i][j]);
-                }
-            }
         }
     }
 
@@ -111,15 +107,6 @@ public class PersistenceManager {
             WorldManager.ins().currentLevel.LoadUpSector();
         }
 
-    }
-
-    public void SaveAndLeaveLevel(SectorState s){
-        System.out.println("leaving "+s.x+", "+s.y);
-        SaveLevel(s);
-        ArrayList<Grid> grids = WorldManager.ins().currentLevel.GetGridsInSector(s);
-        for(Grid g: grids){
-            WorldManager.ins().removeGridFromWorld(g);
-        }
     }
 
     public void SaveLevel(SectorState s){
@@ -192,14 +179,17 @@ public class PersistenceManager {
                     DynamicGrid d = GridStateModel.unjsonifyDynamicGrid(new JSONObject(gridJson));
                     loaded.add(d);
                 }
+                System.out.println("Loaded "+ loaded.size()+" grids");
                 WorldManager.ins().currentLevel.PopulateGrids(loaded);
                 return ret;
-            }catch (FileNotFoundException e){
+            }catch (FileNotFoundException e) {
                 e.printStackTrace();
+                System.out.print("creating new sector");
                 return new SectorState(x+","+y,x,y, true);
             }
         }else {
             //create new
+            System.out.print("creating new sector");
             return new SectorState(x+","+y,x,y, true);
         }
     }

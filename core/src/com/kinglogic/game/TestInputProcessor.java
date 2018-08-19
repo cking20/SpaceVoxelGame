@@ -45,14 +45,14 @@ public class TestInputProcessor implements InputProcessor {
 //        float[][] densities = PCGManager.ins().genDensityMap(seededMap, .1f, .5f);
 //        for (int i = 0; i < densities.length; i++) {
 //            for (int j = 0; j < densities[0].length; j++) {
-//                WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),(j*ResourceManager.voxelPixelSize*50)-(3*ResourceManager.voxelPixelSize*50), 50, densities[i][j]);
+//                WorldManager.ins().GenerateAsteroid((i*ResourceManager.VOXEL_PIXEL_SIZE*50)-(5*ResourceManager.VOXEL_PIXEL_SIZE*50),(j*ResourceManager.VOXEL_PIXEL_SIZE*50)-(3*ResourceManager.VOXEL_PIXEL_SIZE*50), 50, densities[i][j]);
 //            }
 //        }
 
 
         ////
 //        for (int i = 0; i < 10; i++) {
-//            WorldManager.ins().GenerateAsteroid((i*ResourceManager.voxelPixelSize*50)-(5*ResourceManager.voxelPixelSize*50),100, 50, (float)i/20f+.1f);
+//            WorldManager.ins().GenerateAsteroid((i*ResourceManager.VOXEL_PIXEL_SIZE*50)-(5*ResourceManager.VOXEL_PIXEL_SIZE*50),100, 50, (float)i/20f+.1f);
 //        }
 
 //        VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.getIDList().get(0)),new Vector2(800,550));

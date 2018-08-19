@@ -1,14 +1,9 @@
 package com.kinglogic.game.Managers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Align;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
-import com.kinglogic.game.Physics.Grid;
-import com.kinglogic.game.TestInputProcessor;
 
 /**
  * Created by chris on 4/14/2018.
@@ -41,16 +36,16 @@ public class CameraManager {
             if(toTrack instanceof VoxelCollection) {
                 /*
                 mainCamera.translate(new Vector2(
-                        toTrack.getX() + VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize,
-                        toTrack.getY() + VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize));//best so far
+                        toTrack.getX() + VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE,
+                        toTrack.getY() + VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE));//best so far
                 mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);
                 */
                 mainCamera.translate(new Vector2(
                         toTrack.getX(),
                         toTrack.getY()));//best so far
                 Vector2 rotTrans = new Vector2(
-                        VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize,
-                        VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
+                        VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE,
+                        VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE);
                 rotTrans = rotTrans.rotate(toTrack.getRotation());
                 mainCamera.translate(rotTrans);
                 mainCamera.up.set(new Vector2(0,1).rotate(toTrack.getRotation()), 0);

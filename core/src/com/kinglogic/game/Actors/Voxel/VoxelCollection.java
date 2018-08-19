@@ -21,7 +21,7 @@ import java.util.PriorityQueue;
  * Holds Data pertaining to grid of squares
  */
 public class VoxelCollection extends Group {
-    public static int maxSize = Constants.MAX_SIZE;
+    public static int maxSize = Constants.MAX_GRID_SIZE;
     Voxel[][] grid;
 
     /**
@@ -38,11 +38,11 @@ public class VoxelCollection extends Group {
 
         grid[maxSize/2][maxSize/2] = v;
         super.addActor(v);
-        v.setPosition((maxSize/2)*ResourceManager.voxelPixelSize,(maxSize/2)*ResourceManager.voxelPixelSize);
+        v.setPosition((maxSize/2)*ResourceManager.VOXEL_PIXEL_SIZE,(maxSize/2)*ResourceManager.VOXEL_PIXEL_SIZE);
         //todo use v.origin(changes the last bit to +pix/2)
         setPosition(
-                position.x-((maxSize * ResourceManager.voxelPixelSize)/2),
-                position.y-((maxSize * ResourceManager.voxelPixelSize)/2));
+                position.x-((maxSize * ResourceManager.VOXEL_PIXEL_SIZE)/2),
+                position.y-((maxSize * ResourceManager.VOXEL_PIXEL_SIZE)/2));
     }
 
     public VoxelCollection(){
@@ -69,7 +69,7 @@ public class VoxelCollection extends Group {
                 }
             }
         }
-        //v.setPosition((maxSize/2)*ResourceManager.voxelPixelSize,(maxSize/2)*ResourceManager.voxelPixelSize);
+        //v.setPosition((maxSize/2)*ResourceManager.VOXEL_PIXEL_SIZE,(maxSize/2)*ResourceManager.VOXEL_PIXEL_SIZE);
         //todo use v.origin(changes the last bit to +pix/2)
         setPosition(
                 position.x,
@@ -117,7 +117,7 @@ public class VoxelCollection extends Group {
         if(verifyVoxelPlacement(x,y)) {
             grid[x][y] = v;
             super.addActor(v);
-            v.setPosition((x * ResourceManager.voxelPixelSize), (y * ResourceManager.voxelPixelSize));
+            v.setPosition((x * ResourceManager.VOXEL_PIXEL_SIZE), (y * ResourceManager.VOXEL_PIXEL_SIZE));
             return true;
         } else return false;
     }
@@ -127,7 +127,7 @@ public class VoxelCollection extends Group {
         if(grid[x][y] == null) {
             grid[x][y] = v;
             super.addActor(v);
-            v.setPosition((x * ResourceManager.voxelPixelSize), (y * ResourceManager.voxelPixelSize));
+            v.setPosition((x * ResourceManager.VOXEL_PIXEL_SIZE), (y * ResourceManager.VOXEL_PIXEL_SIZE));
             return true;
         }
         return false;
@@ -269,8 +269,8 @@ public class VoxelCollection extends Group {
      */
     private Vector2 mapWorldPointToIndexies(Vector2 worldPos){
         worldPos = this.stageToLocalCoordinates(worldPos);
-        worldPos.x = (int)(worldPos.x/ResourceManager.voxelPixelSize);
-        worldPos.y = (int)(worldPos.y/ResourceManager.voxelPixelSize);
+        worldPos.x = (int)(worldPos.x/ResourceManager.VOXEL_PIXEL_SIZE);
+        worldPos.y = (int)(worldPos.y/ResourceManager.VOXEL_PIXEL_SIZE);
         return worldPos;
     }
 
@@ -283,8 +283,8 @@ public class VoxelCollection extends Group {
     public Vector2 mapIndexesToWorldPos(int i, int j){
         //todo test this
         Vector2 worldPos = new Vector2(getX(), getY());
-        worldPos.x += i * ResourceManager.voxelPixelSize;
-        worldPos.y += j * ResourceManager.voxelPixelSize;
+        worldPos.x += i * ResourceManager.VOXEL_PIXEL_SIZE;
+        worldPos.y += j * ResourceManager.VOXEL_PIXEL_SIZE;
         return worldPos;
     }
 

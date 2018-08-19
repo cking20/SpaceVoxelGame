@@ -148,32 +148,32 @@ public class VoxelUtils {
         }
         return edges;
     }
-    /*              bottom left      new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize)
-                    bottom right     new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize)
-                    top right        new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize)
-                    top left         new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize)     */
+    /*              bottom left      new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE)
+                    bottom right     new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE)
+                    top right        new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE)
+                    top left         new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE)     */
     private static FromEdge GetTop(int i,int j){
         return new FromEdge(
-                new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize),
-                new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize)
+                new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE),
+                new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE)
                 );
     }
     private static FromEdge GetLeft(int i,int j){
         return new FromEdge(
-                new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize),
-                new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize)
+                new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE),
+                new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE)
         );
     }
     private static FromEdge GetRight(int i,int j){
         return new FromEdge(
-                new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize),
-                new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize)
+                new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE),
+                new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE)
         );
     }
     private static FromEdge GetBottom(int i,int j){
         return new FromEdge(
-                new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize),
-                new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize)
+                new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE),
+                new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE)
         );
 
     }
@@ -225,7 +225,7 @@ public class VoxelUtils {
             List<Vector2[]> chainsList = new LinkedList<Vector2[]>();
 
 
-            Vector2 firstPos = new Vector2(firstX*ResourceManager.voxelPixelSize, firstY*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
+            Vector2 firstPos = new Vector2(firstX*ResourceManager.VOXEL_PIXEL_SIZE, firstY*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE);
 //            System.out.println("adding first position = "+firstPos);
 
             if(edgeslist.size() == 0){
@@ -237,7 +237,7 @@ public class VoxelUtils {
                 LinkedList<FromEdge> currentList = edgeslist.remove(firstPos);
                 if (currentList == null) {
                     //meaning we hit an edge case such that the first position isnt in the top left, its in the top right
-                    firstPos = new Vector2(firstX * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, firstY * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
+                    firstPos = new Vector2(firstX * ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, firstY * ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE);
                     currentList = edgeslist.remove(firstPos);
                     if (currentList == null){//then its really northing there
 //                        System.out.println("null currents list");
@@ -289,10 +289,10 @@ public class VoxelUtils {
             for(int j = 0; j < state[0].length; j++){
                 if(state[i][j] != null && state[i][j].properties.hasProperty(VoxelProperties.COLLIDABLE)){
                     foundOneFlag = true;
-                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
-                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
-                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize));
-                    verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, j*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                    verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE));
+                    verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE));
+                    verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE));
+                    verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE));
                 }
             }
         }
@@ -324,20 +324,20 @@ public class VoxelUtils {
                     if(drawing){
                         drawing = !drawing;
                         endPos = j-1;
-                        verts.add(new Vector2(i*ResourceManager.voxelPixelSize, endPos*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
-                        verts.add(new Vector2(i*ResourceManager.voxelPixelSize, startPos*ResourceManager.voxelPixelSize));
-                        verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, startPos*ResourceManager.voxelPixelSize));
-                        verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, endPos*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                        verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, endPos*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE));
+                        verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, startPos*ResourceManager.VOXEL_PIXEL_SIZE));
+                        verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, startPos*ResourceManager.VOXEL_PIXEL_SIZE));
+                        verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, endPos*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE));
                     }
                 }
             }
             if(drawing){
                 drawing = !drawing;
                 endPos = state[0].length-1;
-                verts.add(new Vector2(i*ResourceManager.voxelPixelSize, endPos*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
-                verts.add(new Vector2(i*ResourceManager.voxelPixelSize, startPos*ResourceManager.voxelPixelSize));
-                verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, startPos*ResourceManager.voxelPixelSize));
-                verts.add(new Vector2(i*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, endPos*ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize));
+                verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, endPos*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE));
+                verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, startPos*ResourceManager.VOXEL_PIXEL_SIZE));
+                verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, startPos*ResourceManager.VOXEL_PIXEL_SIZE));
+                verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, endPos*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE));
             }
         }
         if(foundOneFlag){

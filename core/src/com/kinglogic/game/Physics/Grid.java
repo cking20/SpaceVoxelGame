@@ -108,10 +108,10 @@ public class Grid implements Controllable, MaterialModel{
             } else {
                 System.err.println("default shape");
 //                verts = new Vector2[4];
-//                verts[0] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
-//                verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize);
-//                verts[2] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
-//                verts[3] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize, VoxelCollection.maxSize / 2 * ResourceManager.voxelPixelSize + ResourceManager.voxelPixelSize);
+//                verts[0] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE, VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE);
+//                verts[1] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE);
+//                verts[2] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE);
+//                verts[3] = new Vector2(VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE, VoxelCollection.maxSize / 2 * ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE);
 //                if(myBody != null) {
                     /*
                     for (PhysicsShape s : (HashSet<PhysicsShape>) physicsShapes.clone()) {
@@ -130,7 +130,7 @@ public class Grid implements Controllable, MaterialModel{
             }
 
 //        bodyDef.position.set(voxels.getX(),voxels.getY());
-        //voxels.setOrigin((ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2-ResourceManager.voxelPixelSize/2,(ResourceManager.voxelPixelSize * VoxelCollection.maxSize)/2 - ResourceManager.voxelPixelSize/2);
+        //voxels.setOrigin((ResourceManager.VOXEL_PIXEL_SIZE * VoxelCollection.maxSize)/2-ResourceManager.VOXEL_PIXEL_SIZE/2,(ResourceManager.VOXEL_PIXEL_SIZE * VoxelCollection.maxSize)/2 - ResourceManager.VOXEL_PIXEL_SIZE/2);
     }
 
     public List<Vector2[]> recalculateVerts(){
