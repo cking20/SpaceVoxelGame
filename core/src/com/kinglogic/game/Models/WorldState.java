@@ -68,7 +68,7 @@ public class WorldState {
         return new Vector2(((float) x)*chunkSize* ResourceManager.voxelPixelSize,((float) y)*chunkSize*ResourceManager.voxelPixelSize);
     }
 
-    public void LoadUpSectors(){
+    public void LoadUpSector(){
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 sectors[i+1][j+1] = PersistenceManager.ins().LoadLevel((x+i),(y+j));

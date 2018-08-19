@@ -59,6 +59,7 @@ public class WorldManager {
 
     private ArrayList<EntityBody> entityRemovalQueue;
     private ArrayList<Grid> gridRemovalQueue;
+    private ArrayList<Grid> gridRecalculationQueue;
 
     //private String worldName;
     public WorldState currentLevel;
@@ -95,6 +96,7 @@ public class WorldManager {
         playerRemovalQueue = new ArrayList<Vector2>();
         entityRemovalQueue = new ArrayList<EntityBody>();
         gridRemovalQueue = new ArrayList<Grid>();
+        gridRecalculationQueue = new ArrayList<Grid>();
         addalQueue = new ArrayList<Vector2>();
         fapsLogger = new FPSLogger();
         viewCam = CameraManager.ins().mainCamera;
@@ -107,6 +109,7 @@ public class WorldManager {
             worldStage.setDebugUnderMouse(true);
         }
         worldPhysics.setContactListener(new WorldContactListner());
+
         rayHandler = new RayHandler(worldPhysics);
         rayHandler.setAmbientLight(.8f);//.8f);
         rayHandler.setShadows(true);
@@ -181,6 +184,17 @@ public class WorldManager {
             }
         }
         return null;
+    }
+
+    public ArrayList<Grid> getGridsAtWorldPos(Vector2 pos){
+        HashSet<Grid> gridsClone = (HashSet<Grid>) currentLevel.grids.clone();
+        ArrayList<Grid> grids = new ArrayList<Grid>();
+        for(Grid g : gridsClone){
+            if(g.isWorldPositionInGrid(new Vector2(pos.x,pos.y))){
+                grids.add(g);
+            }
+        }
+        return grids;
     }
 
 
@@ -322,6 +336,13 @@ public class WorldManager {
         }
         entityRemovalQueue.clear();
 
+        for(Grid g: gridRecalculationQueue){
+            if(g != null && g.myBody != null){
+                g.recalculateShape();
+            }
+        }
+        gridRecalculationQueue.clear();
+
         for(Grid g : gridRemovalQueue){
             //System.out.println("REMOVING " + e);
             if(g == null){
@@ -411,6 +432,7 @@ public class WorldManager {
             currentLevel.grids.add(d);
         }
     }
+
     public void LoadGridToWorld(Grid d){
             gridsGroup.addActor(d.voxels);
             //todo make funciton in Grid to parse through voxels and create fixture
@@ -424,6 +446,7 @@ public class WorldManager {
             currentLevel.grids.add(d);
 
     }
+
     public void removeGridFromWorld(Grid g){
         System.out.println("remove grid called");
         if(!currentLevel.grids.remove(g)){
@@ -439,6 +462,11 @@ public class WorldManager {
         }
     }
 
+    public void recalculateGrid(Grid g){
+        if(!gridRecalculationQueue.contains(g))
+            gridRecalculationQueue.add(g);
+    }
+
     public void addEntityToWorld(EntityBody e){
         if(!currentLevel.entities.contains(e)) {
             entityGroup.addActor(e.view);
@@ -449,6 +477,7 @@ public class WorldManager {
             currentLevel.entities.add(e);
         }
     }
+
     public void LoadEntityToWorld(EntityBody e){
             entityGroup.addActor(e.view);
             e.myBody = worldPhysics.createBody(e.bodyDef);
@@ -457,6 +486,7 @@ public class WorldManager {
             e.CreateSight(e.viewDistance);
             //currentLevel.entities.add(e);
     }
+
     public void removeEntityFromWorld(EntityBody e){
         entityRemovalQueue.add(e);
     }
@@ -476,7 +506,6 @@ public class WorldManager {
                 gridRemovalQueue.add(g);
     }
 
-
     public void GenerateAsteroid(int posX, int posY, int size, float density){
         int start = VoxelCollection.maxSize/2-size/2;
         int end = VoxelCollection.maxSize/2+size/2;
@@ -494,7 +523,6 @@ public class WorldManager {
         astGrid.voxels.checkAllConnected();
         astGrid.recalculateShape();
     }
-
 
     private void checkWorldGeneration(){
         //todo map the player position to an index and save/load appropriate secotrs

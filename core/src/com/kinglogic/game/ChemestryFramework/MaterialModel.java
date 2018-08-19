@@ -23,5 +23,11 @@ public interface MaterialModel {
      */
     void Recieve(ChemicalEvent event);
 
+    /**
+     * return the element of the model
+     * @return
+     */
+    ChemistryManager.Elements getPrimaryElement();
+
 
 }

@@ -24,7 +24,7 @@ public class PhysicsShape {
     public Fixture fixture;
 
     public static float density = .5f;
-    public static float friction = .4f;
+    public static float friction = .5f;
     public static float restitution = .1f;
 
 

@@ -34,7 +34,7 @@ public class Grid implements Controllable, MaterialModel{
     public HashSet<PhysicsShape> physicsShapes;
     public BodyDef bodyDef;
     public List<Vector2[]> verts;
-    public Vector2 gravity = new Vector2(0f,-98000f);
+    public Vector2 gravity = new Vector2(0f,-180000f);
 
     public Grid(VoxelCollection v){
         name = ""+(gridID++);
@@ -44,7 +44,7 @@ public class Grid implements Controllable, MaterialModel{
         if(myBody != null){
             PhysicsShape s = new PhysicsShape(ResourceManager.ins().getNewChainShape(), myBody);
             Filter filter = new Filter();
-            filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET;
+            filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET | FilterIDs.SENSOR;
             filter.categoryBits = FilterIDs.GRID;
             s.fixture.setFilterData(filter);
             physicsShapes.add(s);
@@ -72,6 +72,10 @@ public class Grid implements Controllable, MaterialModel{
         //voxels.rotateBy(10f);
         //System.out.println("rot="+myBody.getTransform().getRotation());
         voxels.setRotation((float) Math.toDegrees(myBody.getTransform().getRotation()));
+
+        Vector2 tempG = new Vector2(0f,-180000f).rotate((float) Math.toDegrees(myBody.getTransform().getRotation()));
+        gravity.x = tempG.x;
+        gravity.y = tempG.y;
     }
 
     /**
@@ -92,7 +96,7 @@ public class Grid implements Controllable, MaterialModel{
                     stat.createChain(chain);
                     PhysicsShape s = new PhysicsShape(stat, myBody);
                     Filter filter = new Filter();
-                    filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET;
+                    filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET | FilterIDs.SENSOR;
                     filter.categoryBits = FilterIDs.GRID;
                     s.fixture.setFilterData(filter);
                     physicsShapes.add(s);
@@ -288,11 +292,11 @@ public class Grid implements Controllable, MaterialModel{
 
     @Override
     public void setToControl(Controllable that){}
+
     @Override
     public Actor GetView() {
         return voxels;
     }
-
 
     //Needed to simulate fluids moving constantly
     @Override
@@ -307,12 +311,15 @@ public class Grid implements Controllable, MaterialModel{
 
     @Override
     public void Recieve(ChemicalEvent event) {
-        //todo send it to the voxel
         //get the voxel at event position
         Voxel effected = voxels.getVoxelAtWorldPosition(event.position);
-        if(effected == null) return;
-
-        System.out.println("effected != null, applying force");
+        if(effected == null){
+            switch (event.event){
+                default:
+                    break;
+            }
+            return;
+        }
 
         //apply grid specific actions
         switch (event.event){
@@ -331,24 +338,30 @@ public class Grid implements Controllable, MaterialModel{
         effected.Recieve(event);
     }
 
+    @Override
+    public ChemistryManager.Elements getPrimaryElement() {
+        return null;
+    }
+
     public void PropagateEvent(ChemicalEvent event, Voxel type, boolean connectedOnly){
         if(connectedOnly){
             //todo BFS
         }
         else{
+            //todo dont do this at all. its n^2 complexity. remove the boolean arg
             //all of that type
             Voxel[][] grid = voxels.getGrid();
             for (int i = 0; i < grid.length; i++) {
                 for (int j = 0; j < grid[i].length; j++) {
-                    type.getClass();
-                    if(grid[i][j].getClass().equals(type.getClass())){
-                        ChemicalEvent newEvent = new ChemicalEvent();
-                        newEvent.sentBy = this;
-                        newEvent.event = event.event;
-                        newEvent.element = event.element;
-                        newEvent.position = voxels.mapIndexesToWorldPos(i,j);
-                        ChemistryManager.ins().EnqueueEvent(newEvent);
-                    }
+                    if(grid[i][j] != null)
+                        if(grid[i][j].getClass().equals(type.getClass())){
+                            ChemicalEvent newEvent = new ChemicalEvent();
+                            newEvent.sentBy = this;
+                            newEvent.event = event.event;
+                            newEvent.element = event.element;
+                            newEvent.position = voxels.mapIndexesToWorldPos(i,j);
+                            ChemistryManager.ins().EnqueueEvent(newEvent);
+                        }
 
                 }
             }

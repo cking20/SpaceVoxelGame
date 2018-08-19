@@ -1,7 +1,6 @@
 package com.kinglogic.game.Managers;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Json;
 import com.kinglogic.game.Models.GridStateModel;
 import com.kinglogic.game.Models.SectorState;
 import com.kinglogic.game.Models.SectorStateModel;
@@ -17,8 +16,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -51,6 +48,7 @@ public class PersistenceManager {
 
 
     }
+
     public void SaveCurretWorldState(){
         synchronized (WorldManager.ins().currentLevel) {
             System.out.println("saving "+WorldManager.ins().currentLevel);
@@ -78,6 +76,7 @@ public class PersistenceManager {
             }
         }
     }
+
     public void LoadWorld(String toLoad){
         File worldDir = new File(Gdx.files.getLocalStoragePath() + "/savedata/" + toLoad);
         worldDir.mkdirs();
@@ -100,16 +99,16 @@ public class PersistenceManager {
                 state = new WorldState(toLoad, 0,0);
             //todo this hasProperty bad code, the level must be set in the WM before the secotrs are laoaded because their load uses the WorldManager's world name
             WorldManager.ins().currentLevel = state;
-            state.LoadUpSectors();
+            state.LoadUpSector();
             //return state;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             WorldManager.ins().currentLevel = new WorldState(toLoad, 0,0);
-            WorldManager.ins().currentLevel.LoadUpSectors();
+            WorldManager.ins().currentLevel.LoadUpSector();
         } catch (IOException e) {
             e.printStackTrace();
             WorldManager.ins().currentLevel = new WorldState(toLoad, 0,0);
-            WorldManager.ins().currentLevel.LoadUpSectors();
+            WorldManager.ins().currentLevel.LoadUpSector();
         }
 
     }

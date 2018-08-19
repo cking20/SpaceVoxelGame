@@ -167,9 +167,11 @@ public class ResourceManager {
         return (float) Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth();
     }
     public TextureAtlas.AtlasRegion getVoxTex(String name){
+        //todo this should be cashed
         return voxelAtlas.findRegion(name);
     }
     public TextureAtlas.AtlasRegion getSpriteTex(String name){
+        //todo this should be cashed
         return spriteAtlas.findRegion(name);
     }
 

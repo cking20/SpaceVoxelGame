@@ -1,8 +1,11 @@
 package com.kinglogic.game.Actors.Voxel.Blocks;
 
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.kinglogic.game.Actors.Voxel.VoxelProperties;
 import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
 import com.kinglogic.game.ChemestryFramework.ChemistryManager;
+import com.kinglogic.game.Managers.ResourceManager;
+import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.Grid;
 
 import java.util.LinkedList;
@@ -23,7 +26,9 @@ public class Door extends Voxel {
     public void Recieve(ChemicalEvent event) {
         switch (event.event){
             case SHOT:
+                System.out.print("Door shot");
                 //have to send it to the other door pieces
+                toggle();
                 if(event.sentBy instanceof Grid){
                     ChemicalEvent newEvent = event.clone();
                     newEvent.event = ChemistryManager.EventTypes.TRIGGERED;
@@ -33,7 +38,7 @@ public class Door extends Voxel {
                 //the other door pieces already have it
                 toggle();
                 if(event.sentBy instanceof Grid)
-                    ((Grid)event.sentBy).recalculateShape();
+                    WorldManager.ins().recalculateGrid(((Grid)event.sentBy));
 
         }
 
@@ -41,6 +46,10 @@ public class Door extends Voxel {
 
     private void toggle(){
         open = !open;
+        if(open)
+            this.setDrawable(new TextureRegionDrawable(ResourceManager.ins().getVoxTex("base")));
+        else
+            this.setDrawable(new TextureRegionDrawable(ResourceManager.ins().getVoxTex("door")));
         this.properties.setProperty(!open, VoxelProperties.COLLIDABLE);
         this.properties.setPermeable(open);
     }

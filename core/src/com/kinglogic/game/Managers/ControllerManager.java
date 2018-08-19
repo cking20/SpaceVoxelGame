@@ -64,7 +64,7 @@ public class ControllerManager {
             @Override
             public boolean buttonUp(Controller controller, int buttonCode) {
                 if(Constants.DEBUG)
-                    System.out.println("button "+buttonCode + " up");
+//                    System.out.println("button "+buttonCode + " up");
                 switch (buttonCode){
                     case 0:// A
                         Jump();
@@ -72,13 +72,13 @@ public class ControllerManager {
                     case 1:// B
                         break;
                     case 2:// X
-                        FireMain();
                         break;
                     case 3:// Y
                         break;
                     case 4:// L_BUMPER
                         break;
                     case 5:// R_BUMPER
+                        FireMain();
                         break;
                     case 6:// SHARE
                         GameManager.ins().getThePlayer().ToggleGravLock();
@@ -87,8 +87,10 @@ public class ControllerManager {
                         CreateNewGrid();
                         break;
                     case 8:// L_STICK
+
                         break;
                     case 9:// R_STICK
+
                         break;
                     case 10://??
                         break;
@@ -143,25 +145,33 @@ public class ControllerManager {
     public void Update(float delta){
         if(Controllers.getControllers().size > 0) {
 //            //axis
-            rightStickVec = new Vector2(Controllers.getControllers().get(0).getAxis(0),Controllers.getControllers().get(0).getAxis(1)).nor();
-            leftStickVec  = new Vector2(Controllers.getControllers().get(0).getAxis(2),Controllers.getControllers().get(0).getAxis(3)).nor();
+            rightStickVec = new Vector2(Controllers.getControllers().get(0).getAxis(2),Controllers.getControllers().get(0).getAxis(3)).nor();
+            leftStickVec  = new Vector2(Controllers.getControllers().get(0).getAxis(0),Controllers.getControllers().get(0).getAxis(1)).nor();
 
             if (Controllers.getControllers().get(0).getAxis(4) > .5) {
+//                System.out.println("axis 4 > .5");
                 GameManager.ins().getThePlayer().RotateLeft();
             } else if (Controllers.getControllers().get(0).getAxis(4) < -.5) {
+//                System.out.println("axis 4  < -.5");
                 GameManager.ins().getThePlayer().RotateRight();
             }
             if (Controllers.getControllers().get(0).getAxis(0) < -.5) {
                 //GameManager.ins().getThePlayer().GoForeward();
             } else if (Controllers.getControllers().get(0).getAxis(0) > .5) {
-                GameManager.ins().getThePlayer().GoBackward();
+                if(!Controllers.getControllers().get(0).getButton(4)) {
+                    GameManager.ins().getThePlayer().GoBackward();
+                }
             }
             if (Controllers.getControllers().get(0).getAxis(1) < -.5) {
-                GameManager.ins().getThePlayer().GoLeft();
-                GameManager.ins().getThePlayer().TurnLeft();
+                if(!Controllers.getControllers().get(0).getButton(4)) {
+                    GameManager.ins().getThePlayer().GoLeft();
+                    GameManager.ins().getThePlayer().TurnLeft();
+                }
             } else if (Controllers.getControllers().get(0).getAxis(1) > .5) {
-                GameManager.ins().getThePlayer().GoRight();
-                GameManager.ins().getThePlayer().TurnRight();
+                if(!Controllers.getControllers().get(0).getButton(4)) {
+                    GameManager.ins().getThePlayer().GoRight();
+                    GameManager.ins().getThePlayer().TurnRight();
+                }
             }
             float dX = Controllers.getControllers().get(0).getAxis(3);
             float dY = -Controllers.getControllers().get(0).getAxis(2);
@@ -171,27 +181,16 @@ public class ControllerManager {
                 GameManager.ins().getThePlayer().buildPosition.y+=dY*5;
             GUIManager.ins().targetPosition = GameManager.ins().getThePlayer().buildPosition;
 
-            //buttons
-//            if (Controllers.getControllers().get(0).getButton(0)) {
-//                if(GameManager.ins().getThePlayer().isControlling())
-//                    GameManager.ins().getThePlayer().Exit();
-//                else
-//                    GameManager.ins().getThePlayer().Enter(tip.dyn);
-//            }
-//            if (Controllers.getControllers().get(0).getButton(2)) {
-//                //FIRE MAIN
-//                GameManager.ins().getThePlayer().FireMain();
-//            }
             if (Controllers.getControllers().get(0).getButton(0)) {
-               Jump();
+                Jump();
             }
             if (Controllers.getControllers().get(0).getButton(9)) {
                 //ZOOM IN
-                CameraManager.ins().ZoomIn();
+//                CameraManager.ins().ZoomIn();
             }
             if (Controllers.getControllers().get(0).getButton(8)) {
                 //ZOOM OUT
-                CameraManager.ins().ZoomOut();
+//                CameraManager.ins().ZoomOut();
             }
             if (Controllers.getControllers().get(0).getButton(4)) {
                 if(numBlocks > 0)
@@ -280,7 +279,7 @@ public class ControllerManager {
     }
     public void FireMain(){
         if(numBlocks > 0) {
-            GameManager.ins().getThePlayer().FireMain(rightStickVec);
+            GameManager.ins().getThePlayer().FireMain(leftStickVec);
             numBlocks--;
         }
     }

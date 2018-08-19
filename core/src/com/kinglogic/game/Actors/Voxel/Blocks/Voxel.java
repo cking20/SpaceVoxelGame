@@ -3,7 +3,9 @@ package com.kinglogic.game.Actors.Voxel.Blocks;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.kinglogic.game.Actors.Voxel.VoxelProperties;
 import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
+import com.kinglogic.game.ChemestryFramework.ChemistryManager;
 import com.kinglogic.game.ChemestryFramework.MaterialModel;
+import com.kinglogic.game.ChemestryFramework.Properties;
 import com.kinglogic.game.Managers.IDs;
 import com.kinglogic.game.Managers.ResourceManager;
 
@@ -26,11 +28,16 @@ public class Voxel extends Image implements MaterialModel{
 
     //Set the appropriate properties of the Voxel being built
     public static Voxel Build(String name){
-        Voxel v = new Voxel(name);
-        if(name.compareTo(IDs.BASE_TEX) == 0 || name.compareTo(IDs.GRASS_TEX) == 0 || name.compareTo(IDs.GRID_TEX) == 0){
+        Voxel v;
+        if(name.contains(IDs.BASE_TEX) || name.contains(IDs.GRASS_TEX)|| name.contains(IDs.GRID_TEX)){
+            v = new Voxel(name);
             v.properties.setProperty(false, VoxelProperties.COLLIDABLE);
             v.properties.setPermeable(true);
-        }
+        }else if(name.contains(IDs.DOOR_TEX)){
+            v = new Door(name);
+        }else
+            v = new Voxel(name);
+
         return v;
     }
 
@@ -54,6 +61,16 @@ public class Voxel extends Image implements MaterialModel{
 
     @Override
     public void Recieve(ChemicalEvent event) {
-        System.out.println(event.event);
+//        System.out.println(event.event);
+    }
+
+    @Override
+    public ChemistryManager.Elements getPrimaryElement() {
+        if(properties.hasStatus(Properties.ON_FIRE))
+            return ChemistryManager.Elements.FIRE;
+        if(properties.hasStatus(Properties.ELECTROCUTED))
+            return ChemistryManager.Elements.ELECTRICITY;
+
+        return ChemistryManager.Elements.AIR;
     }
 }

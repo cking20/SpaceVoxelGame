@@ -15,6 +15,7 @@ public class IDs {
     public static final String BASE_TEX = "base";
     public static final String GRID_TEX = "grid";
     public static final String GRASS_TEX = "grass";
+    public static final String DOOR_TEX = "door";
 
     private static IDs instance;
     private ArrayList<String> allowedIDsList;

@@ -85,9 +85,9 @@ public class ChemistryManager {
                 //events should be sent to grids, so that the grid can propagate them as needed
                 //  and so that the voxel can callback to neighbors
                 ChemicalEvent cur = eventQueue.get(i);
-                Grid atPos = WorldManager.ins().getGridAtWorldPos(cur.position);
-                if(atPos != null) {
-                    atPos.Recieve(cur);
+                ArrayList<Grid> atPos = WorldManager.ins().getGridsAtWorldPos(cur.position);
+                for(Grid g : atPos){
+                    g.Recieve(cur);
                 }
             }
             eventQueue.clear();

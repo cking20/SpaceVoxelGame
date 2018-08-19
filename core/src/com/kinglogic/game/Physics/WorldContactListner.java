@@ -10,6 +10,9 @@ import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.kinglogic.game.AI.DestructoEnemy;
 import com.kinglogic.game.AI.Enemy;
 import com.kinglogic.game.Actors.Entities.Entity;
+import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
+import com.kinglogic.game.ChemestryFramework.ChemistryManager;
+import com.kinglogic.game.Constants;
 import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
@@ -28,80 +31,129 @@ public class WorldContactListner implements ContactListener {
         if(a == null || a.getBody().getUserData() == null || b == null || b.getBody().getUserData() == null)
             return;
 
+        if(!handleBeginContacts(a,b, contact))
+            handleBeginContacts(b,a, contact);
+//
+//
+//        if(a.isSensor()){
+//            if(isEntitySightOfEntity(a, b)){
+//                ((EntityBody)a.getUserData()).enterSight((EntityBody) b.getBody().getUserData());
+//                return;
+//            }
+//            if(isGroundSensorHittingGround(a,b)){
+//                ((PlayerBody)a.getBody().getUserData()).SetTouchingGround(true);
+//
+//            }
+//        }else if(b.isSensor()){
+//            if(isEntitySightOfEntity(b, a)){
+//                ((EntityBody)b.getUserData()).enterSight((EntityBody) a.getBody().getUserData());
+//                return;
+//            }
+//            if(isGroundSensorHittingGround(b,a)){
+//                ((PlayerBody)b.getBody().getUserData()).SetTouchingGround(true);
+//
+//            }
+//        } else {
+//            if(isEnemyHittingEnemy(a,b))
+//                return;
+//
+//            if(isDynGridHittingDynGrid(a,b)){
+//                handleGridhitGridCollision(a,b,contact.getWorldManifold());
+//                return;
+//            }
+//            if(isDynGridHittingDynGrid(b,a)){
+//                handleGridhitGridCollision(b,a,contact.getWorldManifold());
+//                return;
+//            }
+//            if(isEnemyHittingPlayer(a,b)){
+//                GameManager.ins().GameOver();
+//                return;
+//            }
+//            if(isEnemyHittingPlayer(b,a)){
+//                GameManager.ins().GameOver();
+//                return;
+//            }
+//
+//            if(isDestructoAIhittingStaticGrid(b,a))
+//                return;
+//            if(isDestructoAIhittingStaticGrid(a,b))
+//                return;
+//
+//            if(isDestructoAIhittingDynGrid(b,a)) {
+//                handleRemoveGridVoxel(b, a, contact.getWorldManifold());
+//                return;
+//            }
+//            if(isDestructoAIhittingDynGrid(a,b)) {
+//                handleRemoveGridVoxel(a, b, contact.getWorldManifold());
+//                return;
+//            }
+//
+//            if(isBulltetHittingEntity(a,b)){
+//                handleBulletEntityHit(a,b,contact.getWorldManifold());
+//                return;
+//            }
+//            if(isBulltetHittingEntity(b,a)){
+//                handleBulletEntityHit(b,a,contact.getWorldManifold());
+//                return;
+//            }
+//
+//            if(isEntityHittingGrid(a,b)){
+//                System.out.println("entity hit grid ab");
+//                handlePlayerHitGrid(a,b,contact.getWorldManifold());
+//                return;
+//            }
+//            if(isEntityHittingGrid(b,a)){
+//                System.out.println("entity hit grid ba");
+//                handlePlayerHitGrid(b,a,contact.getWorldManifold());
+//                return;
+//            }
+//
+//        }
+    }
+
+    private boolean handleBeginContacts(Fixture a, Fixture b, Contact contact){
         if(a.isSensor()){
             if(isEntitySightOfEntity(a, b)){
                 ((EntityBody)a.getUserData()).enterSight((EntityBody) b.getBody().getUserData());
-                return;
+                return true;
             }
             if(isGroundSensorHittingGround(a,b)){
-                ((PlayerBody)a.getBody().getUserData()).SetTouchingGround(true);
-
-            }
-        }else if(b.isSensor()){
-            if(isEntitySightOfEntity(b, a)){
-                ((EntityBody)b.getUserData()).enterSight((EntityBody) a.getBody().getUserData());
-                return;
-            }
-            if(isGroundSensorHittingGround(b,a)){
-                ((PlayerBody)b.getBody().getUserData()).SetTouchingGround(true);
-
+                System.out.print("TOUCHING GROUND");
+                ((EntityBody)a.getBody().getUserData()).SetTouchingGround(true);
+                return true;
             }
         } else {
             if(isEnemyHittingEnemy(a,b))
-                return;
+                return true;
 
             if(isDynGridHittingDynGrid(a,b)){
                 handleGridhitGridCollision(a,b,contact.getWorldManifold());
-                return;
-            }
-            if(isDynGridHittingDynGrid(b,a)){
-                handleGridhitGridCollision(b,a,contact.getWorldManifold());
-                return;
+                return true;
             }
             if(isEnemyHittingPlayer(a,b)){
                 GameManager.ins().GameOver();
-                return;
+                return true;
             }
-            if(isEnemyHittingPlayer(b,a)){
-                GameManager.ins().GameOver();
-                return;
-            }
-
-            if(isDestructoAIhittingStaticGrid(b,a))
-                return;
             if(isDestructoAIhittingStaticGrid(a,b))
-                return;
-
-            if(isDestructoAIhittingDynGrid(b,a)) {
-                handleRemoveGridVoxel(b, a, contact.getWorldManifold());
-                return;
-            }
+                return true;
             if(isDestructoAIhittingDynGrid(a,b)) {
                 handleRemoveGridVoxel(a, b, contact.getWorldManifold());
-                return;
+                return true;
             }
-
             if(isBulltetHittingEntity(a,b)){
                 handleBulletEntityHit(a,b,contact.getWorldManifold());
-                return;
+                return true;
             }
-            if(isBulltetHittingEntity(b,a)){
-                handleBulletEntityHit(b,a,contact.getWorldManifold());
-                return;
+            if(isBulltetHittingGrid(a,b)){
+                handleBulletGridHit(a,b,contact.getWorldManifold());
+                return true;
             }
-
             if(isEntityHittingGrid(a,b)){
-                System.out.println("entity hit grid ab");
                 handlePlayerHitGrid(a,b,contact.getWorldManifold());
-                return;
+                return true;
             }
-            if(isEntityHittingGrid(b,a)){
-                System.out.println("entity hit grid ba");
-                handlePlayerHitGrid(b,a,contact.getWorldManifold());
-                return;
-            }
-
         }
+        return false;
     }
 
     @Override
@@ -117,7 +169,7 @@ public class WorldContactListner implements ContactListener {
                 return;
             }
             if(isGroundSensorHittingGround(a,b)){
-                ((PlayerBody)a.getBody().getUserData()).SetTouchingGround(false);
+                //((PlayerBody)a.getBody().getUserData()).SetTouchingGround(false);
                 return;
             }
         }else if(b.isSensor()){
@@ -126,7 +178,7 @@ public class WorldContactListner implements ContactListener {
                 return;
             }
             if(isGroundSensorHittingGround(b,a)){
-                ((PlayerBody)b.getBody().getUserData()).SetTouchingGround(false);
+                //((PlayerBody)b.getBody().getUserData()).SetTouchingGround(false);
                 return;
             }
         }else {
@@ -144,11 +196,26 @@ public class WorldContactListner implements ContactListener {
     public void postSolve(Contact contact, ContactImpulse impulse) {
     }
 
+    private void handleBulletGridHit(Fixture a, Fixture b, WorldManifold m){
+        WorldManager.ins().removeEntityFromWorld((Projectile)a.getBody().getUserData());
+        //todo send grid shot event
+        ChemicalEvent event = new ChemicalEvent();
+        event.event = ChemistryManager.EventTypes.SHOT;
+        event.sentBy = (Projectile)a.getUserData();
+        event.element = ((Projectile)a.getUserData()).getPrimaryElement();
+        for(int i = 0; i <  m.getPoints().length; i++) {
+            event.position = m.getPoints()[i].add(m.getNormal().scl(-1));
+            ((Grid) b.getBody().getUserData()).Recieve(event);
+            ResourceManager.ins().createExplosionEffect(m.getPoints()[i]);
+        }
+    }
+
     private void handleBulletEntityHit(Fixture a, Fixture b, WorldManifold m){
+        if(((Projectile)a.getBody().getUserData()).hitPlayers == false && b.getBody().getUserData() instanceof PlayerBody)
+            return;
         WorldManager.ins().removeEntityFromWorld((Projectile)a.getBody().getUserData());
         WorldManager.ins().removeEntityFromWorld((EntityBody) b.getBody().getUserData());
         ResourceManager.ins().createExplosionEffect(m.getPoints()[0]);
-        System.out.println("HITTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
     }
     private void handleRemoveGridVoxel(Fixture a, Fixture b, WorldManifold m){
 //        System.out.println("handle that shit");
@@ -175,12 +242,16 @@ public class WorldContactListner implements ContactListener {
         return a.getBody().getUserData() instanceof Enemy && b.getBody().getUserData() instanceof PlayerBody;
     }
 
+    private boolean isBulltetHittingGrid(Fixture a, Fixture b){
+        return a.getUserData() instanceof Projectile && b.getBody().getUserData() instanceof Grid;
+    }
+
     private boolean isBulltetHittingEntity(Fixture a, Fixture b){
         return a.getUserData() instanceof Projectile && b.getUserData() instanceof EntityBody;
     }
 
     private boolean isGroundSensorHittingGround(Fixture a, Fixture b){
-        return a.getUserData().equals("ground") && b.getUserData() instanceof Grid;
+        return a.getUserData().equals("ground") && b.getBody().getUserData() instanceof Grid;
     }
 
     private boolean isDestructoAIhittingDynGrid(Fixture a, Fixture b){
@@ -218,7 +289,7 @@ public class WorldContactListner implements ContactListener {
         return false;
     }
     private void handlePlayerHitGrid(Fixture a, Fixture b, WorldManifold m){
-        System.out.println("player to control should be switched");
+//        System.out.println("player to control should be switched");
         ((EntityBody)a.getBody().getUserData()).setToControl(((Grid)b.getBody().getUserData()));//;
     }
 }

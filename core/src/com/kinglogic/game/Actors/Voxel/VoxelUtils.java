@@ -185,7 +185,6 @@ public class VoxelUtils {
      * @return a list of connected vertices
      */
     public static List<Vector2[]> MarchingSquares(Voxel[][] state){
-        //todo implement this
         //save the first
         //for each generate map value and add the verts to the list, then parse the list and reorder it so its a loop counter clockwise loop
         int firstX = -1,firstY = -1;

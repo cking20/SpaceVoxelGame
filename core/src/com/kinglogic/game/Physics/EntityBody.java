@@ -34,6 +34,9 @@ public class EntityBody  implements Controllable, MaterialModel{
     protected Controllable controlling;
     public Controllable lastControlled;
     private boolean gravLock = false;
+    protected boolean onGround = false;
+    protected int jumpCounter = 0;
+    protected int maxJumpCounter = 20;
     protected EntityProperties properties;
 
 
@@ -95,10 +98,12 @@ public class EntityBody  implements Controllable, MaterialModel{
         view.setRotation((float) Math.toDegrees(myBody.getTransform().getRotation()));
 
         //apply gravity
-        if(properties.gravity != null) {
+        if(gravLock) {
             Vector2 artificialGravity = new Vector2(properties.gravity);
             artificialGravity.rotate((myBody.getTransform().getRotation()));
+            myBody.setTransform(myBody.getPosition(), properties.gravity.cpy().rotate90(1).angleRad());
             myBody.applyForceToCenter(artificialGravity.x, artificialGravity.y, true);
+
         }
     }
     public void enterSight(EntityBody seeing){
@@ -108,9 +113,32 @@ public class EntityBody  implements Controllable, MaterialModel{
         perceptions.remove(seeing);
     }
 
+    public void SetTouchingGround(boolean t){
+        onGround = t;
+        if(onGround)
+            jumpCounter = 0;
+    }
+
     public void ToggleGravLock(){
         gravLock = !gravLock;
         myBody.setFixedRotation(gravLock);
+    }
+    public void SetGravLock(boolean grav, Vector2 down){
+        System.out.print("SetGravLock"+ grav+" "+down);
+        if(grav) {
+            gravLock = grav;
+            myBody.setTransform(myBody.getPosition(), down.cpy().rotate90(1).angleRad());
+            myBody.setFixedRotation(gravLock);
+            properties.gravity = down;
+        }else {
+            gravLock = grav;
+            myBody.setFixedRotation(gravLock);
+
+        }
+    }
+
+    public boolean isGravLocked(){
+        return gravLock;
     }
 
     public void dispose(){
@@ -238,6 +266,7 @@ public class EntityBody  implements Controllable, MaterialModel{
     @Override
     public boolean Update(float delta) {
         properties.gravity = null;
+        SetGravLock(false, null);
         return false;
     }
 
@@ -246,10 +275,20 @@ public class EntityBody  implements Controllable, MaterialModel{
         switch (event.event){
             case SEND_GRAVITY:
                 if(properties.hasProperty(Properties.AFFECTED_BY_GRAVITY)) {
-                    System.out.println("setting gravity of " + this + " to " + event.position);
-                    properties.gravity = event.position;
+//                    System.out.println("setting gravity of " + this + " to " + event.position);
+                    this.SetGravLock(true, event.position);
                     ChemistryManager.ins().CheckThis(this);
                 }
         }
+    }
+
+    @Override
+    public ChemistryManager.Elements getPrimaryElement() {
+        if(properties.hasStatus(Properties.ON_FIRE))
+            return ChemistryManager.Elements.FIRE;
+        if(properties.hasStatus(Properties.ELECTROCUTED))
+            return ChemistryManager.Elements.ELECTRICITY;
+
+        return ChemistryManager.Elements.AIR;
     }
 }

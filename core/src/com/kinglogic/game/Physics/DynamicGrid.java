@@ -49,7 +49,7 @@ public class DynamicGrid extends Grid{
                 temp.set(vertPos);
                 PhysicsShape s = new PhysicsShape(temp, myBody);
                 Filter filter = new Filter();
-                filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET;
+                filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET | FilterIDs.SENSOR;
                 filter.categoryBits = FilterIDs.GRID;
                 s.fixture.setFilterData(filter);
                 physicsShapes.add(s);

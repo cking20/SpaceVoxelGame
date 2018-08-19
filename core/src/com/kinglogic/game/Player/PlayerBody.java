@@ -20,7 +20,6 @@ public class PlayerBody extends EntityBody {
     public Vector2 buildPosition;
     PhysicsShape groundSensor;
     boolean mirrorView = false;
-    boolean onGround = false;
     boolean shotCooldown = false;
     float shotCooldownTime = 1.0f;
     float missleSpeed = 2000f;
@@ -68,12 +67,12 @@ public class PlayerBody extends EntityBody {
         super.CreateSight(radius);
         //create the playr spectific sensors, such as on ground
         if(myBody != null) {
-            groundSensor = new PhysicsShape(myBody, ResourceManager.voxelPixelSize/2, 4f, new Vector2(view.getHeight()/2, 0),view.getRotation());
+            groundSensor = new PhysicsShape(myBody, ResourceManager.voxelPixelSize/4, 4f, new Vector2(view.getHeight()/2, 0),view.getRotation());
             Filter filter = new Filter();
             filter.maskBits = FilterIDs.GRID;
             filter.categoryBits = FilterIDs.SENSOR;
             groundSensor.fixture.setFilterData(filter);
-            groundSensor.fixture.setSensor(true);
+            groundSensor.fixture.setSensor(true);//was true
             groundSensor.fixture.setUserData("ground");
         }
 
@@ -110,17 +109,15 @@ public class PlayerBody extends EntityBody {
         p = ResourceManager.ins().getProjectile("projectile",
                 myBody.getPosition()
                 .add(new Vector2(ResourceManager.voxelPixelSize,ResourceManager.voxelPixelSize).rotate(view.getRotation()))
-                .add(direction.rotate90(-1).rotate(view.getRotation()).scl(16f)));
+                .add(direction.rotate90(-1).rotate(view.getRotation()).scl(16f))
+                );
 
-
+        p.hitPlayers = false;
         p.Fire((direction).scl(10));
     }
 
     public Vector2 getBuildPosition(){
         return buildPosition;
-    }
-    public void SetTouchingGround(boolean t){
-        onGround = t;
     }
     public void TurnLeft(){
         mirrorView = true;
@@ -128,6 +125,19 @@ public class PlayerBody extends EntityBody {
     }
     public void TurnRight(){
         mirrorView = false;
+    }
+
+    @Override
+    public void GoForeward() {
+        if(controlling != null)
+            controlling.GoForeward();
+        else
+            if(!isGravLocked() || (isGravLocked() && onGround) || jumpCounter < maxJumpCounter) {
+//                myBody.setLinearVelocity(myBody.getLinearVelocity().add((myBody.getTransform().getOrientation().rotate90(1).scl(400f))));
+                myBody.applyForceToCenter(myBody.getTransform().getOrientation().rotate90(1).scl(speed*myBody.getMass()),true);
+                jumpCounter++;
+            }
+        this.SetTouchingGround(false);
     }
 
 

@@ -13,6 +13,7 @@ import com.kinglogic.game.Managers.ResourceManager;
  */
 
 public class Projectile extends EntityBody{
+    public boolean hitPlayers = false;
 
     public Projectile(String name, Vector2 position) {
         super(name, position);
