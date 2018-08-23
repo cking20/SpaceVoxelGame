@@ -2,6 +2,7 @@ package com.kinglogic.game.Actors.Voxel;
 
 import com.badlogic.gdx.math.Vector2;
 import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
+import com.kinglogic.game.ChemestryFramework.Properties;
 import com.kinglogic.game.Managers.ResourceManager;
 
 import java.util.ArrayList;
@@ -191,7 +192,7 @@ public class VoxelUtils {
         HashMap<Vector2,LinkedList<FromEdge>> edgeslist = new HashMap();
         for(int i = 0; i < state.length; i++){
             for(int j = 0; j < state[0].length; j++){
-                if(state[i][j] != null && state[i][j].properties.hasProperty(VoxelProperties.COLLIDABLE)) {
+                if(state[i][j] != null && state[i][j].properties.hasProperty(Properties.COLLIDABLE)) {
                     //save the firstSpot
                     if(firstX < 0){
                         firstX = i;
@@ -201,19 +202,19 @@ public class VoxelUtils {
                     byte maping = 0;
                     //right 8
                     if (i + 1 < state.length)
-                        if (state[i + 1][j] == null || !state[i + 1][j].properties.hasProperty(VoxelProperties.COLLIDABLE))
+                        if (state[i + 1][j] == null || !state[i + 1][j].properties.hasProperty(Properties.COLLIDABLE))
                             maping ^= 8;
                     //bottom 4
                     if (j - 1 > 0)
-                        if (state[i][j - 1] == null || !state[i][j - 1].properties.hasProperty(VoxelProperties.COLLIDABLE))
+                        if (state[i][j - 1] == null || !state[i][j - 1].properties.hasProperty(Properties.COLLIDABLE))
                             maping ^= 4;
                     //left 2
                     if (i - 1 > 0)
-                        if (state[i - 1][j] == null || !state[i - 1][j].properties.hasProperty(VoxelProperties.COLLIDABLE))
+                        if (state[i - 1][j] == null || !state[i - 1][j].properties.hasProperty(Properties.COLLIDABLE))
                             maping ^= 2;
                     //top 1
                     if (j + 1 < state.length)
-                        if (state[i][j + 1] == null || !state[i][j + 1].properties.hasProperty(VoxelProperties.COLLIDABLE))
+                        if (state[i][j + 1] == null || !state[i][j + 1].properties.hasProperty(Properties.COLLIDABLE))
                             maping ^= 1;
 
                     edgeslist.putAll(map(maping, i, j));
@@ -287,7 +288,7 @@ public class VoxelUtils {
         boolean foundOneFlag = false;
         for(int i = 0; i < state.length; i++){
             for(int j = 0; j < state[0].length; j++){
-                if(state[i][j] != null && state[i][j].properties.hasProperty(VoxelProperties.COLLIDABLE)){
+                if(state[i][j] != null && state[i][j].properties.hasProperty(Properties.COLLIDABLE)){
                     foundOneFlag = true;
                     verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE));
                     verts.add(new Vector2(i*ResourceManager.VOXEL_PIXEL_SIZE, j*ResourceManager.VOXEL_PIXEL_SIZE));
@@ -314,7 +315,7 @@ public class VoxelUtils {
         boolean foundOneFlag = false;
         for(int i = 0; i < state.length; i++){
             for(int j = 0; j < state[0].length; j++){
-                if(state[i][j] != null && state[i][j].properties.hasProperty(VoxelProperties.COLLIDABLE)){
+                if(state[i][j] != null && state[i][j].properties.hasProperty(Properties.COLLIDABLE)){
                     foundOneFlag = true;
                     if(!drawing){
                         drawing = !drawing;

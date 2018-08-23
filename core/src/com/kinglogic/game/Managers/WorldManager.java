@@ -7,15 +7,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.Actors.ParallaxBG;
 import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
@@ -101,19 +104,22 @@ public class WorldManager {
             worldStage.setDebugAll(true);
             worldStage.setDebugInvisible(false);
             worldStage.setDebugUnderMouse(true);
+            debugRenderer = new Box2DDebugRenderer();
         }
         worldPhysics.setContactListener(new WorldContactListner());
 
         rayHandler = new RayHandler(worldPhysics);
         rayHandler.setAmbientLight(.8f);//.8f);
         rayHandler.setShadows(true);
-        DirectionalLight dl = new DirectionalLight(rayHandler,100,
-                new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),-91);
-        dl.setSoftnessLength(300f);
+//        DirectionalLight dl = new DirectionalLight(rayHandler,100,new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),-91)
+        PointLight dl = new PointLight(rayHandler,100, new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),200f,0,0);
+
+        dl.setSoftnessLength(16f);//300f);
         Filter dlF = new Filter();
         dlF.maskBits = FilterIDs.GRID;
         dl.setContactFilter(dlF);
-        debugRenderer = new Box2DDebugRenderer();
+
+
 
     }
     public Batch getBatch(){
@@ -478,6 +484,26 @@ public class WorldManager {
         }
     }
 
+    /**
+     * This wont add it as an entity to be saved/loaded when the world is reset
+     * @param view
+     * @param def
+     * @return
+     */
+    public Body addBodyToWorld(Entity view, BodyDef def){
+        entityGroup.addActor(view);
+        Body b = worldPhysics.createBody(def);
+        return b;
+    }
+
+    public World getWorldPhysics(){
+        return worldPhysics;
+    }
+    public void SetOnTop(Actor top, Actor bottom){
+        entityGroup.removeActor(bottom);
+        entityGroup.addActorBefore(top,bottom);
+    }
+
     public void LoadEntityToWorld(EntityBody e){
             entityGroup.addActor(e.view);
             e.myBody = worldPhysics.createBody(e.bodyDef);
@@ -532,14 +558,20 @@ public class WorldManager {
         newY = oldY;
         if(GameManager.ins().getThePlayer().myBody.getPosition().x > Constants.SECTOR_SIZE/2)
             newX++;
-        if(GameManager.ins().getThePlayer().myBody.getPosition().x < -Constants.SECTOR_SIZE/2)
+        else if(GameManager.ins().getThePlayer().myBody.getPosition().x < -Constants.SECTOR_SIZE/2)
             newX--;
         if(GameManager.ins().getThePlayer().myBody.getPosition().y > Constants.SECTOR_SIZE/2)
             newY++;
-        if(GameManager.ins().getThePlayer().myBody.getPosition().y < -Constants.SECTOR_SIZE/2)
+        else if(GameManager.ins().getThePlayer().myBody.getPosition().y < -Constants.SECTOR_SIZE/2)
             newY--;
-        newX %= Constants.NUM_SECTORS/2;
-        newY %= Constants.NUM_SECTORS/2;
+        if(newX > Constants.NUM_SECTORS/2)
+            newX = -Constants.NUM_SECTORS/2;
+        else if(newX < -Constants.NUM_SECTORS/2)
+            newX = Constants.NUM_SECTORS/2;
+        if(newY > Constants.NUM_SECTORS/2)
+            newY = -Constants.NUM_SECTORS/2;
+        else if(newY < -Constants.NUM_SECTORS/2)
+            newY = Constants.NUM_SECTORS/2;
         if(newX != oldX || newY != oldY)
             currentLevel.ShiftTo(newX,newY);
 
@@ -552,13 +584,13 @@ public class WorldManager {
         return;
     }
 
-    public void ApplyLightToBody(Body b){
+    public void addLightToBody(Body b, float strength, int distance, Vector2 position, Vector2 offset){
         Filter f = new Filter();
         f.maskBits = FilterIDs.GRID;
-        PointLight pl = new PointLight(rayHandler,60, new Color(Color.rgba8888(.40f, .40f, .20f, 1.0f)),
-                ResourceManager.VOXEL_PIXEL_SIZE *40, 0,0);
+        PointLight pl = new PointLight(rayHandler,60, new Color(Color.rgba8888(strength, strength, strength, 1.0f)),
+                ResourceManager.VOXEL_PIXEL_SIZE *distance, position.x,position.y);
         pl.setContactFilter(f);
-        pl.attachToBody(b,8f,8f);
+        pl.attachToBody(b,offset.x,offset.y);
         pl.setSoftnessLength(100f);
     }
 

@@ -23,6 +23,7 @@ public class CameraManager {
 
     private CameraManager(){
         mainCamera = new OrthographicCamera();
+        mainCamera.zoom = .5f;
     }
 
     public void Track(Actor a){

@@ -94,4 +94,12 @@ public class PhysicsShape {
         fixture = b.createFixture(fixtureDef);
 
     }
+
+    public PhysicsShape(Body b, FixtureDef def,float height, float width, Vector2 center, float rotation){
+        PolygonShape ps = ResourceManager.ins().getNewPolyShape();
+        ps.setAsBox(height,width, center, rotation);
+        shape = ps;
+        def.shape = shape;
+        fixture = b.createFixture(def);
+    }
 }

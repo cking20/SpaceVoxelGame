@@ -119,12 +119,7 @@ public class EntityBody  implements Controllable, MaterialModel{
             jumpCounter = 0;
     }
 
-    public void ToggleGravLock(){
-        gravLock = !gravLock;
-        myBody.setFixedRotation(gravLock);
-    }
     public void SetGravLock(boolean grav, Vector2 down){
-        System.out.print("SetGravLock"+ grav+" "+down);
         if(grav) {
             gravLock = grav;
             myBody.setTransform(myBody.getPosition(), down.cpy().rotate90(1).angleRad());
@@ -224,6 +219,11 @@ public class EntityBody  implements Controllable, MaterialModel{
     }
 
     @Override
+    public void LookToward(Vector2 direction) {
+
+    }
+
+    @Override
     public void FireAlt() {
 
     }
@@ -271,7 +271,7 @@ public class EntityBody  implements Controllable, MaterialModel{
     }
 
     @Override
-    public void Recieve(ChemicalEvent event) {
+    public void Receive(ChemicalEvent event) {
         switch (event.event){
             case SEND_GRAVITY:
                 if(properties.hasProperty(Properties.AFFECTED_BY_GRAVITY)) {
@@ -290,5 +290,10 @@ public class EntityBody  implements Controllable, MaterialModel{
             return ChemistryManager.Elements.ELECTRICITY;
 
         return ChemistryManager.Elements.AIR;
+    }
+
+    @Override
+    public void ReactToTouch(MaterialModel model, Vector2 worldPosition) {
+        System.out.println(this+ " touched by " + model);
     }
 }

@@ -3,6 +3,7 @@ package com.kinglogic.game.Models;
 import com.badlogic.gdx.graphics.Color;
 import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
+import com.kinglogic.game.ChemestryFramework.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,9 +41,17 @@ public class VoxelCollectionModel {
             int x = j.getInt("x");
             int y = j.getInt("y");
             String name = j.getString("name");
-            int props = j.getInt("properties");
-            Voxel v = new Voxel(name);
-            v.properties.setProps((byte) props);
+            JSONObject props = j.getJSONObject("properties");
+
+            Voxel v = Voxel.Build(name);
+            //todo should set the properites with all the vals
+            v.properties = new Properties(
+                    (byte) props.getInt("l"),
+                    (byte) props.getInt("h"),
+                    (byte) props.getInt("p"),
+                    (byte) props.getInt("s"),
+                           props.getInt("d"),
+                    (byte) props.getInt("f"));
             Color c = new Color();
             c.r = j.getFloat("r");
             c.g = j.getFloat("g");
@@ -59,10 +68,20 @@ public class VoxelCollectionModel {
     public static JSONObject jsonifyVoxel(Voxel v){
         JSONObject json = new JSONObject();
         json.put("name", v.getName());
-        json.put("properties", v.properties.getProps());
         json.put("r", v.getColor().r);
         json.put("g", v.getColor().g);
         json.put("b", v.getColor().b);
+
+//        json.put("properties", v.properties.getProps());
+        JSONObject props = new JSONObject();
+        props.put("l", v.properties.getLevel());
+        props.put("h", v.properties.getHealth());
+        props.put("p", v.properties.getProperties());
+        props.put("s", v.properties.getStatus());
+        props.put("d", v.properties.getDurration());
+        props.put("f", v.properties.getFluids());
+        json.put("properties", props);
+
         return json;
     }
 }

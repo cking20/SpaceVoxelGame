@@ -86,7 +86,7 @@ public class VoxelCollection extends Group {
     public boolean addVoxelScreenPos(Voxel v, Vector2 screenPosition){
         v.setColor(GUIManager.ins().selectedColor);
 //        System.out.println("Screen pos:" + screenPosition);
-        Vector2 worldPosition = WorldManager.ins().screenToWorldCoords(screenPosition);
+        Vector2 worldPosition = WorldManager.ins().screenToWorldCoords(screenPosition.cpy());
 //        System.out.println("World pos:" + worldPosition);
         Vector2 position = mapWorldPointToIndexies(worldPosition);
 //        System.out.println("index pos:" + position);
@@ -98,7 +98,7 @@ public class VoxelCollection extends Group {
 //        System.out.println("Screen pos:" + screenPosition);
 //        Vector2 worldPosition = WorldManager.ins().screenToWorldCoords(screenPosition);
 //        System.out.println("World pos:" + worldPosition);
-        Vector2 position = mapWorldPointToIndexies(worldPosition);
+        Vector2 position = mapWorldPointToIndexies(worldPosition.cpy());
 //        System.out.println("index pos:" + position);
         int x = (int)position.x;
         int y = (int)position.y;
@@ -113,7 +113,7 @@ public class VoxelCollection extends Group {
      * @return false iff the voxel wasnt added
      */
     public boolean addVoxelIndex(Voxel v, int x, int y){
-        if(!validPosition(x,y))return false;
+        if(!validIndex(x,y))return false;
         if(verifyVoxelPlacement(x,y)) {
             grid[x][y] = v;
             super.addActor(v);
@@ -123,7 +123,7 @@ public class VoxelCollection extends Group {
     }
 
     public boolean hardAddVoxelIndex(Voxel v, int x, int y){
-        if(!validPosition(x,y))return false;
+        if(!validIndex(x,y))return false;
         if(grid[x][y] == null) {
             grid[x][y] = v;
             super.addActor(v);
@@ -140,7 +140,7 @@ public class VoxelCollection extends Group {
      */
     public boolean removeVoxelScreenPos(Vector2 screenPosition){
 //        System.out.println("remove screenpos @"+screenPosition);
-        Vector2 position = mapWorldPointToIndexies(WorldManager.ins().screenToWorldCoords(screenPosition));
+        Vector2 position = mapWorldPointToIndexies(WorldManager.ins().screenToWorldCoords(screenPosition.cpy()));
 //        System.out.println("remove indexpos @"+position);
         int x = (int)position.x;
         int y = (int)position.y;
@@ -148,7 +148,7 @@ public class VoxelCollection extends Group {
     }
     public boolean removeVoxelWorldPos(Vector2 worldPosition){
 //        System.out.println("remove screenpos @"+screenPosition);
-        Vector2 position = mapWorldPointToIndexies(worldPosition);
+        Vector2 position = mapWorldPointToIndexies(worldPosition.cpy());
 //        System.out.println("remove indexpos @"+position);
         int x = (int)position.x;
         int y = (int)position.y;
@@ -163,11 +163,11 @@ public class VoxelCollection extends Group {
      * @return true iff a block has been removed
      */
     public boolean removeVoxelIndex(int x, int y){
-        if(!validPosition(x,y))return false;
-        if(!validPosition(x+1,y))return false;
-        if(!validPosition(x,y+1))return false;
-        if(!validPosition(x-1,y))return false;
-        if(!validPosition(x,y-1))return false;
+        if(!validIndex(x,y))return false;
+        if(!validIndex(x+1,y))return false;
+        if(!validIndex(x,y+1))return false;
+        if(!validIndex(x-1,y))return false;
+        if(!validIndex(x,y-1))return false;
         if(grid[x][y] != null) {
             Voxel v = grid[x][y];
             super.removeActor(v);
@@ -215,7 +215,7 @@ public class VoxelCollection extends Group {
     public void checkAllConnected(){
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid.length; y++) {
-                if(validPosition(x,y)){
+                if(validIndex(x,y)){
                     if(grid[x][y] != null) {
                         Voxel v = grid[x][y];
                         Voxel[][] toRemove;
@@ -267,8 +267,8 @@ public class VoxelCollection extends Group {
      * @param worldPos in world units
      * @return the x,y indexes
      */
-    private Vector2 mapWorldPointToIndexies(Vector2 worldPos){
-        worldPos = this.stageToLocalCoordinates(worldPos);
+    public Vector2 mapWorldPointToIndexies(Vector2 worldPos){
+        worldPos = this.stageToLocalCoordinates(worldPos.cpy());
         worldPos.x = (int)(worldPos.x/ResourceManager.VOXEL_PIXEL_SIZE);
         worldPos.y = (int)(worldPos.y/ResourceManager.VOXEL_PIXEL_SIZE);
         return worldPos;
@@ -297,24 +297,25 @@ public class VoxelCollection extends Group {
 
     public boolean isWorldPosInGrid(Vector2 worldPos){
         Vector2 pos = mapWorldPointToIndexies(worldPos);
-        return validPosition((int)pos.x, (int)pos.y);
+        return validIndex((int)pos.x, (int)pos.y);
     }
 
     public Voxel getVoxelAtWorldPosition(Vector2 pos){
-        Vector2 p = mapWorldPointToIndexies(pos);
+        Vector2 p = mapWorldPointToIndexies(pos.cpy());
         int i = (int)p.x;
         int j = (int)p.y;
-        if(validPosition(i,j)){
+        if(validIndex(i,j)){
             return grid[i][j];
         }
         return null;
     }
+
     /**
      * @param x index
      * @param y index
      * @return true iff there will not be an array index out of bounds exception
      */
-    private boolean validPosition(int x, int y){
+    public boolean validIndex(int x, int y){
         if(x < 0 || y < 0) return false;
         if(x >= maxSize || y >= maxSize) return false;
         return true;
@@ -328,10 +329,10 @@ public class VoxelCollection extends Group {
      */
     private ArrayList<Voxel> getNeighbors(int x,int y){
         ArrayList<Voxel> neighbors = new ArrayList<Voxel>();
-        if(validPosition(x+1,y))neighbors.add(grid[x+1][y]);
-        if(validPosition(x-1,y))neighbors.add(grid[x-1][y]);
-        if(validPosition(x,y+1))neighbors.add(grid[x][y+1]);
-        if(validPosition(x,y+1))neighbors.add(grid[x][y-1]);
+        if(validIndex(x+1,y))neighbors.add(grid[x+1][y]);
+        if(validIndex(x-1,y))neighbors.add(grid[x-1][y]);
+        if(validIndex(x,y+1))neighbors.add(grid[x][y+1]);
+        if(validIndex(x,y+1))neighbors.add(grid[x][y-1]);
         return neighbors;
     }
 
@@ -390,7 +391,7 @@ public class VoxelCollection extends Group {
             if(current == goal){
                 return true;
             }
-            if(validPosition(c.x+1,c.y)){
+            if(validIndex(c.x+1,c.y)){
                 if(grid[c.x+1][c.y] != null && !visited[c.x+1][c.y]){
                     visited[c.x+1][c.y] = true;
                     VoxelUtils.Index next = new VoxelUtils.Index(c.x + 1, c.y);
@@ -398,7 +399,7 @@ public class VoxelCollection extends Group {
                         queue.add(next);
                 }
             }
-            if(validPosition(c.x-1,c.y)){
+            if(validIndex(c.x-1,c.y)){
                 if(grid[c.x-1][c.y] != null && !visited[c.x-1][c.y]){
                     visited[c.x-1][c.y] = true;
                     VoxelUtils.Index next = new VoxelUtils.Index(c.x - 1, c.y);
@@ -406,7 +407,7 @@ public class VoxelCollection extends Group {
                         queue.add(next);
                 }
             }
-            if(validPosition(c.x,c.y+1)){
+            if(validIndex(c.x,c.y+1)){
                 if(grid[c.x][c.y+1] != null && !visited[c.x][c.y+1]){
                     visited[c.x][c.y+1] = true;
                     VoxelUtils.Index next = new VoxelUtils.Index(c.x, c.y + 1);
@@ -414,7 +415,7 @@ public class VoxelCollection extends Group {
                         queue.add(next);
                 }
             }
-            if(validPosition(c.x,c.y-1)){
+            if(validIndex(c.x,c.y-1)){
                 if(grid[c.x][c.y-1] != null && !visited[c.x][c.y-1]){
                     visited[c.x][c.y-1] = true;
                     VoxelUtils.Index next = new VoxelUtils.Index(c.x, c.y - 1);
@@ -433,12 +434,12 @@ public class VoxelCollection extends Group {
      * @return all the cells that have been removed
      */
     private Voxel[][] removeConnectedTo(int x, int y){
-        if(!validPosition(x,y))return null;
+        if(!validIndex(x,y))return null;
         Voxel[][] delta = getVoxelsConnectedToPos(x,y);
         if(delta != null){
             for(int i = 0; i < grid.length; i++){
                 for(int j = 0; j < grid[0].length; j++){
-                    if(!validPosition(i,j))continue;
+                    if(!validIndex(i,j))continue;
                     if(delta[i][j] != null) {
                         super.removeActor(grid[i][j]);
                         grid[i][j] = null;
@@ -486,7 +487,7 @@ public class VoxelCollection extends Group {
         //todo bfs add
         Voxel[][] connected = new Voxel[maxSize][maxSize];
         boolean[][] visited = new boolean[maxSize][maxSize];
-        if(!validPosition(x,y) || grid[x][y] == null){
+        if(!validIndex(x,y) || grid[x][y] == null){
 //            System.out.println("returning null on getVoxelsConnectedToPos");
             return null;
         }
@@ -500,7 +501,7 @@ public class VoxelCollection extends Group {
 //            System.out.println("checking at"+c.x+", "+c.y);
             Voxel current = grid[c.x][c.y];
 
-            if(validPosition(c.x+1,c.y)){
+            if(validIndex(c.x+1,c.y)){
                 if(grid[c.x+1][c.y] != null && !visited[c.x+1][c.y]){
                     visited[c.x+1][c.y] = true;
                     VoxelUtils.Index next = new VoxelUtils.Index(c.x + 1, c.y);
@@ -510,7 +511,7 @@ public class VoxelCollection extends Group {
                     }
                 }
             }
-            if(validPosition(c.x-1,c.y)){
+            if(validIndex(c.x-1,c.y)){
                 if(grid[c.x-1][c.y] != null && !visited[c.x-1][c.y]){
                     visited[c.x-1][c.y] = true;
                     VoxelUtils.Index next = new VoxelUtils.Index(c.x - 1, c.y);
@@ -520,7 +521,7 @@ public class VoxelCollection extends Group {
                     }
                 }
             }
-            if(validPosition(c.x,c.y+1)){
+            if(validIndex(c.x,c.y+1)){
                 if(grid[c.x][c.y+1] != null && !visited[c.x][c.y+1]){
                     visited[c.x][c.y+1] = true;
                     VoxelUtils.Index next = new VoxelUtils.Index(c.x, c.y + 1);
@@ -530,7 +531,7 @@ public class VoxelCollection extends Group {
                     }
                 }
             }
-            if(validPosition(c.x,c.y-1)){
+            if(validIndex(c.x,c.y-1)){
                 if(grid[c.x][c.y-1] != null && !visited[c.x][c.y-1]){
                     visited[c.x][c.y-1] = true;
                     VoxelUtils.Index next = new VoxelUtils.Index(c.x, c.y - 1);
@@ -553,29 +554,28 @@ public class VoxelCollection extends Group {
     public boolean verifyVoxelPlacement(int x, int y){
         boolean isGood = false;
         //check neighbors if there true
-        if(validPosition(x+1,y) && x+1 < grid.length){
+        if(validIndex(x+1,y) && x+1 < grid.length){
             if(grid[x+1][y] != null)
                 isGood = true;
         } else return false;
-        if(validPosition(x-1,y) && x-1 > 0){
+        if(validIndex(x-1,y) && x-1 > 0){
             if(grid[x-1][y] != null)
                 isGood = true;
         } else return false;
-        if(validPosition(x,y+1) && y+1 < grid.length){
+        if(validIndex(x,y+1) && y+1 < grid.length){
             if(grid[x][y+1] != null)
                 isGood = true;
         } else return false;
-        if(validPosition(x,y-1) && y-1 > 0){
+        if(validIndex(x,y-1) && y-1 > 0){
             if(grid[x][y-1] != null)
                 isGood = true;
         } else return false;
 
         //check self if there false
-        if(validPosition(x,y) && grid[x][y] != null)
+        if(validIndex(x,y) && grid[x][y] != null)
             isGood = false;
 
         return isGood;
     }
-
 
 }

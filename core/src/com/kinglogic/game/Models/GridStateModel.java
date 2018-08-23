@@ -3,6 +3,8 @@ package com.kinglogic.game.Models;
 import com.badlogic.gdx.math.Vector2;
 import com.kinglogic.game.Physics.DynamicGrid;
 import com.kinglogic.game.Physics.Grid;
+import com.kinglogic.game.Physics.StaticGrid;
+
 import org.json.*;
 
 /**
@@ -12,6 +14,10 @@ import org.json.*;
 public class GridStateModel {
     public static String jsonifyGrid(Grid g){
         JSONObject grid = new JSONObject();
+        if(g instanceof DynamicGrid)
+            grid.put("type", "DYNAMIC");
+        else
+            grid.put("type", "STATIC");
         grid.put("name", g.name);
         grid.put("x", g.myBody.getPosition().x);
         grid.put("y", g.myBody.getPosition().y);
@@ -22,15 +28,16 @@ public class GridStateModel {
         return grid.toString();
     }
 
-    public static DynamicGrid unjsonifyDynamicGrid(JSONObject o){
-        DynamicGrid toBuild = new DynamicGrid(
-                VoxelCollectionModel.unjsonifyVoxelCollection(o.getJSONObject("voxels")));
+    public static Grid unjsonifyDynamicGrid(JSONObject o){
+        Grid toBuild;
+        if(o.getString("type").equals("DYNAMIC"))
+            toBuild = new DynamicGrid(VoxelCollectionModel.unjsonifyVoxelCollection(o.getJSONObject("voxels")));
+        else
+            toBuild = new StaticGrid(VoxelCollectionModel.unjsonifyVoxelCollection(o.getJSONObject("voxels")));
         toBuild.name = o.getString("name");
         toBuild.bodyDef.position.x = o.getFloat("x");
         toBuild.bodyDef.position.y = o.getFloat("y");
         toBuild.bodyDef.angle = o.getFloat("angle");
-//        toBuild.voxels = VoxelCollectionModel.unjsonifyVoxelCollection(o.getJSONObject("voxels"));
-
         return toBuild;
     }
 }

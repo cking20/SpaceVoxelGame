@@ -64,7 +64,7 @@ public class ControllerManager {
             @Override
             public boolean buttonUp(Controller controller, int buttonCode) {
                 if(Constants.DEBUG)
-//                    System.out.println("button "+buttonCode + " up");
+                    System.out.println("button "+buttonCode + " up");
                 switch (buttonCode){
                     case 0:// A
                         Jump();
@@ -78,10 +78,11 @@ public class ControllerManager {
                     case 4:// L_BUMPER
                         break;
                     case 5:// R_BUMPER
-                        FireMain();
+                        if(!GameManager.ins().getThePlayer().buildMode)
+                            FireMain();
                         break;
                     case 6:// SHARE
-                        GameManager.ins().getThePlayer().ToggleGravLock();
+                        GameManager.ins().getThePlayer().buildMode = !GameManager.ins().getThePlayer().buildMode;
                         break;
                     case 7:// MENU
                         CreateNewGrid();
@@ -105,6 +106,7 @@ public class ControllerManager {
 
             @Override
             public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+                System.out.println(povCode);
                 if(value == PovDirection.north) {
                     NextColor();
                     GUIManager.ins().selectedColor = playersCurrentColor;
@@ -145,8 +147,30 @@ public class ControllerManager {
     public void Update(float delta){
         if(Controllers.getControllers().size > 0) {
 //            //axis
-            rightStickVec = new Vector2(Controllers.getControllers().get(0).getAxis(2),Controllers.getControllers().get(0).getAxis(3)).nor();
-            leftStickVec  = new Vector2(Controllers.getControllers().get(0).getAxis(0),Controllers.getControllers().get(0).getAxis(1)).nor();
+            if(!GameManager.ins().getThePlayer().buildMode){
+                switch (Controllers.getControllers().get(0).getPov(0)){
+                    case east:
+                        GameManager.ins().getThePlayer().GoRight();
+                        GameManager.ins().getThePlayer().TurnRight();
+                        break;
+                    case west:
+                        GameManager.ins().getThePlayer().GoLeft();
+                        GameManager.ins().getThePlayer().TurnLeft();
+                        break;
+                    case south:
+                        GameManager.ins().getThePlayer().GoBackward();
+                        break;
+                }
+
+            }
+
+
+            rightStickVec = new Vector2(Controllers.getControllers().get(0).getAxis(2),Controllers.getControllers().get(0).getAxis(3));
+            leftStickVec  = new Vector2(Controllers.getControllers().get(0).getAxis(0),Controllers.getControllers().get(0).getAxis(1));
+
+            if(rightStickVec.len() > .5f){
+                GameManager.ins().getThePlayer().LookToward(rightStickVec.nor());
+            }
 
             if (Controllers.getControllers().get(0).getAxis(4) > .5) {
 //                System.out.println("axis 4 > .5");
@@ -173,12 +197,15 @@ public class ControllerManager {
                     GameManager.ins().getThePlayer().TurnRight();
                 }
             }
+
             float dX = Controllers.getControllers().get(0).getAxis(3);
             float dY = -Controllers.getControllers().get(0).getAxis(2);
-            if(dX > .05 || dX < -.05)
+            if(dX > .05 || dX < -.05){
                 GameManager.ins().getThePlayer().buildPosition.x+=dX*5;
-            if(dY > .05 || dY < -.05)
-                GameManager.ins().getThePlayer().buildPosition.y+=dY*5;
+            }
+            if(dY > .05 || dY < -.05) {
+                GameManager.ins().getThePlayer().buildPosition.y += dY * 5;
+            }
             GUIManager.ins().targetPosition = GameManager.ins().getThePlayer().buildPosition;
 
             if (Controllers.getControllers().get(0).getButton(0)) {
@@ -186,20 +213,22 @@ public class ControllerManager {
             }
             if (Controllers.getControllers().get(0).getButton(9)) {
                 //ZOOM IN
-//                CameraManager.ins().ZoomIn();
+                CameraManager.ins().ZoomIn();
             }
             if (Controllers.getControllers().get(0).getButton(8)) {
                 //ZOOM OUT
-//                CameraManager.ins().ZoomOut();
+                CameraManager.ins().ZoomOut();
             }
             if (Controllers.getControllers().get(0).getButton(4)) {
-                if(numBlocks > 0)
-                    if(WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName))
-                        numBlocks--;
-//                WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName);
+                if(GameManager.ins().getThePlayer().buildMode)
+                    if(numBlocks > 0)
+                        if(WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName))
+                            numBlocks--;
+    //                WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName);
             }
             if (Controllers.getControllers().get(0).getButton(5)) {
-                WorldManager.ins().playerRemoveVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
+                if(GameManager.ins().getThePlayer().buildMode)
+                    WorldManager.ins().playerRemoveVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
             }
 
         } else {//no controllers
@@ -279,7 +308,7 @@ public class ControllerManager {
     }
     public void FireMain(){
         if(numBlocks > 0) {
-            GameManager.ins().getThePlayer().FireMain(leftStickVec);
+            GameManager.ins().getThePlayer().FireMain();
             numBlocks--;
         }
     }

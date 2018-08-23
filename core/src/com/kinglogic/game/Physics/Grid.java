@@ -34,7 +34,7 @@ public class Grid implements Controllable, MaterialModel{
     public HashSet<PhysicsShape> physicsShapes;
     public BodyDef bodyDef;
     public List<Vector2[]> verts;
-    public Vector2 gravity = new Vector2(0f,-180000f);
+    public Vector2 gravity = new Vector2(0f,-400000f);//was 18
 
     public Grid(VoxelCollection v){
         name = ""+(gridID++);
@@ -266,6 +266,11 @@ public class Grid implements Controllable, MaterialModel{
     }
 
     @Override
+    public void LookToward(Vector2 direction) {
+
+    }
+
+    @Override
     public void FireAlt() {
 
     }
@@ -310,17 +315,19 @@ public class Grid implements Controllable, MaterialModel{
     }
 
     @Override
-    public void Recieve(ChemicalEvent event) {
+    public void Receive(ChemicalEvent event) {
         //get the voxel at event position
-        Voxel effected = voxels.getVoxelAtWorldPosition(event.position);
+        Voxel effected = voxels.getVoxelAtWorldPosition(event.position.cpy());
+
         if(effected == null){
             switch (event.event){
+                case SHOT:
+
                 default:
                     break;
             }
             return;
         }
-
         //apply grid specific actions
         switch (event.event){
             case TOUCHED:
@@ -328,14 +335,14 @@ public class Grid implements Controllable, MaterialModel{
                 e.sentBy = this;
                 e.position = gravity;
                 e.event = ChemistryManager.EventTypes.SEND_GRAVITY;
-                event.sentBy.Recieve(e);
+                event.sentBy.Receive(e);
                 break;
             default:
                 event.sentBy = this;
                 break;
         }
         //send the event to that voxel
-        effected.Recieve(event);
+        effected.Receive(event);
     }
 
     @Override
@@ -343,9 +350,73 @@ public class Grid implements Controllable, MaterialModel{
         return null;
     }
 
+    @Override
+    public void ReactToTouch(MaterialModel model, Vector2 worldPosition) {
+
+    }
+
+    /**
+     * Recursive BFS
+     * @param visited
+     * @param grid
+     * @param i
+     * @param j
+     * @param event
+     * @param type
+     */
+    private void RecursivePropagate(boolean[][] visited,Voxel[][] grid, int i, int j, ChemicalEvent event, Voxel type){
+        System.out.println("Rec.Prop @ "+ i+ ", "+ j +": "+grid[i][j]);
+        if(grid[i][j] != null && grid[i][j].getClass().equals(type.getClass())) {
+            ChemicalEvent newEvent = new ChemicalEvent();
+            newEvent.sentBy = this;
+            newEvent.event = event.event;
+            newEvent.element = event.element;
+            newEvent.position = voxels.mapIndexesToWorldPos(i,j);
+            ChemistryManager.ins().EnqueueEvent(newEvent);
+        }
+
+        if(voxels.validIndex(i+1,j) && visited[i+1][j] == false){
+            visited[i+1][j] = true;
+            if(grid[i+1][j] != null && grid[i+1][j].getClass().equals(type.getClass())){
+                RecursivePropagate(visited, grid, i+1, j, event, type);
+            }
+        }
+        if(voxels.validIndex(i-1,j) && visited[i-1][j] == false) {
+            visited[i - 1][j] = true;
+            if (grid[i - 1][j] != null && grid[i - 1][j].getClass().equals(type.getClass())) {
+                RecursivePropagate(visited, grid, i-1, j, event, type);
+            }
+        }
+        if(voxels.validIndex(i,j+1) && visited[i][j+1] == false) {
+            visited[i][j + 1] = true;
+            if (grid[i][j + 1] != null && grid[i][j + 1].getClass().equals(type.getClass())) {
+                RecursivePropagate(visited, grid, i, j+1, event, type);
+            }
+        }
+        if(voxels.validIndex(i,j-1) && visited[i][j-1] == false) {
+            visited[i][j - 1] = true;
+            if (grid[i][j - 1] != null && grid[i][j - 1].getClass().equals(type.getClass())) {
+                RecursivePropagate(visited, grid, i, j-1, event, type);
+            }
+        }
+    }
+
     public void PropagateEvent(ChemicalEvent event, Voxel type, boolean connectedOnly){
+        System.out.println("event pos @ Prop call: "+event.position);
         if(connectedOnly){
             //todo BFS
+            Voxel[][] grid = voxels.getGrid();
+            boolean[][]visited = new boolean[grid.length][grid[0].length];
+            if(voxels.isWorldPosInGrid(event.position.cpy())){
+                Vector2 pos = voxels.mapWorldPointToIndexies(event.position);
+                int i = (int)pos.x;
+                int j = (int)pos.y;
+                if(voxels.validIndex(i,j)) {
+                    System.out.println("!!!!RECUSION TIME!!!");
+                    visited[i][j] = true;
+                    RecursivePropagate(visited,grid,i,j,event,type);
+                }
+            }
         }
         else{
             //todo dont do this at all. its n^2 complexity. remove the boolean arg
@@ -367,4 +438,21 @@ public class Grid implements Controllable, MaterialModel{
             }
         }
     }
+
+    public void PropagateEvent(ChemicalEvent event, int i, int j, Voxel type){
+        System.out.println("event pos @ Prop call: "+event.position);
+
+        Voxel[][] grid = voxels.getGrid();
+        boolean[][]visited = new boolean[grid.length][grid[0].length];
+        if(voxels.validIndex(i,j)) {
+            System.out.println("!!!!RECUSION TIME!!!");
+            visited[i][j] = true;
+            RecursivePropagate(visited,grid,i,j,event,type);
+        }
+
+
+
+    }
+
+
 }

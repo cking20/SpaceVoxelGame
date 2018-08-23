@@ -1,5 +1,7 @@
 package com.kinglogic.game.ChemestryFramework;
 
+import com.badlogic.gdx.math.Vector2;
+
 import java.util.LinkedList;
 
 /**
@@ -21,13 +23,19 @@ public interface MaterialModel {
      * Handle the event and possibly change state
      * @param event
      */
-    void Recieve(ChemicalEvent event);
+    void Receive(ChemicalEvent event);
 
     /**
      * return the element of the model
      * @return
      */
     ChemistryManager.Elements getPrimaryElement();
+
+    /**
+     * React to a collision between models
+     * @param model the model that touched this model
+     */
+    void ReactToTouch(MaterialModel model, Vector2 worldPosition);
 
 
 }

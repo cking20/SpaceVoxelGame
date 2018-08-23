@@ -176,7 +176,7 @@ public class PersistenceManager {
                         gridJson+=scanner.next();
                     }
                     scanner.close();
-                    DynamicGrid d = GridStateModel.unjsonifyDynamicGrid(new JSONObject(gridJson));
+                    Grid d = GridStateModel.unjsonifyDynamicGrid(new JSONObject(gridJson));
                     loaded.add(d);
                 }
                 System.out.println("Loaded "+ loaded.size()+" grids");

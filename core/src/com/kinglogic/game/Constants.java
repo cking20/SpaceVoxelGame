@@ -10,9 +10,9 @@ public class Constants {
     public static final boolean DEBUG = true;
     public static final boolean FULLSCREEN = false;
     public static final float TIME_STEP = 1/80f;
-    public static final int VELOCITY_ITERATIONS = 7;//was 4
-    public static final int  POSITION_ITERATIONS = 2;//was 2
-    public static final int MAX_GRID_SIZE = 50;
+    public static final int VELOCITY_ITERATIONS = 10;//was 4 then was 7
+    public static final int  POSITION_ITERATIONS = 3;//was 2
+    public static final int MAX_GRID_SIZE = 250;
     public static final float SECTOR_SIZE = 2036f;//was 4036
     public static final int NUM_SECTORS = 4;
     public static final int START_WIDTH = 1920;

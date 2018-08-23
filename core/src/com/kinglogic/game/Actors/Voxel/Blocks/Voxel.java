@@ -1,7 +1,7 @@
 package com.kinglogic.game.Actors.Voxel.Blocks;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.kinglogic.game.Actors.Voxel.VoxelProperties;
 import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
 import com.kinglogic.game.ChemestryFramework.ChemistryManager;
 import com.kinglogic.game.ChemestryFramework.MaterialModel;
@@ -17,13 +17,13 @@ import java.util.List;
  */
 
 public class Voxel extends Image implements MaterialModel{
-    public VoxelProperties properties;
+    public Properties properties;
 
     public Voxel(String name){
         super(ResourceManager.ins().getVoxTex(name));
         this.setName(name);
-        properties = new VoxelProperties();
-        properties.setProperty(true,VoxelProperties.COLLIDABLE);
+        properties = new Properties();
+        properties.setProperty(true,Properties.COLLIDABLE);
     }
 
     //Set the appropriate properties of the Voxel being built
@@ -31,7 +31,7 @@ public class Voxel extends Image implements MaterialModel{
         Voxel v;
         if(name.contains(IDs.BASE_TEX) || name.contains(IDs.GRASS_TEX)|| name.contains(IDs.GRID_TEX)){
             v = new Voxel(name);
-            v.properties.setProperty(false, VoxelProperties.COLLIDABLE);
+            v.properties.setProperty(false, Properties.COLLIDABLE);
             v.properties.setPermeable(true);
         }else if(name.contains(IDs.DOOR_TEX)){
             v = new Door(name);
@@ -41,7 +41,7 @@ public class Voxel extends Image implements MaterialModel{
         return v;
     }
 
-    public static Voxel Build(String name, VoxelProperties custom){
+    public static Voxel Build(String name, Properties custom){
         Voxel v =  new Voxel(name);
         v.properties.copy(custom);
         return v;
@@ -49,18 +49,17 @@ public class Voxel extends Image implements MaterialModel{
 
     @Override
     public LinkedList<ChemicalEvent> Output() {
-        System.out.println("output: ");
         return null;
     }
 
     @Override
     public boolean Update(float delta) {
-        System.out.println("updating voxel");
-        return true;
+        System.out.println("updating voxel. done.");
+        return false;
     }
 
     @Override
-    public void Recieve(ChemicalEvent event) {
+    public void Receive(ChemicalEvent event) {
 //        System.out.println(event.event);
     }
 
@@ -73,4 +72,20 @@ public class Voxel extends Image implements MaterialModel{
 
         return ChemistryManager.Elements.AIR;
     }
+
+    @Override
+    public void ReactToTouch(MaterialModel model, Vector2 worldPosition) {
+
+    }
+
+    /**
+     * Tells if a sensor collision box should be made at this voxel, and the range of it.
+     * 0 is implied that there should not be a sensor
+     * @return the radius in blocks of the sensor
+     */
+    public int buildCollisionSensor(){
+        return 0;
+    }
+
+
 }

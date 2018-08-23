@@ -9,10 +9,8 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.kinglogic.game.AI.DestructoEnemy;
 import com.kinglogic.game.AI.Enemy;
-import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
 import com.kinglogic.game.ChemestryFramework.ChemistryManager;
-import com.kinglogic.game.Constants;
 import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
@@ -169,7 +167,7 @@ public class WorldContactListner implements ContactListener {
                 return;
             }
             if(isGroundSensorHittingGround(a,b)){
-                //((PlayerBody)a.getBody().getUserData()).SetTouchingGround(false);
+                ((PlayerBody)a.getBody().getUserData()).SetTouchingGround(false);
                 return;
             }
         }else if(b.isSensor()){
@@ -199,15 +197,28 @@ public class WorldContactListner implements ContactListener {
     private void handleBulletGridHit(Fixture a, Fixture b, WorldManifold m){
         WorldManager.ins().removeEntityFromWorld((Projectile)a.getBody().getUserData());
         //todo send grid shot event
-        ChemicalEvent event = new ChemicalEvent();
-        event.event = ChemistryManager.EventTypes.SHOT;
-        event.sentBy = (Projectile)a.getUserData();
-        event.element = ((Projectile)a.getUserData()).getPrimaryElement();
-        for(int i = 0; i <  m.getPoints().length; i++) {
-            event.position = m.getPoints()[i].add(m.getNormal().scl(-1));
-            ((Grid) b.getBody().getUserData()).Recieve(event);
-            ResourceManager.ins().createExplosionEffect(m.getPoints()[i]);
-        }
+
+//        for(int i = 0; i <  m.getPoints().length; i++) {
+            ChemicalEvent event = new ChemicalEvent();
+            event.event = ChemistryManager.EventTypes.SHOT;
+            event.sentBy = (Projectile)a.getUserData();
+            event.element = ((Projectile)a.getUserData()).getPrimaryElement();
+            event.position = m.getPoints()[0].cpy().add(m.getNormal().cpy().scl(-1));
+            System.out.println("hit @"+ event.position +"aka"+m.getPoints()[0]);
+            ResourceManager.ins().createExplosionEffect(event.position);
+            ((Grid) b.getBody().getUserData()).Receive(event);
+
+
+            ChemicalEvent event2 = new ChemicalEvent();
+            event2.event = ChemistryManager.EventTypes.SHOT;
+            event2.sentBy = (Projectile)a.getUserData();
+            event2.element = ((Projectile)a.getUserData()).getPrimaryElement();
+            event2.position = m.getPoints()[0].cpy().add(m.getNormal().cpy().scl(1));
+            System.out.println("hit @"+ event2.position +"aka"+m.getPoints()[0]);
+            ResourceManager.ins().createExplosionEffect(event2.position);
+            ((Grid) b.getBody().getUserData()).Receive(event2);
+
+//        }
     }
 
     private void handleBulletEntityHit(Fixture a, Fixture b, WorldManifold m){

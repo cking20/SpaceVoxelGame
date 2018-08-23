@@ -19,6 +19,7 @@ public interface Controllable {
     void Activate();
     void FireMain();
     void FireMain(Vector2 direction);
+    void LookToward(Vector2 direction);
     void FireAlt();
     void FireAlt(Vector2 direction);
     void Deactivate();

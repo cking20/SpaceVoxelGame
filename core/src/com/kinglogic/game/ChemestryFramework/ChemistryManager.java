@@ -1,11 +1,8 @@
 package com.kinglogic.game.ChemestryFramework;
 
 
-import com.badlogic.gdx.math.Vector2;
-import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Managers.WorldManager;
-import com.kinglogic.game.Models.WorldState;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
 
@@ -87,7 +84,7 @@ public class ChemistryManager {
                 ChemicalEvent cur = eventQueue.get(i);
                 ArrayList<Grid> atPos = WorldManager.ins().getGridsAtWorldPos(cur.position);
                 for(Grid g : atPos){
-                    g.Recieve(cur);
+                    g.Receive(cur.clone());
                 }
             }
             eventQueue.clear();

@@ -2,6 +2,7 @@ package com.kinglogic.game.AI;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.kinglogic.game.Managers.WorldManager;
 
 /**
  * Created by chris on 4/23/2018.
@@ -11,6 +12,7 @@ public class DestructoEnemy extends Enemy {
     public DestructoEnemy(String name, Vector2 position) {
         super(name, position);
         this.speed = 200f;
+
     }
 
     @Override

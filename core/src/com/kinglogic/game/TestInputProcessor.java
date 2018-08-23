@@ -103,7 +103,7 @@ public class TestInputProcessor implements InputProcessor {
             WorldManager.ins().addEntityToWorld(new RobotFriend("robot", GameManager.ins().getThePlayer().myBody.getPosition()));
         }
         else if(character == 'g'){
-            GameManager.ins().getThePlayer().ToggleGravLock();
+            //GameManager.ins().getThePlayer().ToggleGravLock();
         }
         else if(character == 'l'){
             System.out.println("queued load");

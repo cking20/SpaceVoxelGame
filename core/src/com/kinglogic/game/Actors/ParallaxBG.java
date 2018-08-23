@@ -15,7 +15,7 @@ import com.kinglogic.game.Screens.GameScreen;
  */
 
 public class ParallaxBG extends Image {
-    private static final float LAYER_SPEED_DIFFERENCE = .5f;
+    private static final float LAYER_SPEED_DIFFERENCE = .25f;
     private int x, y,originX, originY, rotation;
     private float scaleX, scaleY;
     Array<Texture> layers;
@@ -47,7 +47,7 @@ public class ParallaxBG extends Image {
         scrollX+=speedX;
         scrollY+=speedY;
         for(int i = 0;i<layers.size;i++) {
-            batch.draw(layers.get(i),
+            batch.draw(layers.get(layers.size-1 -i),
                     CameraManager.ins().mainCamera.position.x-CameraManager.ins().mainCamera.viewportWidth*scaleX,
                     CameraManager.ins().mainCamera.position.y-CameraManager.ins().mainCamera.viewportHeight*scaleY,
                     getOriginX(),
@@ -57,8 +57,8 @@ public class ParallaxBG extends Image {
                     getScaleX(),
                     getScaleY(),
                     getRotation(),
-                    (int) (scrollX + i*this.LAYER_SPEED_DIFFERENCE *scrollX),
-                    (int) (scrollY + i*this.LAYER_SPEED_DIFFERENCE *scrollY),
+                    (int) (scrollX + (i*this.LAYER_SPEED_DIFFERENCE) *scrollX),
+                    (int) (scrollY + (i*this.LAYER_SPEED_DIFFERENCE) *scrollY),
                     layers.get(i).getWidth(),
                     layers.get(i).getHeight(),
                     false,false);
