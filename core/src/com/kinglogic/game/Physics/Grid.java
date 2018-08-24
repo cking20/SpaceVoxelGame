@@ -12,7 +12,9 @@ import com.kinglogic.game.Actors.Voxel.VoxelUtils;
 import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
 import com.kinglogic.game.ChemestryFramework.ChemistryManager;
 import com.kinglogic.game.ChemestryFramework.MaterialModel;
+import com.kinglogic.game.Constants;
 import com.kinglogic.game.Interfaces.Controllable;
+import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 
@@ -41,6 +43,7 @@ public class Grid implements Controllable, MaterialModel{
         voxels = v;
         bodyDef = new BodyDef();
         physicsShapes = new HashSet<PhysicsShape>();
+        //find all the important voxels
         if(myBody != null){
             PhysicsShape s = new PhysicsShape(ResourceManager.ins().getNewChainShape(), myBody);
             Filter filter = new Filter();
@@ -48,6 +51,7 @@ public class Grid implements Controllable, MaterialModel{
             filter.categoryBits = FilterIDs.GRID;
             s.fixture.setFilterData(filter);
             physicsShapes.add(s);
+            buildSensors();
 //            physicsShapes.add(new PhysicsShape(ResourceManager.ins().getNewChainShape(), myBody));
         }
         //recalculateShape();
@@ -85,7 +89,6 @@ public class Grid implements Controllable, MaterialModel{
     public void recalculateShape(){
         recalculateVerts();
             if (verts != null && myBody != null) {
-                //todo dispose of the old chain and get a new one from the resource manager
                 for(PhysicsShape s : (HashSet<PhysicsShape>)physicsShapes.clone()){
                     ResourceManager.ins().disposeOfShape(s.shape);
                     myBody.destroyFixture(s.fixture);
@@ -101,8 +104,8 @@ public class Grid implements Controllable, MaterialModel{
                     s.fixture.setFilterData(filter);
                     physicsShapes.add(s);
                 }
-
-
+                //todo go through sensors and all sensor fixtures with userdata as the vox
+                buildSensors();
 
                 bodyDef.position.set(voxels.getX(),voxels.getY());
             } else {
@@ -131,6 +134,43 @@ public class Grid implements Controllable, MaterialModel{
 
 //        bodyDef.position.set(voxels.getX(),voxels.getY());
         //voxels.setOrigin((ResourceManager.VOXEL_PIXEL_SIZE * VoxelCollection.maxSize)/2-ResourceManager.VOXEL_PIXEL_SIZE/2,(ResourceManager.VOXEL_PIXEL_SIZE * VoxelCollection.maxSize)/2 - ResourceManager.VOXEL_PIXEL_SIZE/2);
+    }
+
+    /**
+     * Go through all the sensor blocks and attach a fixture
+     */
+    protected void buildSensors() {
+        Voxel[][] grid = voxels.getGrid();
+        for (int i = 0; i < voxels.sensorBlocks.size(); i++) {
+            System.out.println("build Sensor");
+            VoxelUtils.Index index = voxels.sensorBlocks.get(i);
+            Voxel v = grid[index.x][index.y];
+            if(v == null){
+                voxels.sensorBlocks.remove(v);
+                continue;
+            }
+            int size = v.buildCollisionSensor();//this should always be > 0
+            if( size <= 0){
+                voxels.sensorBlocks.remove(v);
+                continue;
+            }
+            //todo test - test the map index to world pos in this case. might need to account for grid rotation
+            PhysicsShape sensor = new PhysicsShape(
+                    this.myBody,
+                    ResourceManager.VOXEL_PIXEL_SIZE * size/2.0f,
+                    ResourceManager.VOXEL_PIXEL_SIZE * size/2.0f,
+                    new Vector2(ResourceManager.VOXEL_PIXEL_SIZE * index.x + ResourceManager.VOXEL_PIXEL_SIZE/2,ResourceManager.VOXEL_PIXEL_SIZE * index.y + ResourceManager.VOXEL_PIXEL_SIZE/2),//myBody.getPosition().cpy().add(new Vector2(ResourceManager.VOXEL_PIXEL_SIZE* (index.x+(Constants.MAX_GRID_SIZE/2))-ResourceManager.VOXEL_PIXEL_SIZE+1, ResourceManager.VOXEL_PIXEL_SIZE* (index.y+(Constants.MAX_GRID_SIZE/2))+4*ResourceManager.VOXEL_PIXEL_SIZE+8).rotate((float) Math.toDegrees(myBody.getAngle()))),
+                    0);
+            System.out.println("("+index.x+", "+index.y+") mapped to" +voxels.mapIndexesToWorldPos(myBody.getPosition(), (float) Math.toDegrees(myBody.getAngle()),index.x, index.y));
+            Filter filter = new Filter();
+            filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET | FilterIDs.SENSOR;
+            filter.categoryBits = FilterIDs.GRID;
+            sensor.fixture.setFilterData(filter);
+            sensor.fixture.setSensor(true);
+            sensor.fixture.setUserData(v);
+            physicsShapes.add(sensor);
+
+        }
     }
 
     public List<Vector2[]> recalculateVerts(){
@@ -371,7 +411,7 @@ public class Grid implements Controllable, MaterialModel{
             newEvent.sentBy = this;
             newEvent.event = event.event;
             newEvent.element = event.element;
-            newEvent.position = voxels.mapIndexesToWorldPos(i,j);
+            newEvent.position = voxels.mapIndexesToWorldPos(myBody.getPosition(), (float) Math.toDegrees(myBody.getAngle()),i,j);
             ChemistryManager.ins().EnqueueEvent(newEvent);
         }
 
@@ -430,7 +470,7 @@ public class Grid implements Controllable, MaterialModel{
                             newEvent.sentBy = this;
                             newEvent.event = event.event;
                             newEvent.element = event.element;
-                            newEvent.position = voxels.mapIndexesToWorldPos(i,j);
+                            newEvent.position = voxels.mapIndexesToWorldPos(myBody.getPosition(), (float) Math.toDegrees(myBody.getAngle()), i,j);
                             ChemistryManager.ins().EnqueueEvent(newEvent);
                         }
 

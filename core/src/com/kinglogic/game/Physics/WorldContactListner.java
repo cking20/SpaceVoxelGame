@@ -11,6 +11,7 @@ import com.kinglogic.game.AI.DestructoEnemy;
 import com.kinglogic.game.AI.Enemy;
 import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
 import com.kinglogic.game.ChemestryFramework.ChemistryManager;
+import com.kinglogic.game.ChemestryFramework.MaterialModel;
 import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
@@ -118,6 +119,16 @@ public class WorldContactListner implements ContactListener {
             if(isGroundSensorHittingGround(a,b)){
                 System.out.print("TOUCHING GROUND");
                 ((EntityBody)a.getBody().getUserData()).SetTouchingGround(true);
+                return true;
+            }
+            //this is the proper way and will allow everything to define its own actions instead of the
+            //contact listner performing the task
+            if(b.getUserData() instanceof MaterialModel && a.getUserData() instanceof MaterialModel) {
+                ChemicalEvent event = new ChemicalEvent();
+                event.position = contact.getWorldManifold().getPoints()[0];
+                event.sentBy = (MaterialModel) b.getUserData();
+                event.event = ChemistryManager.EventTypes.TOUCHED;
+                ((MaterialModel) a.getUserData()).Receive(event);
                 return true;
             }
         } else {

@@ -29,12 +29,16 @@ public class Voxel extends Image implements MaterialModel{
     //Set the appropriate properties of the Voxel being built
     public static Voxel Build(String name){
         Voxel v;
-        if(name.contains(IDs.BASE_TEX) || name.contains(IDs.GRASS_TEX)|| name.contains(IDs.GRID_TEX)){
+        if(name.contains(IDs.BASE_TEX) || name.contains(IDs.GRID_TEX)){//|| name.contains(IDs.GRASS_TEX)){
             v = new Voxel(name);
             v.properties.setProperty(false, Properties.COLLIDABLE);
             v.properties.setPermeable(true);
         }else if(name.contains(IDs.DOOR_TEX)){
             v = new Door(name);
+        }else if(name.contains(IDs.GRASS_TEX)){
+            v = new SensorBlock(name);
+            v.properties.setProperty(false, Properties.COLLIDABLE);
+            v.properties.setPermeable(true);
         }else
             v = new Voxel(name);
 

@@ -2,6 +2,7 @@ package com.kinglogic.game.Actors.Voxel;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.kinglogic.game.Actors.Voxel.Blocks.SensorBlock;
 import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Managers.GUIManager;
@@ -23,6 +24,8 @@ import java.util.PriorityQueue;
 public class VoxelCollection extends Group {
     public static int maxSize = Constants.MAX_GRID_SIZE;
     Voxel[][] grid;
+    public ArrayList<VoxelUtils.Index> sensorBlocks; //used so we dont have to search for them every time shape is recalculated
+
 
     /**
      * Init at a world position with a root
@@ -35,7 +38,8 @@ public class VoxelCollection extends Group {
             maxSize--;
 
         grid = new Voxel[maxSize][maxSize];
-
+        sensorBlocks = new ArrayList<VoxelUtils.Index>();
+        if(v.buildCollisionSensor() > 0) sensorBlocks.add(new VoxelUtils.Index(maxSize/2,maxSize/2));
         grid[maxSize/2][maxSize/2] = v;
         super.addActor(v);
         v.setPosition((maxSize/2)*ResourceManager.VOXEL_PIXEL_SIZE,(maxSize/2)*ResourceManager.VOXEL_PIXEL_SIZE);
@@ -47,6 +51,7 @@ public class VoxelCollection extends Group {
 
     public VoxelCollection(){
         grid = new Voxel[maxSize][maxSize];
+        sensorBlocks = new ArrayList<VoxelUtils.Index>();
     }
 
     /**
@@ -59,13 +64,16 @@ public class VoxelCollection extends Group {
         if(maxSize%2 == 0)
             maxSize--;
         grid = v;
+        sensorBlocks = new ArrayList<VoxelUtils.Index>();
         if(grid == null){
             grid = new Voxel[maxSize][maxSize];
         }else {
             for (int i = 0; i < v.length; i++) {
                 for (int j = 0; j < v.length; j++) {
-                    if (grid[i][j] != null)
+                    if (grid[i][j] != null) {
+                        if(grid[i][j].buildCollisionSensor() > 0) sensorBlocks.add(new VoxelUtils.Index(i,j));
                         super.addActor(grid[i][j]);
+                    }
                 }
             }
         }
@@ -118,6 +126,7 @@ public class VoxelCollection extends Group {
             grid[x][y] = v;
             super.addActor(v);
             v.setPosition((x * ResourceManager.VOXEL_PIXEL_SIZE), (y * ResourceManager.VOXEL_PIXEL_SIZE));
+            if(v.buildCollisionSensor() > 0) sensorBlocks.add(new VoxelUtils.Index(x,y));
             return true;
         } else return false;
     }
@@ -170,6 +179,7 @@ public class VoxelCollection extends Group {
         if(!validIndex(x,y-1))return false;
         if(grid[x][y] != null) {
             Voxel v = grid[x][y];
+            if(v instanceof SensorBlock) sensorBlocks.remove(v);
             super.removeActor(v);
             grid[x][y] = null;
             Voxel[][] toRemove;
@@ -280,12 +290,20 @@ public class VoxelCollection extends Group {
      * @param j row
      * @return
      */
-    public Vector2 mapIndexesToWorldPos(int i, int j){
+    public Vector2 mapIndexesToWorldPos(Vector2 bodyPos, float bodyRotationDegrees, int i, int j){
         //todo test this
-        Vector2 worldPos = new Vector2(getX(), getY());
-        worldPos.x += i * ResourceManager.VOXEL_PIXEL_SIZE;
-        worldPos.y += j * ResourceManager.VOXEL_PIXEL_SIZE;
+        Vector2 worldPos = new Vector2(i * ResourceManager.VOXEL_PIXEL_SIZE,j * ResourceManager.VOXEL_PIXEL_SIZE);
+        worldPos.rotate(bodyRotationDegrees);
+        worldPos = bodyPos.cpy().add(worldPos);
+        System.out.println("body pos="+ worldPos);
+
+//        Vector2 pos = new Vector2(i+grid.length/2,j+grid[0].length/2);
+//        pos.x *= ResourceManager.VOXEL_PIXEL_SIZE;
+//        pos.y *= ResourceManager.VOXEL_PIXEL_SIZE;
+//        System.out.println("stage pos="+ pos);
+
         return worldPos;
+
     }
 
     /**

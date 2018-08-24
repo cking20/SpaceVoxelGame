@@ -68,7 +68,7 @@ public class CameraManager {
     }
     public void ZoomOut(){
         mainCamera.zoom+=.05f;
-        if(mainCamera.zoom > 2.5f)
-            mainCamera.zoom = 2.5f;
+//        if(mainCamera.zoom > 2.5f)
+//            mainCamera.zoom = 2.5f;
     }
 }

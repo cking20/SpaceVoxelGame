@@ -140,7 +140,7 @@ public class PlayerBody extends EntityBody {
             filter.maskBits = FilterIDs.GRID;
             filter.categoryBits = FilterIDs.SENSOR;
             groundSensor.fixture.setFilterData(filter);
-            groundSensor.fixture.setSensor(true);//was true
+            groundSensor.fixture.setSensor(true);
             groundSensor.fixture.setUserData("ground");
 
             WorldManager.ins().addLightToBody(myBody,.2f,32,myBody.getLocalCenter(), new Vector2(16f,16f));

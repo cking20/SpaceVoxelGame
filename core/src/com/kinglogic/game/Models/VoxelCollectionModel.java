@@ -3,6 +3,7 @@ package com.kinglogic.game.Models;
 import com.badlogic.gdx.graphics.Color;
 import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
+import com.kinglogic.game.Actors.Voxel.VoxelUtils;
 import com.kinglogic.game.ChemestryFramework.Properties;
 
 import org.json.JSONArray;
@@ -44,6 +45,8 @@ public class VoxelCollectionModel {
             JSONObject props = j.getJSONObject("properties");
 
             Voxel v = Voxel.Build(name);
+            if(v.buildCollisionSensor() > 0)
+                ret.sensorBlocks.add(new VoxelUtils.Index(x,y));
             //todo should set the properites with all the vals
             v.properties = new Properties(
                     (byte) props.getInt("l"),

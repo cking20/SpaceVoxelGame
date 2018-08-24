@@ -35,7 +35,7 @@ public class SectorState {
                 int vt = r.nextInt()% 5;
                 v = Math.min(v,Math.abs(vt));
             }
-            Vector2 pos = WorldState.mapFromChunkIndex(x, y);
+            Vector2 pos = new Vector2(0,0);//WorldState.mapFromChunkIndex(x, y);
             WorldManager.ins().GenerateAsteroid((int)pos.x, (int)pos.y, WorldState.chunkSize-5, ((float) v)/10);
 
             v = MathUtils.random(10);
@@ -44,7 +44,7 @@ public class SectorState {
                 v = Math.min(v,Math.abs(vt));
             }
             for (int k = 0; k < v; k++) {
-                Vector2 spawn = WorldState.mapFromChunkIndex(x,y);
+                Vector2 spawn = new Vector2(x,y);//WorldState.mapFromChunkIndex(x,y);
                 spawn.x += MathUtils.random(ResourceManager.VOXEL_PIXEL_SIZE * Constants.MAX_GRID_SIZE);
                 spawn.y += MathUtils.random(ResourceManager.VOXEL_PIXEL_SIZE * Constants.MAX_GRID_SIZE);
                 WorldManager.ins().addEntityToWorld(new DestructoEnemy("Yellowparasite", spawn));

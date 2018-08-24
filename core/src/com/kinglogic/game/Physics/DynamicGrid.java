@@ -55,7 +55,7 @@ public class DynamicGrid extends Grid{
                 physicsShapes.add(s);
 //                physicsShapes.add(new PhysicsShape(temp, myBody));
             }
-
+            super.buildSensors();
             bodyDef.position.set(voxels.getX(),voxels.getY());
 
         } else {

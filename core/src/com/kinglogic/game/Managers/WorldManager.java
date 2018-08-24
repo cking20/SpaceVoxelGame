@@ -399,6 +399,9 @@ public class WorldManager {
     public Vector2 screenToWorldCoords(Vector2 pos){
         return worldStage.screenToStageCoordinates(pos);
     }
+    public Vector2 worldToScreenCoords(Vector2 pos){
+        return worldStage.stageToScreenCoordinates(pos);
+    }
 
     /**
      * Raycast from point to point, returning the position of the first hit
