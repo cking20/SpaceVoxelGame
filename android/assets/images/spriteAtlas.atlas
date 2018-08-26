@@ -4,18 +4,18 @@ size: 128,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Yellowparasite
-  rotate: false
-  xy: 86, 40
-  size: 20, 20
-  orig: 20, 20
-  offset: 0, 0
-  index: -1
 arm
   rotate: false
-  xy: 86, 32
+  xy: 103, 54
   size: 20, 6
   orig: 20, 6
+  offset: 0, 0
+  index: -1
+pinkparasite
+  rotate: false
+  xy: 2, 2
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: -1
 player
@@ -34,14 +34,14 @@ playerjump
   index: -1
 projectile
   rotate: false
-  xy: 19, 11
-  size: 19, 7
-  orig: 19, 7
+  xy: 20, 11
+  size: 20, 7
+  orig: 20, 7
   offset: 0, 0
   index: -1
 robot
   rotate: false
-  xy: 2, 2
+  xy: 86, 44
   size: 15, 16
   orig: 15, 16
   offset: 0, 0

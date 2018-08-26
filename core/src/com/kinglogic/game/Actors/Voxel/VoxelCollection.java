@@ -92,7 +92,6 @@ public class VoxelCollection extends Group {
      * @return false iff the voxel wasnt added
      */
     public boolean addVoxelScreenPos(Voxel v, Vector2 screenPosition){
-        v.setColor(GUIManager.ins().selectedColor);
 //        System.out.println("Screen pos:" + screenPosition);
         Vector2 worldPosition = WorldManager.ins().screenToWorldCoords(screenPosition.cpy());
 //        System.out.println("World pos:" + worldPosition);

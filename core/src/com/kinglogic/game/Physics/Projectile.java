@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.ChemestryFramework.Properties;
 import com.kinglogic.game.Managers.ResourceManager;
+import com.kinglogic.game.Managers.WorldManager;
 
 /**
  * Created by chris on 4/24/2018.
@@ -14,6 +15,7 @@ import com.kinglogic.game.Managers.ResourceManager;
 
 public class Projectile extends EntityBody{
     public boolean hitPlayers = false;
+    private int lifetime = 20;
 
     public Projectile(String name, Vector2 position) {
         super(name, position);
@@ -40,7 +42,17 @@ public class Projectile extends EntityBody{
     }
 
     @Override
+    public void updateRendering(){
+        super.updateRendering();
+        lifetime--;
+        if(lifetime < 0)
+            WorldManager.ins().removeEntityFromWorld(this);
+
+    }
+
+    @Override
     public void GoForeward(){
 
     }
+
 }

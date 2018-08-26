@@ -47,7 +47,7 @@ public class SectorState {
                 Vector2 spawn = new Vector2(x,y);//WorldState.mapFromChunkIndex(x,y);
                 spawn.x += MathUtils.random(ResourceManager.VOXEL_PIXEL_SIZE * Constants.MAX_GRID_SIZE);
                 spawn.y += MathUtils.random(ResourceManager.VOXEL_PIXEL_SIZE * Constants.MAX_GRID_SIZE);
-                WorldManager.ins().addEntityToWorld(new DestructoEnemy("Yellowparasite", spawn));
+                WorldManager.ins().addEntityToWorld(new DestructoEnemy("pinkparasite", spawn));
             }
         }
 

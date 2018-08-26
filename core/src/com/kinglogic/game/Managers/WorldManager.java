@@ -30,6 +30,7 @@ import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.FilterIDs;
 import com.kinglogic.game.Physics.Grid;
 import com.kinglogic.game.Physics.WorldContactListner;
+import com.kinglogic.game.Player.PlayerBody;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -112,12 +113,12 @@ public class WorldManager {
         rayHandler.setAmbientLight(.8f);//.8f);
         rayHandler.setShadows(true);
 //        DirectionalLight dl = new DirectionalLight(rayHandler,100,new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),-91)
-        PointLight dl = new PointLight(rayHandler,100, new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),200f,0,0);
-
-        dl.setSoftnessLength(16f);//300f);
-        Filter dlF = new Filter();
-        dlF.maskBits = FilterIDs.GRID;
-        dl.setContactFilter(dlF);
+//        PointLight dl = new PointLight(rayHandler,100, new Color(Color.rgba8888(.20f, .20f, .20f, 1.0f)),200f,0,0);
+//
+//        dl.setSoftnessLength(16f);//300f);
+//        Filter dlF = new Filter();
+//        dlF.maskBits = FilterIDs.GRID;
+//        dl.setContactFilter(dlF);
 
 
 
@@ -127,11 +128,13 @@ public class WorldManager {
     }
 
 
-    public boolean addVoxelScreenPosition(float x, float y, String block){
+    public boolean addVoxelScreenPosition(float x, float y, String block, Color color){
         boolean hitFlag = false;
         HashSet<Grid> clone = (HashSet<Grid>) currentLevel.grids.clone();
         for(Grid g : clone){
-            if(g.addVoxelScreenPos(Voxel.Build(block),new Vector2(x,y))){
+            Voxel v = Voxel.Build(block);
+            v.setColor(color);
+            if(g.addVoxelScreenPos(v,new Vector2(x,y))){
                 hitFlag = true;
                 rethinkShape(g);
             }
@@ -150,8 +153,12 @@ public class WorldManager {
     public void clearLevel(){
         gridRemovalQueue.addAll(currentLevel.grids);
         entityRemovalQueue.addAll(currentLevel.entities);
-        entityRemovalQueue.remove(GameManager.ins().getThePlayer());
-        gridRemovalQueue.remove(GameManager.ins().getThePlayer().lastControlled);
+        PlayerBody[] players = GameManager.ins().getPlayers();
+        for (int i = 0; i < players.length; i++) {
+            entityRemovalQueue.remove(GameManager.ins().getPlayer(i));
+            gridRemovalQueue.remove(GameManager.ins().getPlayer(i).lastControlled);
+        }
+
     }
 
     public void removeVoxelScreenPosition(float x, float y){
@@ -241,14 +248,25 @@ public class WorldManager {
             rayHandler.update();
             rayHandler.setCombinedMatrix(CameraManager.ins().mainCamera);//worldStage.getCamera());
         }
-        currentLevel.entities.remove(GameManager.ins().getThePlayer());
+        PlayerBody[] players = GameManager.ins().getPlayers();
+        for (int i = 0; i < players.length; i++) {
+            currentLevel.entities.remove(GameManager.ins().getPlayer(i));
+        }
         checkWorldGeneration();
-        currentLevel.entities.add(GameManager.ins().getThePlayer());
+        for (int i = 0; i < players.length; i++) {
+            currentLevel.entities.add(GameManager.ins().getPlayer(i));
+        }
         if(queuedWorldSave) {
             queuedWorldSave = false;
-            currentLevel.entities.remove(GameManager.ins().getThePlayer());
+            for (int i = 0; i < players.length; i++) {
+                currentLevel.entities.remove(GameManager.ins().getPlayer(i));
+            }
+
             PersistenceManager.ins().SaveCurrentWorldState();
-            currentLevel.entities.add(GameManager.ins().getThePlayer());
+
+            for (int i = 0; i < players.length; i++) {
+                currentLevel.entities.add(GameManager.ins().getPlayer(i));
+            }
         }
         if(queuedWorldLoad){
             queuedWorldLoad = false;
@@ -256,7 +274,9 @@ public class WorldManager {
             gridRemovalQueue.addAll(currentLevel.grids);
             entityRemovalQueue.addAll(currentLevel.entities);
             removeQueued();
-            currentLevel.entities.remove(GameManager.ins().getThePlayer());
+            for (int i = 0; i < players.length; i++) {
+                currentLevel.entities.remove(GameManager.ins().getPlayer(i));
+            }
 //            SectorState loading = PersistenceManager.ins().LoadLevel(toLoad);
 //            currentLevel = loading;
             PersistenceManager.ins().LoadWorld(toLoad);
@@ -271,14 +291,24 @@ public class WorldManager {
                 for (EntityBody e : eclone)
                     LoadEntityToWorld(e);
             }
-            currentLevel.entities.add(GameManager.ins().getThePlayer());
+            for (int i = 0; i < players.length; i++) {
+                currentLevel.entities.add(GameManager.ins().getPlayer(i));
+            }
         }
         VerifyWorldState();
 
     }
 
     public void render(){
-        background.setSpeed(GameManager.ins().getThePlayer().myBody.getLinearVelocity().x/100f,-GameManager.ins().getThePlayer().myBody.getLinearVelocity().y/100f);
+        Vector2 averageSpeed = new Vector2();
+        PlayerBody[] players = GameManager.ins().getPlayers();
+        for (int i = 0; i < players.length; i++) {
+            averageSpeed = averageSpeed.add(players[i].myBody.getLinearVelocity().cpy().scl(.01f));
+        }
+        //todo move when the camera moves, not the players
+        averageSpeed = GameManager.ins().getPlayer().myBody.getLinearVelocity().cpy().scl(.005f);
+
+        background.setSpeed(averageSpeed.x,-averageSpeed.y);
 //        background.setScale(4f*CameraManager.ins().mainCamera.zoom);
 //        background.setPosition(
 //                CameraManager.ins().mainCamera.position.x-background.getWidth()*background.getScaleX()/2,
@@ -329,7 +359,12 @@ public class WorldManager {
             //System.out.println("REMOVING " + e);
             if(e == null) continue;
             if(e.myBody == null) continue;
-            if(e.equals(GameManager.ins().getThePlayer())) continue;
+            boolean isPlayerFlag = false;
+            PlayerBody[] players = GameManager.ins().getPlayers();
+            for (int i = 0; i < players.length; i++) {
+                if (e.equals(players[i])) isPlayerFlag = true;
+            }
+            if(isPlayerFlag) continue;
 
             currentLevel.entities.remove(e);
             entityGroup.removeActor(e.view);
@@ -559,13 +594,14 @@ public class WorldManager {
         int newY, oldY = currentLevel.getCenterY();
         newX = oldX;
         newY = oldY;
-        if(GameManager.ins().getThePlayer().myBody.getPosition().x > Constants.SECTOR_SIZE/2)
+
+        if(GameManager.ins().getPlayer().myBody.getPosition().x > Constants.SECTOR_SIZE/2)
             newX++;
-        else if(GameManager.ins().getThePlayer().myBody.getPosition().x < -Constants.SECTOR_SIZE/2)
+        else if(GameManager.ins().getPlayer().myBody.getPosition().x < -Constants.SECTOR_SIZE/2)
             newX--;
-        if(GameManager.ins().getThePlayer().myBody.getPosition().y > Constants.SECTOR_SIZE/2)
+        if(GameManager.ins().getPlayer().myBody.getPosition().y > Constants.SECTOR_SIZE/2)
             newY++;
-        else if(GameManager.ins().getThePlayer().myBody.getPosition().y < -Constants.SECTOR_SIZE/2)
+        else if(GameManager.ins().getPlayer().myBody.getPosition().y < -Constants.SECTOR_SIZE/2)
             newY--;
         if(newX > Constants.NUM_SECTORS/2)
             newX = -Constants.NUM_SECTORS/2;
@@ -575,6 +611,7 @@ public class WorldManager {
             newY = -Constants.NUM_SECTORS/2;
         else if(newY < -Constants.NUM_SECTORS/2)
             newY = Constants.NUM_SECTORS/2;
+        //todo this should only shift if a player is controlling a ship and chooses to warp
         if(newX != oldX || newY != oldY)
             currentLevel.ShiftTo(newX,newY);
 

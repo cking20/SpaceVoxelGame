@@ -1,6 +1,7 @@
 package com.kinglogic.game.Player;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.kinglogic.game.Actors.Entities.Entity;
 import com.kinglogic.game.Constants;
+import com.kinglogic.game.Managers.IDs;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.EntityBody;
@@ -26,6 +28,12 @@ public class PlayerBody extends EntityBody {
     public boolean buildMode = false;
     public Vector2 buildPosition;
     PhysicsShape groundSensor;
+
+    public  String playersCurrentBlock = IDs.getIDList().get(0);
+    public Color playersCurrentColor = IDs.getColorList().get(0);
+    public int currentBlockIndex = 0;
+    public int currentColorIndex = 0;
+    public int numBlocks = 10000;
 
     Entity armView;
     Body armBody;

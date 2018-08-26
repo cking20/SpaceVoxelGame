@@ -13,7 +13,10 @@ import com.kinglogic.game.Actors.Voxel.Blocks.Voxel;
 import com.kinglogic.game.Actors.Voxel.VoxelCollection;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Physics.StaticGrid;
+import com.kinglogic.game.Player.PlayerBody;
 import com.kinglogic.game.TestInputProcessor;
+
+import java.util.ArrayList;
 
 /**
  * Created by chris on 4/20/2018.
@@ -25,11 +28,11 @@ public class ControllerManager {
     private Vector2 mousePos;
     private TestInputProcessor tip;
 
-    public  String playersCurrentBlock = IDs.getIDList().get(0);
-    private int currentBlockIndex = 0;
+//    public  String playersCurrentBlock = IDs.getIDList().get(0);
+//    private int currentBlockIndex = 0;
 
-    public Color playersCurrentColor = IDs.getColorList().get(0);
-    private int currentColorIndex = 0;
+//    public Color playersCurrentColor = IDs.getColorList().get(0);
+//    private int currentColorIndex = 0;
     public int numBlocks = 10000;
 
     private Vector2 rightStickVec = new Vector2(0,0);
@@ -41,6 +44,10 @@ public class ControllerManager {
             instance = new ControllerManager();
         return instance;
     }
+
+    public int getNumControllers(){
+        return Controllers.getControllers().size;
+    }
     private ControllerManager(){
         tip = new TestInputProcessor();
         Gdx.input.setInputProcessor(tip);
@@ -48,12 +55,16 @@ public class ControllerManager {
         playerControllerAdapter = new ControllerListener(){
             @Override
             public void connected(Controller controller) {
-
+                System.out.println("connecting "+ controller);
+                GameManager.ins().addPlayer();
             }
 
             @Override
             public void disconnected(Controller controller) {
+                System.out.println("removing "+ controller);
 
+                int playerNum = Controllers.getControllers().indexOf(controller, true);
+                GameManager.ins().removePlayer(playerNum);
             }
 
             @Override
@@ -63,11 +74,16 @@ public class ControllerManager {
 
             @Override
             public boolean buttonUp(Controller controller, int buttonCode) {
+                int playerNumber = Controllers.getControllers().indexOf(controller, true);
+                if(playerNumber < 0){
+//                    controllers.add(controller);
+                    playerNumber = 0;
+                }
                 if(Constants.DEBUG)
                     System.out.println("button "+buttonCode + " up");
                 switch (buttonCode){
                     case 0:// A
-                        Jump();
+                        Jump(playerNumber);
                         break;
                     case 1:// B
                         break;
@@ -78,14 +94,14 @@ public class ControllerManager {
                     case 4:// L_BUMPER
                         break;
                     case 5:// R_BUMPER
-                        if(!GameManager.ins().getThePlayer().buildMode)
-                            FireMain();
+                        if(!GameManager.ins().getPlayer(playerNumber).buildMode)
+                            FireMain(playerNumber);
                         break;
                     case 6:// SHARE
-                        GameManager.ins().getThePlayer().buildMode = !GameManager.ins().getThePlayer().buildMode;
+                        GameManager.ins().getPlayer(playerNumber).buildMode = !GameManager.ins().getPlayer(playerNumber).buildMode;
                         break;
                     case 7:// MENU
-                        CreateNewGrid();
+                        CreateNewGrid(playerNumber);
                         break;
                     case 8:// L_STICK
 
@@ -106,22 +122,24 @@ public class ControllerManager {
 
             @Override
             public boolean povMoved(Controller controller, int povCode, PovDirection value) {
+                int playerIndex = Controllers.getControllers().indexOf(controller, true);
+                PlayerBody player = GameManager.ins().getPlayer(playerIndex);
                 System.out.println(povCode);
                 if(value == PovDirection.north) {
-                    NextColor();
-                    GUIManager.ins().selectedColor = playersCurrentColor;
+                    NextColor(player);
+//                    GUIManager.ins().selectedColor = playersCurrentColor;
 //                    System.out.println("up");
                 }if(value == PovDirection.south) {
-                    PreviousColor();
-                    GUIManager.ins().selectedColor = playersCurrentColor;
+                    PreviousColor(player);
+//                    GUIManager.ins().selectedColor = playersCurrentColor;
 //                    System.out.println("down");
                 }if(value == PovDirection.west) {
-                    PreviousBlock();
-                    GUIManager.ins().selectedBlockName = playersCurrentBlock;
+                    PreviousBlock(player);
+//                    GUIManager.ins().selectedBlockName = playersCurrentBlock;
                 }   //System.out.println("left");
                 if(value == PovDirection.east) {
-                    NextBlock();
-                    GUIManager.ins().selectedBlockName = playersCurrentBlock;
+                    NextBlock(player);
+//                    GUIManager.ins().selectedBlockName = playersCurrentBlock;
                 }    //System.out.println("right");
                 return false;
             }
@@ -141,116 +159,116 @@ public class ControllerManager {
                 return false;
             }
         };
-
         Controllers.addListener(playerControllerAdapter);
     }
     public void Update(float delta){
-        if(Controllers.getControllers().size > 0) {
+        for (int i = 0; i < Controllers.getControllers().size; i++) {
 //            //axis
-            if(!GameManager.ins().getThePlayer().buildMode){
-                switch (Controllers.getControllers().get(0).getPov(0)){
+            if(!GameManager.ins().getPlayer(i).buildMode){
+                switch (Controllers.getControllers().get(i).getPov(0)){
                     case east:
-                        GameManager.ins().getThePlayer().GoRight();
-                        GameManager.ins().getThePlayer().TurnRight();
+                        GameManager.ins().getPlayer(i).GoRight();
+                        GameManager.ins().getPlayer(i).TurnRight();
                         break;
                     case west:
-                        GameManager.ins().getThePlayer().GoLeft();
-                        GameManager.ins().getThePlayer().TurnLeft();
+                        GameManager.ins().getPlayer(i).GoLeft();
+                        GameManager.ins().getPlayer(i).TurnLeft();
                         break;
                     case south:
-                        GameManager.ins().getThePlayer().GoBackward();
+                        GameManager.ins().getPlayer(i).GoBackward();
                         break;
                 }
 
             }
 
 
-            rightStickVec = new Vector2(Controllers.getControllers().get(0).getAxis(2),Controllers.getControllers().get(0).getAxis(3));
-            leftStickVec  = new Vector2(Controllers.getControllers().get(0).getAxis(0),Controllers.getControllers().get(0).getAxis(1));
+            rightStickVec = new Vector2(Controllers.getControllers().get(i).getAxis(2),Controllers.getControllers().get(i).getAxis(3));
+            leftStickVec  = new Vector2(Controllers.getControllers().get(i).getAxis(0),Controllers.getControllers().get(i).getAxis(1));
 
             if(rightStickVec.len() > .5f){
-                GameManager.ins().getThePlayer().LookToward(rightStickVec.nor());
+                GameManager.ins().getPlayer(i).LookToward(rightStickVec.nor());
             }
 
-            if (Controllers.getControllers().get(0).getAxis(4) > .5) {
+            if (Controllers.getControllers().get(i).getAxis(4) > .5) {
 //                System.out.println("axis 4 > .5");
-                GameManager.ins().getThePlayer().RotateLeft();
-            } else if (Controllers.getControllers().get(0).getAxis(4) < -.5) {
+                GameManager.ins().getPlayer(i).RotateLeft();
+            } else if (Controllers.getControllers().get(i).getAxis(4) < -.5) {
 //                System.out.println("axis 4  < -.5");
-                GameManager.ins().getThePlayer().RotateRight();
+                GameManager.ins().getPlayer(i).RotateRight();
             }
-            if (Controllers.getControllers().get(0).getAxis(0) < -.5) {
+            if (Controllers.getControllers().get(i).getAxis(0) < -.5) {
                 //GameManager.ins().getThePlayer().GoForeward();
-            } else if (Controllers.getControllers().get(0).getAxis(0) > .5) {
-                if(!Controllers.getControllers().get(0).getButton(4)) {
-                    GameManager.ins().getThePlayer().GoBackward();
+            } else if (Controllers.getControllers().get(i).getAxis(0) > .5) {
+                if(!Controllers.getControllers().get(i).getButton(4)) {
+                    GameManager.ins().getPlayer(i).GoBackward();
                 }
             }
-            if (Controllers.getControllers().get(0).getAxis(1) < -.5) {
-                if(!Controllers.getControllers().get(0).getButton(4)) {
-                    GameManager.ins().getThePlayer().GoLeft();
-                    GameManager.ins().getThePlayer().TurnLeft();
+            if (Controllers.getControllers().get(i).getAxis(1) < -.5) {
+                if(!Controllers.getControllers().get(i).getButton(4)) {
+                    GameManager.ins().getPlayer(i).GoLeft();
+                    GameManager.ins().getPlayer(i).TurnLeft();
                 }
-            } else if (Controllers.getControllers().get(0).getAxis(1) > .5) {
-                if(!Controllers.getControllers().get(0).getButton(4)) {
-                    GameManager.ins().getThePlayer().GoRight();
-                    GameManager.ins().getThePlayer().TurnRight();
+            } else if (Controllers.getControllers().get(i).getAxis(1) > .5) {
+                if(!Controllers.getControllers().get(i).getButton(4)) {
+                    GameManager.ins().getPlayer(i).GoRight();
+                    GameManager.ins().getPlayer(i).TurnRight();
                 }
             }
 
-            float dX = Controllers.getControllers().get(0).getAxis(3);
-            float dY = -Controllers.getControllers().get(0).getAxis(2);
+            float dX = Controllers.getControllers().get(i).getAxis(3);
+            float dY = -Controllers.getControllers().get(i).getAxis(2);
             if(dX > .05 || dX < -.05){
-                GameManager.ins().getThePlayer().buildPosition.x+=dX*5;
+                GameManager.ins().getPlayer(i).buildPosition.x+=dX*5;
             }
             if(dY > .05 || dY < -.05) {
-                GameManager.ins().getThePlayer().buildPosition.y += dY * 5;
+                GameManager.ins().getPlayer(i).buildPosition.y += dY * 5;
             }
-            GUIManager.ins().targetPosition = GameManager.ins().getThePlayer().buildPosition;
 
-            if (Controllers.getControllers().get(0).getButton(0)) {
-                Jump();
+            if (Controllers.getControllers().get(i).getButton(0)) {
+                Jump(i);
             }
-            if (Controllers.getControllers().get(0).getButton(9)) {
+            if (Controllers.getControllers().get(i).getButton(9)) {
                 //ZOOM IN
                 CameraManager.ins().ZoomIn();
             }
-            if (Controllers.getControllers().get(0).getButton(8)) {
+            if (Controllers.getControllers().get(i).getButton(8)) {
                 //ZOOM OUT
                 CameraManager.ins().ZoomOut();
             }
-            if (Controllers.getControllers().get(0).getButton(4)) {
-                if(GameManager.ins().getThePlayer().buildMode)
+            //todo optimization store a local copy of getPlayers
+            if (Controllers.getControllers().get(i).getButton(4)) {
+                if(GameManager.ins().getPlayer(i).buildMode)
                     if(numBlocks > 0)
-                        if(WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName))
+                        if(WorldManager.ins().addVoxelScreenPosition(GameManager.ins().getPlayers()[i].buildPosition.x, Gdx.graphics.getHeight()-GameManager.ins().getPlayers()[i].buildPosition.y, GameManager.ins().getPlayers()[i].playersCurrentBlock, GameManager.ins().getPlayers()[i].playersCurrentColor))
                             numBlocks--;
     //                WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName);
             }
-            if (Controllers.getControllers().get(0).getButton(5)) {
-                if(GameManager.ins().getThePlayer().buildMode)
-                    WorldManager.ins().playerRemoveVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
+            if (Controllers.getControllers().get(i).getButton(5)) {
+                if(GameManager.ins().getPlayer(i).buildMode)
+                    WorldManager.ins().playerRemoveVoxelScreenPosition((int)GameManager.ins().getPlayers()[i].buildPosition.x,(int)Gdx.graphics.getHeight()-GameManager.ins().getPlayers()[i].buildPosition.y);
             }
 
-        } else {//no controllers
+        }
+        if(Controllers.getControllers().size == 0){//no controllers
             if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-                GameManager.ins().getThePlayer().GoForeward();
+                GameManager.ins().getPlayer().GoForeward();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-                GameManager.ins().getThePlayer().GoBackward();
+                GameManager.ins().getPlayer().GoBackward();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-                GameManager.ins().getThePlayer().GoLeft();
-                GameManager.ins().getThePlayer().TurnLeft();
+                GameManager.ins().getPlayer().GoLeft();
+                GameManager.ins().getPlayer().TurnLeft();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-                GameManager.ins().getThePlayer().GoRight();
-                GameManager.ins().getThePlayer().TurnRight();
+                GameManager.ins().getPlayer().GoRight();
+                GameManager.ins().getPlayer().TurnRight();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.PAGE_UP)){
-                GameManager.ins().getThePlayer().RotateLeft();
+                GameManager.ins().getPlayer().RotateLeft();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.PAGE_DOWN)){
-                GameManager.ins().getThePlayer().RotateRight();
+                GameManager.ins().getPlayer().RotateRight();
             }
             if(Gdx.input.isKeyPressed(Input.Keys.MINUS)){
                 CameraManager.ins().mainCamera.zoom-=.05;
@@ -259,11 +277,11 @@ public class ControllerManager {
                 CameraManager.ins().mainCamera.zoom+=.05;
             }
             if(Gdx.input.isKeyPressed(Input.Keys.NUM_0)){
-                GameManager.ins().getThePlayer().FireMain();
+                GameManager.ins().getPlayer().FireMain();
             }
             mousePos.x = Gdx.input.getX();
             mousePos.y = Gdx.graphics.getHeight()-Gdx.input.getY();
-            GUIManager.ins().targetPosition = mousePos;
+            GameManager.ins().getPlayer().buildPosition = mousePos;
         }
 
     }
@@ -271,51 +289,51 @@ public class ControllerManager {
         numBlocks++;
     }
 
-    public void NextBlock(){
-        currentBlockIndex++;
-        currentBlockIndex = currentBlockIndex % IDs.ins().getNumBlockIds();
-        System.out.println(currentBlockIndex);
-        playersCurrentBlock = IDs.ins().getID(currentBlockIndex);
+    public void NextBlock(PlayerBody playerBody){
+        playerBody.currentBlockIndex++;
+        playerBody.currentBlockIndex = playerBody.currentBlockIndex % IDs.ins().getNumBlockIds();
+//        System.out.println(currentBlockIndex);
+        playerBody.playersCurrentBlock = IDs.ins().getID(playerBody.currentBlockIndex);
     }
-    public void PreviousBlock(){
-        currentBlockIndex--;
-        if(currentBlockIndex < 0)
-            currentBlockIndex = IDs.ins().getNumBlockIds()-1;
-        System.out.println(currentBlockIndex);
-        playersCurrentBlock = IDs.ins().getID(currentBlockIndex);
+    public void PreviousBlock(PlayerBody playerBody){
+        playerBody.currentBlockIndex--;
+        if(playerBody.currentBlockIndex < 0)
+            playerBody.currentBlockIndex = IDs.ins().getNumBlockIds()-1;
+//        System.out.println(currentBlockIndex);
+        playerBody.playersCurrentBlock = IDs.ins().getID(playerBody.currentBlockIndex);
     }
-    public void NextColor(){
-        currentColorIndex++;
-        currentColorIndex = currentColorIndex % IDs.ins().getNumColorIds();
-        playersCurrentColor = IDs.ins().getColor(currentColorIndex);
+    public void NextColor(PlayerBody playerBody){
+        playerBody.currentColorIndex++;
+        playerBody.currentColorIndex = playerBody.currentColorIndex % IDs.ins().getNumColorIds();
+        playerBody.playersCurrentColor = IDs.ins().getColor(playerBody.currentColorIndex);
 
     }
-    public void PreviousColor(){
-        currentColorIndex--;
-        if(currentColorIndex < 0)
-            currentColorIndex = IDs.ins().getNumColorIds()-1;
-        playersCurrentColor = IDs.ins().getColor(currentColorIndex);
+    public void PreviousColor(PlayerBody playerBody){
+        playerBody.currentColorIndex--;
+        if(playerBody.currentColorIndex < 0)
+            playerBody.currentColorIndex = IDs.ins().getNumColorIds()-1;
+        playerBody.playersCurrentColor = IDs.ins().getColor(playerBody.currentColorIndex);
 
     }
-    public void TogglePlayerControl(){
-        if(GameManager.ins().getThePlayer().isControlling())
-            GameManager.ins().getThePlayer().Exit();
+    public void TogglePlayerControl(int id){
+        if(GameManager.ins().getPlayer(id).isControlling())
+            GameManager.ins().getPlayer(id).Exit();
         else
-            GameManager.ins().getThePlayer().Enter(GameManager.ins().getThePlayer().lastControlled);
+            GameManager.ins().getPlayer(id).Enter(GameManager.ins().getPlayer(id).lastControlled);
     }
-    public void Jump(){
-        GameManager.ins().getThePlayer().GoForeward();
+    public void Jump(int player){
+        GameManager.ins().getPlayer(player).GoForeward();
     }
-    public void FireMain(){
+    public void FireMain(int player){
         if(numBlocks > 0) {
-            GameManager.ins().getThePlayer().FireMain();
+            GameManager.ins().getPlayer(player).FireMain();
             numBlocks--;
         }
     }
-    public void CreateNewGrid(){
+    public void CreateNewGrid(int player){
         if(numBlocks > 0) {
             numBlocks--;
-            VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX), GameManager.ins().getThePlayer().myBody.getPosition());
+            VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX), GameManager.ins().getPlayer(player).myBody.getPosition());
             WorldManager.ins().addGridToWorld(new StaticGrid(vc));
         }
     }

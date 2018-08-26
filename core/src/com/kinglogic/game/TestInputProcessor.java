@@ -73,24 +73,24 @@ public class TestInputProcessor implements InputProcessor {
     @Override
     public boolean keyTyped(char character) {
         if(character == '1'){
-            ControllerManager.ins().PreviousBlock();
-            GUIManager.ins().selectedBlockName = ControllerManager.ins().playersCurrentBlock;
+            ControllerManager.ins().PreviousBlock(GameManager.ins().getPlayer());
+//            GUIManager.ins().selectedBlockName = ControllerManager.ins().playersCurrentBlock;
 //            blockName = IDs.METAL_TEX;
         }
         else if(character == '2'){
-            ControllerManager.ins().NextBlock();
-            GUIManager.ins().selectedBlockName = ControllerManager.ins().playersCurrentBlock;
+            ControllerManager.ins().NextBlock(GameManager.ins().getPlayer());
+//            GUIManager.ins().selectedBlockName = ControllerManager.ins().playersCurrentBlock;
 //            blockName = IDs.TECH_TEX;
 
         }
         else if(character == '3'){
-            ControllerManager.ins().NextColor();
-            GUIManager.ins().selectedColor = ControllerManager.ins().playersCurrentColor;
+            ControllerManager.ins().NextColor(GameManager.ins().getPlayer());
+//            GUIManager.ins().selectedColor = ControllerManager.ins().playersCurrentColor;
 //            blockName = IDs.ROCK_TEX;
         }
         else if(character == '4'){
-            ControllerManager.ins().PreviousColor();
-            GUIManager.ins().selectedColor = ControllerManager.ins().playersCurrentColor;
+            ControllerManager.ins().PreviousColor(GameManager.ins().getPlayer());
+//            GUIManager.ins().selectedColor = ControllerManager.ins().playersCurrentColor;
 //            blockName = IDs.BASE_TEX;
         }
         else if(character == 's'){
@@ -100,7 +100,7 @@ public class TestInputProcessor implements InputProcessor {
             WorldManager.ins();
         }
         else if(character == 'f'){
-            WorldManager.ins().addEntityToWorld(new RobotFriend("robot", GameManager.ins().getThePlayer().myBody.getPosition()));
+            WorldManager.ins().addEntityToWorld(new RobotFriend("robot", GameManager.ins().getPlayer().myBody.getPosition()));
         }
         else if(character == 'g'){
             //GameManager.ins().getThePlayer().ToggleGravLock();
@@ -110,10 +110,10 @@ public class TestInputProcessor implements InputProcessor {
             WorldManager.ins().QueueLoad("infinity");
         }
         else if(character == ' '){
-            if(GameManager.ins().getThePlayer().isControlling())
-                GameManager.ins().getThePlayer().Exit();
+            if(GameManager.ins().getPlayer().isControlling())
+                GameManager.ins().getPlayer().Exit();
             else
-                GameManager.ins().getThePlayer().Enter(GameManager.ins().getThePlayer().lastControlled);
+                GameManager.ins().getPlayer().Enter(GameManager.ins().getPlayer().lastControlled);
         }
         else if(character == '.'){
             VoxelCollection vc = new VoxelCollection(Voxel.Build(IDs.ROCK_TEX),new Vector2(800,550));
@@ -129,12 +129,12 @@ public class TestInputProcessor implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == Input.Buttons.LEFT) {
             if(ControllerManager.ins().numBlocks > 0)
-                if(WorldManager.ins().addVoxelScreenPosition(GUIManager.ins().targetPosition.x, Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y, GUIManager.ins().selectedBlockName))
+                if(WorldManager.ins().addVoxelScreenPosition(GameManager.ins().getPlayer().buildPosition.x, Gdx.graphics.getHeight()-GameManager.ins().getPlayer().buildPosition.y, GameManager.ins().getPlayer().playersCurrentBlock, GameManager.ins().getPlayer().playersCurrentColor))
                     ControllerManager.ins().numBlocks--;
             return true;
         }
         if (button == Input.Buttons.RIGHT) {
-            WorldManager.ins().playerRemoveVoxelScreenPosition((int)GUIManager.ins().targetPosition.x,(int)Gdx.graphics.getHeight()-GUIManager.ins().targetPosition.y);
+            WorldManager.ins().playerRemoveVoxelScreenPosition((int)GameManager.ins().getPlayer().buildPosition.x,(int)Gdx.graphics.getHeight()-GameManager.ins().getPlayer().buildPosition.y);
             return true;
         }
         return false;

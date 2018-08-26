@@ -8,6 +8,7 @@ import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
+import com.kinglogic.game.Player.PlayerBody;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -70,7 +71,10 @@ public class WorldState {
 
         WorldManager.ins().clearLevel();
         //todo dont put player in the center, and the ship has to come with
-        GameManager.ins().getThePlayer().myBody.setTransform(0,0,0);
+        PlayerBody[] players = GameManager.ins().getPlayers();
+        for (int i = 0; i < players.length; i++) {
+            players[i].myBody.setTransform(0,0,0);
+        }
 
         sector = PersistenceManager.ins().LoadLevel(newX, newY);
         x = newX;
