@@ -53,6 +53,7 @@ public class EntityBody  implements Controllable, MaterialModel{
 
         perceptions = new ArrayList<EntityBody>();
         view = new Entity(name);
+        view.setOrigin(view.getWidth()/2, view.getHeight()/2);
         bodyDef = new BodyDef();
         if(myBody != null){
            physicsShape = new PhysicsShape(myBody, view);
@@ -93,6 +94,8 @@ public class EntityBody  implements Controllable, MaterialModel{
 
     public void updateRendering(){
         view.setPosition(myBody.getPosition().x, myBody.getPosition().y);
+        Vector2 v = new Vector2(-view.getWidth()/2,-view.getHeight()/2);
+        view.moveBy(v.x, v.y);
         //voxels.rotateBy(10f);
         //System.out.println("rot="+myBody.getTransform().getRotation());
         view.setRotation((float) Math.toDegrees(myBody.getTransform().getRotation()));

@@ -42,7 +42,8 @@ public class PhysicsShape {
     public PhysicsShape(Body b, Entity view, float radius){
         CircleShape c = ResourceManager.ins().getNewCircleShape();
         c.setRadius(radius);
-        c.setPosition(new Vector2(view.getWidth()/2, view.getHeight()/2));
+//        c.setPosition(new Vector2(view.getWidth()/2, view.getHeight()/2));
+        c.setPosition(new Vector2(0,0));
         shape = c;
         shape.setRadius(radius);
         fixtureDef = new FixtureDef();
@@ -71,8 +72,8 @@ public class PhysicsShape {
 
     public PhysicsShape(Body b, Entity view){
         PolygonShape ps = ResourceManager.ins().getNewPolyShape();
-        ps.setAsBox(view.getWidth()/2-1f,view.getHeight()/2-1f, new Vector2(view.getWidth()/2, view.getHeight()/2),view.getRotation());
-
+//        ps.setAsBox(view.getWidth()/2-1f,view.getHeight()/2-1f, new Vector2(view.getWidth()/2, view.getHeight()/2),view.getRotation());
+        ps.setAsBox(view.getWidth()/2-1f, view.getHeight()/2-1f, new Vector2(0,0), view.getRotation());
         shape = ps;
 
         fixtureDef = new FixtureDef();

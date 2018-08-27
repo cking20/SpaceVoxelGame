@@ -58,8 +58,9 @@ public class PlayerBody extends EntityBody {
     public void CreateFixture(){
         if(myBody != null){
             //create the player body's shape
-            physicsShape = new PhysicsShape(myBody, ResourceManager.VOXEL_PIXEL_SIZE /2-1,ResourceManager.VOXEL_PIXEL_SIZE -1,
-                    new Vector2(view.getWidth()/2, view.getHeight()/2-1),view.getRotation());
+//            physicsShape = new PhysicsShape(myBody, ResourceManager.VOXEL_PIXEL_SIZE /2-1,ResourceManager.VOXEL_PIXEL_SIZE -1, new Vector2(view.getWidth()/2, view.getHeight()/2-1),view.getRotation());
+            physicsShape = new PhysicsShape(myBody, ResourceManager.VOXEL_PIXEL_SIZE /2-1,ResourceManager.VOXEL_PIXEL_SIZE -1, new Vector2(0, 0),view.getRotation());
+
             Filter filter = new Filter();
             filter.maskBits = FilterIDs.ENTITY | FilterIDs.GRID | FilterIDs.BULLET | FilterIDs.SENSOR;
             filter.categoryBits = FilterIDs.ENTITY | FilterIDs.PLAYER;
@@ -100,12 +101,14 @@ public class PlayerBody extends EntityBody {
         armView.setPosition(armBody.getPosition().x, armBody.getPosition().y);
         if(mirrorView){
             view.setScaleX(-1);
-            Vector2 v = new Vector2(view.getWidth(),0).rotate((float) Math.toDegrees(myBody.getTransform().getRotation()));
+            Vector2 v = new Vector2(-view.getWidth()/2,-view.getHeight()/2);
             view.moveBy(v.x, v.y);
         }else {
             view.setScaleX(1);
-            Vector2 v = new Vector2(-view.getWidth(),0).rotate((float) Math.toDegrees(myBody.getTransform().getRotation()));;
-            //view.moveBy(v.x, v.y);
+//            Vector2 v = new Vector2(-view.getWidth(),0).rotate((float) Math.toDegrees(myBody.getTransform().getRotation()));;
+            Vector2 v = new Vector2(-view.getWidth()/2,-view.getHeight()/2);
+
+            view.moveBy(v.x, v.y);
         }
         view.setRotation((float) Math.toDegrees(myBody.getTransform().getRotation()));
         armView.setRotation((float) Math.toDegrees(armBody.getTransform().getRotation()));
@@ -143,7 +146,7 @@ public class PlayerBody extends EntityBody {
         super.CreateSight(radius);
         //create the playr spectific sensors, such as on ground
         if(myBody != null) {
-            groundSensor = new PhysicsShape(myBody, ResourceManager.VOXEL_PIXEL_SIZE /4, 4f, new Vector2(view.getHeight()/2, 0),view.getRotation());
+            groundSensor = new PhysicsShape(myBody, ResourceManager.VOXEL_PIXEL_SIZE /4, 4f, new Vector2(0, -view.getHeight()/2+6),view.getRotation());
             Filter filter = new Filter();
             filter.maskBits = FilterIDs.GRID;
             filter.categoryBits = FilterIDs.SENSOR;
@@ -184,24 +187,25 @@ public class PlayerBody extends EntityBody {
 //            p.Fire(myBody.getTransform().getOrientation().rotate(180f).scl(missleSpeed));
 //        else
 //            p.Fire(myBody.getTransform().getOrientation().scl(missleSpeed));
-        Vector2 direction = new Vector2(0,1).rotate((float) Math.toDegrees(armBody.getAngle()));
+        Vector2 direction = new Vector2(1,0).rotate((float) Math.toDegrees(armBody.getAngle()));
         Projectile p;
         p = ResourceManager.ins().getProjectile("projectile",
                 myBody.getPosition()
-                        .add(new Vector2(ResourceManager.VOXEL_PIXEL_SIZE,ResourceManager.VOXEL_PIXEL_SIZE).rotate(view.getRotation()))
-                        .add(direction.rotate90(-1).rotate(view.getRotation()).scl(16f))
+                    .add(direction.cpy().scl(32))
+//                        .add(new Vector2(ResourceManager.VOXEL_PIXEL_SIZE,ResourceManager.VOXEL_PIXEL_SIZE).rotate(armView.getRotation()))
+//                        .add(direction.rotate90(-1).rotate(view.getRotation()).scl(16f))
         );
 
         p.hitPlayers = false;
-        p.Fire((direction).scl(10));
+        p.Fire((direction).scl(100));
     }
     @Override
     public void FireMain(Vector2 direction){
         Projectile p;
         p = ResourceManager.ins().getProjectile("projectile",
                 myBody.getPosition()
-                .add(new Vector2(ResourceManager.VOXEL_PIXEL_SIZE,ResourceManager.VOXEL_PIXEL_SIZE).rotate(view.getRotation()))
-                .add(direction.rotate90(-1).rotate(view.getRotation()).scl(16f))
+                .add(new Vector2(ResourceManager.VOXEL_PIXEL_SIZE,ResourceManager.VOXEL_PIXEL_SIZE).rotate(armView.getRotation()))
+//                .add(direction.rotate90(-1).rotate(view.getRotation()).scl(16f))
                 );
 
         p.hitPlayers = false;
