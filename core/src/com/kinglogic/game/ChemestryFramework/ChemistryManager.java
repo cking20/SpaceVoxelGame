@@ -20,6 +20,7 @@ import java.util.LinkedList;
 public class ChemistryManager {
     private static ChemistryManager instance;
     private ArrayList<ChemicalEvent> eventQueue;
+    private ArrayList<Mapping> specificEventQueue;
     private ArrayList<MaterialModel> updateQueue;
     private float simulationStep = Constants.CHEMISTRY_SIM_STEP;
     private float deltaTime = 0;
@@ -41,10 +42,14 @@ public class ChemistryManager {
     }
     private ChemistryManager(){
         eventQueue = new ArrayList<ChemicalEvent>();
+        specificEventQueue = new ArrayList<Mapping>();
         updateQueue = new ArrayList<MaterialModel>();
     }
     public void EnqueueEvent(ChemicalEvent event){
         eventQueue.add(event);
+    }
+    public void EnqueueEvent(ChemicalEvent event, MaterialModel model){
+        specificEventQueue.add(new Mapping(event,model));
     }
 
     /**
@@ -88,6 +93,10 @@ public class ChemistryManager {
                 }
             }
             eventQueue.clear();
+            for(Mapping m: specificEventQueue){
+                m.effected.Receive(m.event);
+            }
+            specificEventQueue.clear();
 
 
             deltaTime = 0;
@@ -100,7 +109,15 @@ public class ChemistryManager {
     public void dispose(){
 
     }
+    private class Mapping{
+        public ChemicalEvent event;
+        public MaterialModel effected;
 
+        public Mapping(ChemicalEvent event, MaterialModel effected){
+            this.event = event;
+            this.effected = effected;
+        }
+    }
 
 
 }

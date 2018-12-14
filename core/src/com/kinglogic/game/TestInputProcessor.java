@@ -100,7 +100,8 @@ public class TestInputProcessor implements InputProcessor {
             WorldManager.ins();
         }
         else if(character == 'f'){
-            WorldManager.ins().addEntityToWorld(new RobotFriend("robot", GameManager.ins().getPlayer().myBody.getPosition()));
+            GameManager.ins().getPlayer().buildMode = !GameManager.ins().getPlayer().buildMode;
+//            WorldManager.ins().addEntityToWorld(new RobotFriend("robot", GameManager.ins().getPlayer().myBody.getPosition()));
         }
         else if(character == 'g'){
             //GameManager.ins().getThePlayer().ToggleGravLock();
@@ -122,20 +123,32 @@ public class TestInputProcessor implements InputProcessor {
         }
 
 
+
         return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (button == Input.Buttons.LEFT) {
-            if(ControllerManager.ins().numBlocks > 0)
-                if(WorldManager.ins().addVoxelScreenPosition(GameManager.ins().getPlayer().buildPosition.x, Gdx.graphics.getHeight()-GameManager.ins().getPlayer().buildPosition.y, GameManager.ins().getPlayer().playersCurrentBlock, GameManager.ins().getPlayer().playersCurrentColor))
-                    ControllerManager.ins().numBlocks--;
-            return true;
-        }
-        if (button == Input.Buttons.RIGHT) {
-            WorldManager.ins().playerRemoveVoxelScreenPosition((int)GameManager.ins().getPlayer().buildPosition.x,(int)Gdx.graphics.getHeight()-GameManager.ins().getPlayer().buildPosition.y);
-            return true;
+        if(GameManager.ins().getPlayer().buildMode) {
+            if (button == Input.Buttons.LEFT) {
+                if (ControllerManager.ins().numBlocks > 0)
+                    if (WorldManager.ins().addVoxelScreenPosition(GameManager.ins().getPlayer().buildPosition.x, Gdx.graphics.getHeight() - GameManager.ins().getPlayer().buildPosition.y, GameManager.ins().getPlayer().playersCurrentBlock, GameManager.ins().getPlayer().playersCurrentColor))
+                        ControllerManager.ins().numBlocks--;
+                return true;
+            }
+            if (button == Input.Buttons.RIGHT) {
+                WorldManager.ins().playerRemoveVoxelScreenPosition((int) GameManager.ins().getPlayer().buildPosition.x, (int) Gdx.graphics.getHeight() - GameManager.ins().getPlayer().buildPosition.y);
+                return true;
+            }
+        }else{
+            if (button == Input.Buttons.LEFT) {
+                GameManager.ins().getPlayer().FireMain();
+                return true;
+            }
+            if (button == Input.Buttons.RIGHT) {
+                GameManager.ins().getPlayer().FireAlt();
+                return true;
+            }
         }
         return false;
     }

@@ -35,6 +35,8 @@ public class Voxel extends Image implements MaterialModel{
             v.properties.setPermeable(true);
         }else if(name.contains(IDs.DOOR_TEX)){
             v = new Door(name);
+        }else if(name.contains(IDs.TECH_TEX)){
+            v = new Cannon(name);
         }else if(name.contains(IDs.GRASS_TEX)){
             v = new SensorBlock(name);
             v.properties.setProperty(false, Properties.COLLIDABLE);

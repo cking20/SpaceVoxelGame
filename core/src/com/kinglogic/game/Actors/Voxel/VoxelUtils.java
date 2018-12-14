@@ -16,6 +16,17 @@ import java.util.List;
 
 public class VoxelUtils {
 
+    public enum FIFTEEN_PATCH{
+        HO(5), AT(11), VT(10),
+        RT(3), TT(1),  LT(9),
+        RR(2), CC(0),  LL(8),
+        RB(6), BB(4),  LB(2),
+        AL(7), AB(14), AR(13), AA(15);
+        private final int value;
+        FIFTEEN_PATCH(final int newValue) {value = newValue;}
+        public int getValue() { return value; }
+    }
+
     /**
      * Helper function of marching squares. Maps the values to a set of edges
      * @param value the neighbor code
@@ -185,9 +196,9 @@ public class VoxelUtils {
      * @param state of a grid
      * @return a list of connected vertices
      */
-    public static List<Vector2[]> MarchingSquares(Voxel[][] state){
+    public static List<Vector2[]> MarchingSquaresVerts(Voxel[][] state){
         //save the first
-        //for each generate map value and add the verts to the list, then parse the list and reorder it so its a loop counter clockwise loop
+        //for each generate map value and add the verts to the list, then parse the list and reorder it so its a counter clockwise loop
         int firstX = -1,firstY = -1;
         HashMap<Vector2,LinkedList<FromEdge>> edgeslist = new HashMap();
         for(int i = 0; i < state.length; i++){
@@ -222,11 +233,11 @@ public class VoxelUtils {
             }
 
         }
-        if(firstX >= 0){
+        if(firstX >= 0){//there is a shape
             List<Vector2[]> chainsList = new LinkedList<Vector2[]>();
 
 
-            Vector2 firstPos = new Vector2(firstX*ResourceManager.VOXEL_PIXEL_SIZE, firstY*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE);
+            Vector2 firstPos;// = new Vector2(firstX*ResourceManager.VOXEL_PIXEL_SIZE, firstY*ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE);
 //            System.out.println("adding first position = "+firstPos);
 
             if(edgeslist.size() == 0){
@@ -237,6 +248,7 @@ public class VoxelUtils {
                 firstPos = edgeslist.keySet().iterator().next();
                 LinkedList<FromEdge> currentList = edgeslist.remove(firstPos);
                 if (currentList == null) {
+                    System.out.println("that edge case");
                     //meaning we hit an edge case such that the first position isnt in the top left, its in the top right
                     firstPos = new Vector2(firstX * ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE, firstY * ResourceManager.VOXEL_PIXEL_SIZE + ResourceManager.VOXEL_PIXEL_SIZE);
                     currentList = edgeslist.remove(firstPos);
@@ -261,6 +273,17 @@ public class VoxelUtils {
                 }
                 verts.add(currentVert.from);
                 verts.add(currentVert.to);
+
+
+                if(verts.size() > 1)
+                    for (int i = verts.size()-1; i > 0; i--) {
+                        if(verts.get(i).cpy().sub(verts.get(i-1)).len() < .000025f) {
+                            System.out.println("culling vert" + verts.get(i-1)+" due to "+verts.get(i));
+                            verts.remove(i-1);
+                        }
+                    }
+
+
                 Vector2[] chain = new Vector2[verts.size()];
                 chain = verts.toArray(chain);
                 chainsList.add(chain);
@@ -352,7 +375,7 @@ public class VoxelUtils {
     }
 
     /**
-     * Helper class of the MarchingSquares function
+     * Helper class of the MarchingSquaresVerts function
      */
     private static class FromEdge{
         public Vector2 from;

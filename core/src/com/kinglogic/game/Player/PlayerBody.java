@@ -154,7 +154,7 @@ public class PlayerBody extends EntityBody {
             groundSensor.fixture.setSensor(true);
             groundSensor.fixture.setUserData("ground");
 
-            WorldManager.ins().addLightToBody(myBody,.2f,32,myBody.getLocalCenter(), new Vector2(16f,16f));
+            WorldManager.ins().addLightToBody(myBody,.2f,32,myBody.getLocalCenter(), new Vector2(0f,0f));
         }
 
     }

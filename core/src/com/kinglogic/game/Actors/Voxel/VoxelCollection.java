@@ -33,9 +33,6 @@ public class VoxelCollection extends Group {
      * @param position in world units
      */
     public VoxelCollection(Voxel v, Vector2 position){
-        //the size must be odd to get a center position
-        if(maxSize%2 == 0)
-            maxSize--;
 
         grid = new Voxel[maxSize][maxSize];
         sensorBlocks = new ArrayList<VoxelUtils.Index>();
@@ -73,6 +70,7 @@ public class VoxelCollection extends Group {
                     if (grid[i][j] != null) {
                         if(grid[i][j].buildCollisionSensor() > 0) sensorBlocks.add(new VoxelUtils.Index(i,j));
                         super.addActor(grid[i][j]);
+                        grid[i][j].setPosition((i * ResourceManager.VOXEL_PIXEL_SIZE), (j * ResourceManager.VOXEL_PIXEL_SIZE));
                     }
                 }
             }

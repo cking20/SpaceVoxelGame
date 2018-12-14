@@ -11,5 +11,6 @@ public class Entity extends Image{
     //will use Animation<TextureRegion>
     public Entity(String name) {
         super(ResourceManager.ins().getSpriteTex(name));
+        this.setName(name);
     }
 }

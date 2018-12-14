@@ -67,6 +67,11 @@ public class EntityBody  implements Controllable, MaterialModel{
 // Set our body's starting position in the world
         bodyDef.position.set(position.x,position.y);
     }
+
+    public static EntityBody Build(String name, Vector2 pos){
+        //todo make it generate the correct class
+        return new EntityBody(name,pos);
+    }
     public void CreateFixture(){
         if(myBody != null){
             physicsShape = new PhysicsShape(myBody, view);
@@ -279,7 +284,7 @@ public class EntityBody  implements Controllable, MaterialModel{
             case SEND_GRAVITY:
                 if(properties.hasProperty(Properties.AFFECTED_BY_GRAVITY)) {
 //                    System.out.println("setting gravity of " + this + " to " + event.position);
-                    this.SetGravLock(true, event.position);
+                    this.SetGravLock(true, event.direction);
                     ChemistryManager.ins().CheckThis(this);
                 }
         }

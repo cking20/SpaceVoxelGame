@@ -1,14 +1,18 @@
 package com.kinglogic.game.Managers;
 
 import com.badlogic.gdx.Gdx;
+import com.kinglogic.game.Models.EntityStateModel;
 import com.kinglogic.game.Models.GridStateModel;
 import com.kinglogic.game.Models.SectorState;
 import com.kinglogic.game.Models.SectorStateModel;
 import com.kinglogic.game.Models.WorldState;
 import com.kinglogic.game.Models.WorldStateModel;
 import com.kinglogic.game.Physics.DynamicGrid;
+import com.kinglogic.game.Physics.EntityBody;
 import com.kinglogic.game.Physics.Grid;
+import com.kinglogic.game.Player.PlayerBody;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -18,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 /**
@@ -122,14 +127,30 @@ public class PersistenceManager {
         Gdx.files.local("/savedata/"+WorldManager.ins().getWorldName()+"/"+s.name).mkdirs();
         File gridsFile = new File(levelPath+"/grids");
         gridsFile.mkdirs();
-        File ent = new File(levelPath+"/entities");
-        ent.mkdirs();
+//        File ent = new File(levelPath+"/entities");
+//        ent.mkdirs();
         File leveldat = new File(levelPath+"/levelstate.txt");
         try {
             leveldat.createNewFile();
             FileOutputStream leveldatOutputStream = new FileOutputStream(leveldat);
             PrintWriter leveldatOutputWriter = new PrintWriter(leveldatOutputStream,false);
-            leveldatOutputWriter.write(SectorStateModel.jsonifySectorState(s));
+
+            ArrayList<EntityBody> entityBodies = new ArrayList<EntityBody>(WorldManager.ins().currentLevel.entities);
+            JSONArray entities  = new JSONArray();
+            PlayerBody[] players = GameManager.ins().getPlayers();
+            for (EntityBody b: entityBodies) {
+                boolean isPlayer = false;
+                for (int i = 0; i < players.length; i++) {
+                    if(b.equals(players[i]))
+                        isPlayer = true;
+                }
+                if(!isPlayer)
+                    entities.put(EntityStateModel.jsonifyEntity(b));
+            }
+            JSONObject state = SectorStateModel.jsonifySectorState(s);
+            state.put("entities", entities);
+
+            leveldatOutputWriter.write(state.toString());
             leveldatOutputWriter.close();
             ArrayList<Grid> grids = WorldManager.ins().currentLevel.GetGridsInSector(s);
                 for(Grid g: grids){
@@ -164,7 +185,16 @@ public class PersistenceManager {
                     in+=leveldatScanner.next();
                 }
                 leveldatScanner.close();
-                ret = SectorStateModel.unjsonifySectorState(new JSONObject(in));
+                JSONObject state = new JSONObject(in);
+                ret = SectorStateModel.unjsonifySectorState(state);
+
+                ArrayList<EntityBody> bodies = new ArrayList<EntityBody>();
+                JSONArray entities = state.getJSONArray("entities");
+                for (int i = 0; i < entities.length(); i++) {
+                    bodies.add(EntityStateModel.unjsonifyEntity(entities.getJSONObject(i)));
+                }
+                WorldManager.ins().currentLevel.PopulateEntities(bodies);
+
                 ArrayList<Grid> loaded = new ArrayList<Grid>();
                 File gridDir = new File(levelPath+"/grids");
                 File[] gridFiles = gridDir.listFiles();
@@ -185,12 +215,12 @@ public class PersistenceManager {
             }catch (FileNotFoundException e) {
                 e.printStackTrace();
                 System.out.print("creating new sector");
-                return new SectorState(x+","+y,x,y, true);
+                return PCGManager.ins().generateSectorState(WorldManager.ins().currentLevel,x,y);
             }
         }else {
             //create new
             System.out.print("creating new sector");
-            return new SectorState(x+","+y,x,y, true);
+            return PCGManager.ins().generateSectorState(WorldManager.ins().currentLevel,x,y);
         }
     }
 }

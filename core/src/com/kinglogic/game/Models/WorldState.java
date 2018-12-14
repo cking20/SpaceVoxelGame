@@ -3,6 +3,7 @@ package com.kinglogic.game.Models;
 import com.badlogic.gdx.math.Vector2;
 import com.kinglogic.game.Constants;
 import com.kinglogic.game.Managers.GameManager;
+import com.kinglogic.game.Managers.PCGManager;
 import com.kinglogic.game.Managers.PersistenceManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
@@ -23,7 +24,7 @@ public class WorldState {
     public String name;
     public HashSet<Grid> grids;
     public HashSet<EntityBody> entities;
-
+    public PCGManager.SECTOR_ARCHETYPE[][] sectorsData;
     public SectorState sector;
 
     private int x, y;
@@ -33,7 +34,18 @@ public class WorldState {
         this.name = name;
         x = currentX;
         y = currentY;
-        sector = new SectorState(x+","+y, x,y, false);
+        sectorsData = PCGManager.ins().generateWorldMap();
+        sector = new SectorState(x,y, PCGManager.SECTOR_ARCHETYPE.VOID);
+        grids = new HashSet<Grid>();
+        entities = new HashSet<EntityBody>();
+    }
+
+    public WorldState(String name, PCGManager.SECTOR_ARCHETYPE[][] worldData, int currentX, int currentY){
+        this.name = name;
+        x = currentX;
+        y = currentY;
+        sectorsData = worldData;
+        sector = new SectorState(x,y, PCGManager.SECTOR_ARCHETYPE.VOID);
         grids = new HashSet<Grid>();
         entities = new HashSet<EntityBody>();
     }

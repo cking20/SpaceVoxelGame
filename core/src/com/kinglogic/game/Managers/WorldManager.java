@@ -61,6 +61,7 @@ public class WorldManager {
     private ArrayList<Vector2>playerRemovalQueue;
     private ArrayList<Vector2> addalQueue;
 
+    private ArrayList<EntityBody> entityAddalQueue;
     private ArrayList<EntityBody> entityRemovalQueue;
     private ArrayList<Grid> gridRemovalQueue;
     private ArrayList<Grid> gridRecalculationQueue;
@@ -92,6 +93,7 @@ public class WorldManager {
 //        entities = new HashSet<EntityBody>();
         removalQueue = new ArrayList<Vector2>();
         playerRemovalQueue = new ArrayList<Vector2>();
+        entityAddalQueue = new ArrayList<EntityBody>();
         entityRemovalQueue = new ArrayList<EntityBody>();
         gridRemovalQueue = new ArrayList<Grid>();
         gridRecalculationQueue = new ArrayList<Grid>();
@@ -405,7 +407,20 @@ public class WorldManager {
             }
         }
         gridRemovalQueue.clear();
-        //System.out.println("Done removing");
+
+        for(EntityBody e : entityAddalQueue){
+            if(!currentLevel.entities.contains(e)) {
+                entityGroup.addActor(e.view);
+                e.myBody = worldPhysics.createBody(e.bodyDef);
+                e.myBody.setUserData(e);
+                e.CreateFixture();
+                e.CreateSight(e.viewDistance);
+                currentLevel.entities.add(e);
+            }
+        }
+        entityAddalQueue.clear();
+
+
 
 
     }
@@ -512,7 +527,12 @@ public class WorldManager {
     }
 
     public void addEntityToWorld(EntityBody e){
-        if(!currentLevel.entities.contains(e)) {
+
+        if(worldPhysics.isLocked()){
+            System.out.println("add entity called during physics step");
+            if(!entityAddalQueue.contains(e))
+                entityAddalQueue.add(e);
+        } else if(!currentLevel.entities.contains(e)) {
             entityGroup.addActor(e.view);
             e.myBody = worldPhysics.createBody(e.bodyDef);
             e.myBody.setUserData(e);
@@ -521,6 +541,7 @@ public class WorldManager {
             currentLevel.entities.add(e);
         }
     }
+
 
     /**
      * This wont add it as an entity to be saved/loaded when the world is reset

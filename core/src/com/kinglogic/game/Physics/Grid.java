@@ -1,6 +1,5 @@
 package com.kinglogic.game.Physics;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,9 +12,7 @@ import com.kinglogic.game.Actors.Voxel.VoxelUtils;
 import com.kinglogic.game.ChemestryFramework.ChemicalEvent;
 import com.kinglogic.game.ChemestryFramework.ChemistryManager;
 import com.kinglogic.game.ChemestryFramework.MaterialModel;
-import com.kinglogic.game.Constants;
 import com.kinglogic.game.Interfaces.Controllable;
-import com.kinglogic.game.Managers.GameManager;
 import com.kinglogic.game.Managers.ResourceManager;
 import com.kinglogic.game.Managers.WorldManager;
 
@@ -176,7 +173,7 @@ public class Grid implements Controllable, MaterialModel{
 
     public List<Vector2[]> recalculateVerts(){
         //todo parse through the voxels, counter clockwise
-        List<Vector2[]> verticies = VoxelUtils.MarchingSquares(voxels.getGrid());
+        List<Vector2[]> verticies = VoxelUtils.MarchingSquaresVerts(voxels.getGrid());
 
         if(verticies != null) {
             Vector2[] ret = new Vector2[verticies.size()];
@@ -374,16 +371,19 @@ public class Grid implements Controllable, MaterialModel{
             case TOUCHED:
                 ChemicalEvent e = new ChemicalEvent();
                 e.sentBy = this;
-                e.position = gravity;
+                e.direction = gravity;
+                e.position = event.position.cpy();
                 e.event = ChemistryManager.EventTypes.SEND_GRAVITY;
-                event.sentBy.Receive(e);
+//                event.sentBy.Receive(e);
+                ChemistryManager.ins().EnqueueEvent(e, event.sentBy);
                 break;
             default:
                 event.sentBy = this;
                 break;
         }
         //send the event to that voxel
-        effected.Receive(event);
+        ChemistryManager.ins().EnqueueEvent(event, effected);
+//        effected.Receive(event);
     }
 
     @Override

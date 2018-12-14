@@ -15,7 +15,7 @@ import com.kinglogic.game.Managers.WorldManager;
 
 public class Projectile extends EntityBody{
     public boolean hitPlayers = false;
-    private int lifetime = 20;
+    public int lifetime = 20;
 
     public Projectile(String name, Vector2 position) {
         super(name, position);

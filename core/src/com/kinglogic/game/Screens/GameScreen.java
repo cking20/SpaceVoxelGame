@@ -46,8 +46,6 @@ public class GameScreen implements Screen {
         //Set the entire screen to this color
         Gdx.gl.glClearColor(.078f, .047f, .101f, 1);
         //render the actors
-        WorldManager.ins().render();
-        GUIManager.ins().render();
 
         //perform the actions of the actors
         GameManager.ins().Update(delta);
@@ -57,6 +55,10 @@ public class GameScreen implements Screen {
         WorldManager.ins().update(delta);
         ResourceManager.ins().Update(delta);
         CameraManager.ins().Update(delta);
+
+
+        WorldManager.ins().render();
+        GUIManager.ins().render();
 
     }
 

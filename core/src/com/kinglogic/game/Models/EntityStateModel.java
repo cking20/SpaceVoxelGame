@@ -10,18 +10,19 @@ import org.json.JSONObject;
  */
 
 public class EntityStateModel {
-    public static String jsonifyEntity(EntityBody e){
+    public static JSONObject jsonifyEntity(EntityBody e){
         JSONObject json = new JSONObject();
         json.put("name", e.view.getName());
         json.put("x", e.myBody.getPosition().x);
         json.put("y", e.myBody.getPosition().x);
+        json.put("class", e.getClass());
 
-        return json.toString();
+        return json;
     }
 
     public static EntityBody unjsonifyEntity(JSONObject json){
         //todo there hasProperty a massive bug here where the entity will not come back as the correct type
-        EntityBody e = new EntityBody(
+        EntityBody e = EntityBody.Build(
                 json.getString("name"),
                 new Vector2(json.getFloat("x"), json.getFloat("y"))
         );

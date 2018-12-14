@@ -276,12 +276,11 @@ public class ControllerManager {
             else if(Gdx.input.isKeyPressed(Input.Keys.EQUALS)){
                 CameraManager.ins().mainCamera.zoom+=.05;
             }
-            if(Gdx.input.isKeyPressed(Input.Keys.NUM_0)){
-                GameManager.ins().getPlayer().FireMain();
-            }
+
             mousePos.x = Gdx.input.getX();
             mousePos.y = Gdx.graphics.getHeight()-Gdx.input.getY();
             GameManager.ins().getPlayer().buildPosition = mousePos;
+            GameManager.ins().getPlayer().LookToward(mousePos.cpy().sub(new Vector2(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2)).rotate90(1));
         }
 
     }
